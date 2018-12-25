@@ -99,7 +99,7 @@ class Sensor():
         self.model = self.data['Type']
         self.hidden = False if self.data['Hidden'] == 'false' else True
         self.flagged = True if self.data['Flag'] == 1 else False
-        self.downgraded = True if self.data['A_H'] == 1 else False
+        self.downgraded = True if self.data['A_H'] == 'true' else False
         self.age = int(self.data['AGE']) # Number of minutes old the data is
 
 
