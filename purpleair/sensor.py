@@ -1,4 +1,5 @@
 import json
+import thingspeak
 import requests
 import requests_cache
 from datetime import timedelta
@@ -18,6 +19,7 @@ class Sensor():
         self.json = json
         self.data = self.get_data()
         self.parse_location = parse_location
+        self.thingspeak_data = {}
         self.setup()
 
 
@@ -99,6 +101,8 @@ class Sensor():
         self.tp_a_key = self.data['THINGSPEAK_PRIMARY_ID_READ_KEY']
         self.tp_b = self.data['THINGSPEAK_SECONDARY_ID']
         self.tp_b_key = self.data['THINGSPEAK_SECONDARY_ID_READ_KEY']
+        self.channel_a = thingspeak.Channel(id=self.tp_a, api_key=self.tp_a_key)
+        self.channel_b =thingspeak.Channel(id=self.tp_b, api_key=self.tp_b_key)
 
         # Diagnostic
         self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
@@ -115,6 +119,13 @@ class Sensor():
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
         self.location = location
         return location
+
+
+    def get_field(self, field) -> None:
+        """Gets the thingspeak data for a sensor"""
+        self.thingspeak_data[field] = {}
+        self.thingspeak_data[field]['channel_a'] = json.loads(self.channel_a.get_field(field=field))
+        self.thingspeak_data[field]['channel_b'] = json.loads(self.channel_b.get_field(field=field))
 
 
     def is_useful(self) -> bool:
