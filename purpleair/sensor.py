@@ -94,6 +94,12 @@ class Sensor():
             except KeyError:
                 self.last2_modified = None
 
+        # Thingspeak IDs
+        self.tp_a = self.data['THINGSPEAK_PRIMARY_ID']
+        self.tp_a_key = self.data['THINGSPEAK_PRIMARY_ID_READ_KEY']
+        self.tp_b = self.data['THINGSPEAK_SECONDARY_ID']
+        self.tp_b_key = self.data['THINGSPEAK_SECONDARY_ID_READ_KEY']
+
         # Diagnostic
         self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
         self.model = self.data['Type']
