@@ -6,7 +6,6 @@ from purpleair import sensor
 p = purpleair.PurpleAir()
 print(len(p.useful_sensors))
 s = p.useful_sensors[0] # First confirmed useful sensor
-s.get_field('field2')
 # s.get_location()
 print(s)
 
