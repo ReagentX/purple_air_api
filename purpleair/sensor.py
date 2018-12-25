@@ -3,7 +3,7 @@ import requests
 import requests_cache
 from datetime import timedelta
 from datetime import datetime
-from api_data import API_ROOT
+from .api_data import API_ROOT
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 

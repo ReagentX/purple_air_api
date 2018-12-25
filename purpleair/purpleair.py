@@ -2,8 +2,8 @@ import json
 import requests
 import requests_cache
 from datetime import timedelta
-from api_data import API_ROOT
-from sensor import Sensor
+from .api_data import API_ROOT
+from .sensor import Sensor
 from itertools import chain
 
 
