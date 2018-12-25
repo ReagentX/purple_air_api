@@ -16,9 +16,9 @@ class PurpleAir():
         self.data = self.get_all_data()
         self.all_sensors = [Sensor(s['ID'], json=s, parse_location=parse_location) for s in self.data]
         self.outside_sensors = [s for s in self.all_sensors if s.location_type == 'outside']
-        self.useful_sensors = 
+        # self.useful_sensors = 
 
-    def get_all_data(self):
+    def get_all_data(self) -> dict:
         """Get all data from the API"""
         response = requests.get(f'{API_ROOT}')
         data = json.loads(response.content)

@@ -5,7 +5,7 @@ from datetime import timedelta
 from datetime import datetime
 from api_data import API_ROOT
 from geopy.geocoders import Nominatim
-
+from geopy.location import Location
 
 # Setup cache for requests
 requests_cache.install_cache(expire_after=timedelta(hours=24))
@@ -17,11 +17,11 @@ class Sensor():
         self.id = id
         self.json = json
         self.data = self.get_data()
-        self.parse_location = parse_location  # Disables some slow features
+        self.parse_location = parse_location
         self.setup()
 
 
-    def get_data(self):
+    def get_data(self) -> dict:
         """Get new data if no data is provided"""
         # Fetch the JSON and exclude the child sensors
         if not self.json:
@@ -32,7 +32,7 @@ class Sensor():
             return self.json
 
 
-    def setup(self):
+    def setup(self) -> None:
         """Initiailze metadata and real data for a sensor; for detailed info see docs"""
         # Meta
         self.lat = self.data['Lat']
@@ -41,7 +41,7 @@ class Sensor():
         self.name = self.data['Label']
         self.location_type = self.data['DEVICE_LOCATIONTYPE']
         # Parse the location (slow, so must be manually enabled)
-        if not self.parse_location:
+        if self.parse_location:
             self.get_location()
 
         # Data
@@ -103,7 +103,7 @@ class Sensor():
         self.age = int(self.data['AGE']) # Number of minutes old the data is
 
 
-    def get_location(self):
+    def get_location(self) -> Location:
         """Set the location for a Sensor using geopy"""
         geolocator = Nominatim(user_agent="purple_air_api")
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
