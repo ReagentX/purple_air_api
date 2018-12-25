@@ -22,6 +22,7 @@ class Sensor():
 
 
     def get_data(self):
+        """Get new data if no data is provided"""
         # Fetch the JSON and exclude the child sensors
         if not self.json:
             response = requests.get(f'{API_ROOT}?show={self.id}')
@@ -111,6 +112,7 @@ class Sensor():
 
 
     def __repr__(self):
+        """String representation of the class"""
         try:
             return f"Sensor {self.id} at {self.location}"
         except AttributeError:
