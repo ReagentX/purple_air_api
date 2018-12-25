@@ -41,7 +41,7 @@ class Sensor():
         self.location_type = self.data['DEVICE_LOCATIONTYPE']
         # Parse the location (slow, so must be manually enabled)
         if not self.parse_location:
-            self.location = self.get_location()
+            self.get_location()
 
         # Data
         self.current_pm2_5 = self.data['PM2_5Value']
@@ -104,11 +104,11 @@ class Sensor():
 
 
     def get_location(self):
-        lat = self.data['Lat']
-        lon = self.data['Lon']
+        """Set the location for a Sensor using geopy"""
         geolocator = Nominatim(user_agent="purple_air_api")
-        location = geolocator.reverse(f'{lat}, {lon}')
+        location = geolocator.reverse(f'{self.lat}, {self.lon}')
         print(location.raw['display_name'])
+        self.location = location
         return location
 
 
