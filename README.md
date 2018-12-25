@@ -1,6 +1,6 @@
 # purple_air_api
 
-A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas Dataframe with several utility functions.
+A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas Dataframe with several utility methods.
 
 ## Installation
 
