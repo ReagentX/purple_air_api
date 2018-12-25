@@ -1,6 +1,6 @@
 # Using PurpleAir data
 
-PurpleAir sensors employ a dual laser counter to provide some level of data integrity. This is intended to provide a way of determining sensor health and fault detection. Some examples of what can go wrong with a laser counter are a fan failure, insects or other debris inside the device or just a layer of dust from long term exposure. 
+PurpleAir sensors employ a dual laser counter to provide some level of data integrity. This is intended to provide a way of determining sensor health and fault detection. Some examples of what can go wrong with a laser counter are a fan failure, insects or other debris inside the device or just a layer of dust from long term exposure.
 
 If both laser counters (channels) are in agreement, the data can be seen as excellent quality. If there are different readings from the two channels, there may be a fault with one or both.
 
@@ -19,13 +19,13 @@ The simplest way to download the data is using the download page available at[ht
 
 PurpleAir provides access to our real time data in a JSON format. This format allows developers to access current data for all sensors or a subset of sensors.
 
-There are two ways to access the JSON data: 
+There are two ways to access the JSON data:
 
-- All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json) 
+- All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json)
 
 - One entry: `https://www.purpleair.com/json?show=ID` where ID is the “ID” of the sensor you want (in the case of dual laser where ParentID is “null”).
 
-### PurpleAir JSON fields description and example values:
+### PurpleAir JSON fields description and example values
 
 The following is a list of the fields and a description of their values contained in the JSON data:
 
@@ -37,7 +37,7 @@ The following is a list of the fields and a description of their values containe
         "Label":"name", // The "name" that appears on the map for this sensor
         "Lat":null, // Latitude position info
         "Lon":null, // Longitude position info
-        "PM2_5Value":"1.07", // Current PM2.5 value (based on the 
+        "PM2_5Value":"1.07", // Current PM2.5 value
         "State":null,  // Unused variable
         "Type":"TYPE",  // Sensor type (PMS5003, PMS1003, BME280 etc)
         "Hidden":"true", // Hide from public view on map: true/false
@@ -71,23 +71,23 @@ The following is a list of the fields and a description of their values containe
             }"
     }
 
-Accessing data directly from Thingspeak:
+## Accessing data directly from Thingspeak
 
 Another way to get the data is to use ThingSpeak.com and to do this, you will need the API Key and channelID. These two pieces of data are available from PurpleAir’s JSON.
 
 **NOTE: Please limit multiple threaded applications to a few threads at any time to reduce load on purpleair.com or thingspeak.com servers. If you do not limit the amount of threads, you may be blocked on the firewall.**
 
-More info on using ThingSpeak’s API is here: [https://www.mathworks.com/help/thingspeak/rest-api.html](https://www.mathworks.com/help/thingspeak/rest-api.html) 
+More info on using ThingSpeak’s API is here: [https://www.mathworks.com/help/thingspeak/rest-api.html](https://www.mathworks.com/help/thingspeak/rest-api.html)
 
 ## Field descriptions
 
 Channel A and B, primary and secondary ThingSpeak channels together provide 32 fields for each sensor.
 
-There are six ug/m3 values and six particle counts for each channel (laser) as well as temperature, humidity, WiFi signal (RSSI), sensor uptime, free memory and analog input. 
+There are six ug/m3 values and six particle counts for each channel (laser) as well as temperature, humidity, WiFi signal (RSSI), sensor uptime, free memory and analog input.
 
 ### Channel A
 
-**PrimaryData**
+#### PrimaryData
 
     field1: PM1.0 (CF=ATM) ug/m3
     field2: PM2.5 (CF=ATM) ug/m3
@@ -98,7 +98,7 @@ There are six ug/m3 values and six particle counts for each channel (laser) as w
     field7: Humidity (%)
     field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
 
-**SecondaryData**
+#### SecondaryData
 
     field1: 0.3um particles/deciliter
     field2: 0.5um particles/deciliter
@@ -111,7 +111,7 @@ There are six ug/m3 values and six particle counts for each channel (laser) as w
 
 ### Channel B
 
-**PrimaryData**
+#### PrimaryData
 
     field1: PM1.0 (CF=ATM) ug/m3
     field2: PM2.5 (CF=ATM) ug/m3
@@ -122,7 +122,7 @@ There are six ug/m3 values and six particle counts for each channel (laser) as w
     field7: (NOT USED)
     field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
 
-**SecondaryData**
+#### SecondaryData
 
     field1: 0.3um particles/deciliter
     field2: 0.5um particles/deciliter
@@ -188,6 +188,7 @@ Each sensor contains two identical laser counters, hence channel A and B. If the
 
 ## Plantower PMS sensor notes
 
-**ATM** is "**atmospheric**", meant to be used for outdoor applications
-**CF=1** is meant to be used for indoor or controlled environment applications
-However, PurpleAir uses CF=1 values on the map. This value is lower than the ATM value in higher measured concentrations.
+- **ATM** is "**atmospheric**", meant to be used for outdoor applications
+- **CF=1** is meant to be used for indoor or controlled environment applications
+  - However, PurpleAir uses CF=1 values on the map
+  - This value is lower than the ATM value in higher measured concentrations
