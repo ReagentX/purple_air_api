@@ -24,4 +24,3 @@ class PurpleAir():
         data = json.loads(response.content)
         print(f"Initialized {len(data['results'])} sensors!")
         return data['results']
-
