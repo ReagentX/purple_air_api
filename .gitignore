@@ -2,3 +2,4 @@
 venv/*
 *.pyc
 cache.sqlite
+puepleair_api.egg-info/*
