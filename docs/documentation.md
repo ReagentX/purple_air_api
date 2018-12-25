@@ -145,42 +145,42 @@ The SD Card version of the PA-II (PA-II-SD) has a built in real time clock and O
 
 ### Header Descriptions
 
-**UTCDateTime:** The Date and time derived from the Real Time Clock and synced with NTP where possible (in UTC).
-**Mac_address:** The MAC address of the WiFi module on the sensor (used as an ID for the unit).
-**Firmware_ver:** Firmware version of the control board.
-**Hardware:** Hardware the control board has detected.
-**current_temp_f:** Current temperature in F.
-**Current_humidity:** Current Humidity in %.
-**Current_dewpoint_f:** Calculated dew point in F.
-**Pressure:** Current pressure in millibars.
-**Adc:** The voltage reading on the analog input of the control board.
-**Mem:** Free HEAP memory on the control board.
-**Rssi:** WiFi signal strength in dBm
-**Uptime:** Firmware uptime in seconds.
-**Pm1_0_atm:** Channel A ATM PM1.0 particulate mass in ug/m3
-**Pm2_5_atm:** Channel A ATM PM2.5 particulate mass in ug/m3
-**Pm10_0_atm:** Channel A ATM PM10.0 particulate mass in ug/m3
-**Pm1_0_cf_1:** Channel A CF=1 PM1.0 particulate mass in ug/m3
-**Pm2_5_cf_1:** Channel A CF=1 PM2.5 particulate mass in ug/m3
-**Pm10_0_cf_1:** Channel A CF=1 PM10.0 particulate mass in ug/m3
-**P_0_3_um:** Channel A 0.3 micrometer particle counts per deciliter of air
-**P_0_5_um:** Channel A 0.5 micrometer particle counts per deciliter of air
-**P_1_0_um:** Channel A 1.0 micrometer particle counts per deciliter of air
-**P_2_5_um:** Channel A 2.5 micrometer particle counts per deciliter of air
-**P_5_0_um:** Channel A 5.0 micrometer particle counts per deciliter of air
-**P_10_0_um:** Channel A 10.0 micrometer particle counts per deciliter of air
-**Pm1_0_atm_b:** Channel B ATM PM1.0 particulate mass in ug/m3.
-**Pm2_5_atm_b:** Channel B ATM PM2.5 particulate mass in ug/m3
-**Pm10_0_atm_b:** Channel B ATM PM10.0 particulate mass in ug/m3
-**Pm1_0_cf_1_b:** Channel B CF=1 PM1.0 particulate mass in ug/m3
-**Pm2_5_cf_1_b:** Channel B CF=1 PM2.5 particulate mass in ug/m3
-**Pm10_0_cf_1_b:** Channel B CF=1 PM10.0 particulate mass in ug/m3
-**P_0_3_um_b:** Channel B 0.3 micrometer particle counts per deciliter of air
-**P_0_5_um_b:** Channel B 0.5 micrometer particle counts per deciliter of air
-**P_1_0_um_b:** Channel B 1.0 micrometer particle counts per deciliter of air
-**P_2_5_um_b:** Channel B 2.5 micrometer particle counts per deciliter of air
-**P_5_0_um_b:** Channel B 5.0 micrometer particle counts per deciliter of air
-**P_10_0_um_b:** Channel B 10.0 micrometer particle counts per deciliter of air
+    UTCDateTime: The Date and time derived from the Real Time Clock and synced with NTP where possible (in UTC).
+    Mac_address: The MAC address of the WiFi module on the sensor (used as an ID for the unit).
+    Firmware_ver: Firmware version of the control board.
+    Hardware: Hardware the control board has detected.
+    current_temp_f: Current temperature in F.
+    Current_humidity: Current Humidity in %.
+    Current_dewpoint_f: Calculated dew point in F.
+    Pressure: Current pressure in millibars.
+    Adc: The voltage reading on the analog input of the control board.
+    Mem: Free HEAP memory on the control board.
+    Rssi: WiFi signal strength in dBm
+    Uptime: Firmware uptime in seconds.
+    Pm1_0_atm: Channel A ATM PM1.0 particulate mass in ug/m3
+    Pm2_5_atm: Channel A ATM PM2.5 particulate mass in ug/m3
+    Pm10_0_atm: Channel A ATM PM10.0 particulate mass in ug/m3
+    Pm1_0_cf_1: Channel A CF=1 PM1.0 particulate mass in ug/m3
+    Pm2_5_cf_1: Channel A CF=1 PM2.5 particulate mass in ug/m3
+    Pm10_0_cf_1: Channel A CF=1 PM10.0 particulate mass in ug/m3
+    P_0_3_um: Channel A 0.3 micrometer particle counts per deciliter of air
+    P_0_5_um: Channel A 0.5 micrometer particle counts per deciliter of air
+    P_1_0_um: Channel A 1.0 micrometer particle counts per deciliter of air
+    P_2_5_um: Channel A 2.5 micrometer particle counts per deciliter of air
+    P_5_0_um: Channel A 5.0 micrometer particle counts per deciliter of air
+    P_10_0_um: Channel A 10.0 micrometer particle counts per deciliter of air
+    Pm1_0_atm_b: Channel B ATM PM1.0 particulate mass in ug/m3.
+    Pm2_5_atm_b: Channel B ATM PM2.5 particulate mass in ug/m3
+    Pm10_0_atm_b: Channel B ATM PM10.0 particulate mass in ug/m3
+    Pm1_0_cf_1_b: Channel B CF=1 PM1.0 particulate mass in ug/m3
+    Pm2_5_cf_1_b: Channel B CF=1 PM2.5 particulate mass in ug/m3
+    Pm10_0_cf_1_b: Channel B CF=1 PM10.0 particulate mass in ug/m3
+    P_0_3_um_b: Channel B 0.3 micrometer particle counts per deciliter of air
+    P_0_5_um_b: Channel B 0.5 micrometer particle counts per deciliter of air
+    P_1_0_um_b: Channel B 1.0 micrometer particle counts per deciliter of air
+    P_2_5_um_b: Channel B 2.5 micrometer particle counts per deciliter of air
+    P_5_0_um_b: Channel B 5.0 micrometer particle counts per deciliter of air
+    P_10_0_um_b: Channel B 10.0 micrometer particle counts per deciliter of air
 
 ## PA-II NOTES
 
