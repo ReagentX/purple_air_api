@@ -73,7 +73,6 @@ class Sensor():
         stats = self.data['Stats']
         if stats:
             self.pm2_5stats = json.loads(self.data['Stats'])
-            print(self.pm2_5stats)
             self.m10avg = self.pm2_5stats['v1']
             self.m30avg = self.pm2_5stats['v2']
             self.h1ravg = self.pm2_5stats['v3']
@@ -107,13 +106,12 @@ class Sensor():
         """Set the location for a Sensor using geopy"""
         geolocator = Nominatim(user_agent="purple_air_api")
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
-        print(location.raw['display_name'])
         self.location = location
         return location
 
 
     def __repr__(self):
-        if not self.parse_location:
-            return f"Sensor {self.id} at {self.location.raw['city']}"
-        else:
+        try:
+            return f"Sensor {self.id} at {self.location}"
+        except AttributeError:
             return f"Sensor {self.id}"
