@@ -3,3 +3,4 @@ venv/*
 *.pyc
 cache.sqlite
 puepleair_api.egg-info/*
+purpleair_api.egg-info/*
