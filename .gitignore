@@ -1,4 +1,4 @@
-
+.vscode/*
 venv/*
 *.pyc
 cache.sqlite
