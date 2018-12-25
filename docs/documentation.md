@@ -8,7 +8,7 @@ In the case of a fault, the channel may be marked as flagged or downgraded (susp
 
 ## PurpleAir provides ways to get direct access to the data and there are a few different ways to do this
 
-The simplest way to download the data is using the download page available at[https://www.purpleair.com/sensorlist](https://www.purpleair.com/sensorlist). This page provides an easy to use interface to download data based on a date range.
+The simplest way to download the data is using the download page available at [https://www.purpleair.com/sensorlist](https://www.purpleair.com/sensorlist). This page provides an easy to use interface to download data based on a date range.
 
 - Find and mark the sensor/s in the list you want to download - use CTRL + F to quickly search by sensor name.
 - Return to the top of the page and enter the desired date range, then click Download Selected.
