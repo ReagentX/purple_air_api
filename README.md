@@ -5,6 +5,7 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 ## Installation
 
 - Clone this repo
+- `cd` to the folder
 - `pip setup.py develop`
 
 ## Example code:
