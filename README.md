@@ -2,7 +2,12 @@
 
 A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas Dataframe with several utility functions.
 
-Example code:
+## Installation
+
+- Clone this repo
+- `pip setup.py develop`
+
+## Example code:
 
     from purpleair import purpleair
     from purpleair import sensor
