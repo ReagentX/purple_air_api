@@ -90,16 +90,16 @@ class Sensor():
                 self.last_modified_stats = None
 
             try:
-                self.last_modified = self.pm2_5stats['timeSinceModified'] # MS since last update to stats
+                self.last2_modified = self.pm2_5stats['timeSinceModified'] # MS since last update to stats
             except KeyError:
-                self.last_modified = None
+                self.last2_modified = None
 
         # Diagnostic
         self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
         self.model = self.data['Type']
         self.hidden = False if self.data['Hidden'] == 'false' else True
-        self.flagged = True if self.data['Flag'] != 'null' else False
-        self.downgraded = True if self.data['A_H'] != 'null' else False
+        self.flagged = True if self.data['Flag'] == 1 else False
+        self.downgraded = True if self.data['A_H'] == 1 else False
         self.age = int(self.data['AGE']) # Number of minutes old the data is
 
 
@@ -110,6 +110,29 @@ class Sensor():
         self.location = location
         return location
 
+
+    def is_useful(self) -> bool:
+        """Function to dump broken sensors; expanded like this so we can collect metrics later"""
+        if self.hidden:
+            return False
+        elif self.flagged:
+            return False
+        elif self.downgraded:
+            return False
+        elif self.current_temp_f == None:
+            return False
+        elif self.current_humidity == None:
+            return False
+        elif self.current_pressure == None:
+            return False
+        elif not self.data['Stats']:
+            # Happens before stats because they will be missing if this is missing
+            return False
+        elif self.last_modified_stats == None:
+            return False
+        elif self.last2_modified == None:
+            return False
+        return True
 
     def __repr__(self):
         """String representation of the class"""
