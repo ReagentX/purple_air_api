@@ -1,4 +1,4 @@
-Using PurpleAir data
+# Using PurpleAir data
 
 PurpleAir sensors employ a dual laser counter to provide some level of data integrity. This is intended to provide a way of determining sensor health and fault detection. Some examples of what can go wrong with a laser counter are a fan failure, insects or other debris inside the device or just a layer of dust from long term exposure. 
 
@@ -6,15 +6,14 @@ If both laser counters (channels) are in agreement, the data can be seen as exce
 
 In the case of a fault, the channel may be marked as flagged or downgraded (suspect or known faulty).
 
-**PurpleAir provides ways to get direct access to the data and there are a few different ways to do this.**
+## PurpleAir provides ways to get direct access to the data and there are a few different ways to do this
 
 The simplest way to download the data is using the download page available at[https://www.purpleair.com/sensorlist](https://www.purpleair.com/sensorlist). This page provides an easy to use interface to download data based on a date range.
 
-- Find and mark the sensor/s in the list you want to download - use CTRL + F to quickly search by sensor name. 
-
+- Find and mark the sensor/s in the list you want to download - use CTRL + F to quickly search by sensor name.
 - Return to the top of the page and enter the desired date range, then click Download Selected.
 
-JSON data available from PurpleAir
+## JSON data available from PurpleAir
 
 **NOTE: Please limit multiple threaded applications to a few threads at any time to reduce load on purpleair.com or thingspeak.com servers. If you do not limit the amount of threads, you may be blocked on the firewall.**
 
@@ -22,11 +21,11 @@ PurpleAir provides access to our real time data in a JSON format. This format al
 
 There are two ways to access the JSON data: 
 
-All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json) 
+- All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json) 
 
-One entry: [https://www.purpleair.com/json?show=&lt;ID&gt;](https://www.purpleair.com/json?show=%3CID%3E) where ID is the “ID” of the sensor you want (in the case of dual laser where ParentID is “null”).
+- One entry: `https://www.purpleair.com/json?show=ID` where ID is the “ID” of the sensor you want (in the case of dual laser where ParentID is “null”).
 
-PurpleAir JSON fields description and example values:
+### PurpleAir JSON fields description and example values:
 
 The following is a list of the fields and a description of their values contained in the JSON data:
 
@@ -80,71 +79,71 @@ Another way to get the data is to use ThingSpeak.com and to do this, you will ne
 
 More info on using ThingSpeak’s API is here: [https://www.mathworks.com/help/thingspeak/rest-api.html](https://www.mathworks.com/help/thingspeak/rest-api.html) 
 
-Field descriptions:
+## Field descriptions
 
 Channel A and B, primary and secondary ThingSpeak channels together provide 32 fields for each sensor.
 
 There are six ug/m3 values and six particle counts for each channel (laser) as well as temperature, humidity, WiFi signal (RSSI), sensor uptime, free memory and analog input. 
 
-Channel A
+### Channel A
 
 **PrimaryData**
 
-field1: PM1.0 (CF=ATM) ug/m3
-field2: PM2.5 (CF=ATM) ug/m3
-field3: PM10.0 (CF=ATM) ug/m3
-field4: Uptime (Minutes)
-field5: RSSI (WiFi Signal Strength)
-field6: Temperature (F)
-field7: Humidity (%)
-field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
+    field1: PM1.0 (CF=ATM) ug/m3
+    field2: PM2.5 (CF=ATM) ug/m3
+    field3: PM10.0 (CF=ATM) ug/m3
+    field4: Uptime (Minutes)
+    field5: RSSI (WiFi Signal Strength)
+    field6: Temperature (F)
+    field7: Humidity (%)
+    field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
 
 **SecondaryData**
 
-field1: 0.3um particles/deciliter
-field2: 0.5um particles/deciliter
-field3: 1.0um particles/deciliter
-field4: 2.5um particles/deciliter
-field5: 5.0um particles/deciliter
-field6: 10.0um particles/deciliter
-field7: PM1.0 (CF=1) ug/m3 This s the field to use for PM1.0
-field8: PM10 (CF=1) ug/m3 This is the field to use for PM10
+    field1: 0.3um particles/deciliter
+    field2: 0.5um particles/deciliter
+    field3: 1.0um particles/deciliter
+    field4: 2.5um particles/deciliter
+    field5: 5.0um particles/deciliter
+    field6: 10.0um particles/deciliter
+    field7: PM1.0 (CF=1) ug/m3 This s the field to use for PM1.0
+    field8: PM10 (CF=1) ug/m3 This is the field to use for PM10
 
-Channel B
+### Channel B
 
 **PrimaryData**
 
-field1: PM1.0 (CF=ATM) ug/m3
-field2: PM2.5 (CF=ATM) ug/m3
-field3: PM10.0 (CF=ATM) ug/m3
-field4: Free HEAP memory
-field5: ADC0 (analog input) voltage
-field6: SENSOR FIRMWARE 2.5 and up: Atmospheric Pressure
-field7: (NOT USED)
-field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
+    field1: PM1.0 (CF=ATM) ug/m3
+    field2: PM2.5 (CF=ATM) ug/m3
+    field3: PM10.0 (CF=ATM) ug/m3
+    field4: Free HEAP memory
+    field5: ADC0 (analog input) voltage
+    field6: SENSOR FIRMWARE 2.5 and up: Atmospheric Pressure
+    field7: (NOT USED)
+    field8: PM2.5 (CF=1) ug/m3 This is the field to use for PM2.5
 
 **SecondaryData**
 
-field1: 0.3um particles/deciliter
-field2: 0.5um particles/deciliter
-field3: 1.0um particles/deciliter
-field4: 2.5um particles/deciliter
-field5: 5.0um particles/deciliter
-field6: 10.0um particles/deciliter
-field7: PM1.0 (CF=1) ug/m3 This is the field to use for PM1.0
-field8: PM10 (CF=1) ug/m3 This is the field to use for PM10
+    field1: 0.3um particles/deciliter
+    field2: 0.5um particles/deciliter
+    field3: 1.0um particles/deciliter
+    field4: 2.5um particles/deciliter
+    field5: 5.0um particles/deciliter
+    field6: 10.0um particles/deciliter
+    field7: PM1.0 (CF=1) ug/m3 This is the field to use for PM1.0
+    field8: PM10 (CF=1) ug/m3 This is the field to use for PM10
 
 \* All time stamps are UTC.
 
-PurpleAir sensors attempt to send both primary and secondary data every 40 seconds or so. 
+PurpleAir sensors attempt to send both primary and secondary data every 40 seconds or so.
 
-PA-II-SD data format
+## PA-II-SD data format
 
 The SD Card version of the PA-II (PA-II-SD) has a built in real time clock and OPENLOG serial logger. The SD card contains data in CSV format with the following headers:
 
-_UTCDateTime,mac_address,firmware_ver,hardware,current_temp_f,current_humidity,current_dewpoint_f,pressure,adc,mem,rssi,uptime,pm1_0_atm,pm2_5_atm,pm10_0_atm,pm1_0_cf_1,pm2_5_cf_1,pm10_0_cf_1,p_0_3_um,p_0_5_um,p_1_0_um,p_2_5_um,p_5_0_um,p_10_0_um,pm1_0_atm_b,pm2_5_atm_b,pm10_0_atm_b,pm1_0_cf_1_b,pm2_5_cf_1_b,pm10_0_cf_1_b,p_0_3_um_b,p_0_5_um_b,p_1_0_um_b,p_2_5_um_b,p_5_0_um_b,p_10_0_um_b_
+    _UTCDateTime,mac_address,firmware_ver,hardware,current_temp_f,current_humidity,current_dewpoint_f,pressure,adc,mem,rssi,uptime,pm1_0_atm,pm2_5_atm,pm10_0_atm,pm1_0_cf_1,pm2_5_cf_1,pm10_0_cf_1,p_0_3_um,p_0_5_um,p_1_0_um,p_2_5_um,p_5_0_um,p_10_0_um,pm1_0_atm_b,pm2_5_atm_b,pm10_0_atm_b,pm1_0_cf_1_b,pm2_5_cf_1_b,pm10_0_cf_1_b,p_0_3_um_b,p_0_5_um_b,p_1_0_um_b,p_2_5_um_b,p_5_0_um_b,p_10_0_um_b_
 
-Header Descriptions
+### Header Descriptions
 
 **UTCDateTime:** The Date and time derived from the Real Time Clock and synced with NTP where possible (in UTC).
 **Mac_address:** The MAC address of the WiFi module on the sensor (used as an ID for the unit).
@@ -182,14 +181,13 @@ Header Descriptions
 **P_2_5_um_b:** Channel B 2.5 micrometer particle counts per deciliter of air
 **P_5_0_um_b:** Channel B 5.0 micrometer particle counts per deciliter of air
 **P_10_0_um_b:** Channel B 10.0 micrometer particle counts per deciliter of air
-**PA-II NOTES: **
+
+## PA-II NOTES
 
 Each sensor contains two identical laser counters, hence channel A and B. If these two channels do not agree to some extent then there is something wrong with one or both channels.
 
-**Plantower PMS sensor notes:**
+## Plantower PMS sensor notes
 
 **ATM** is "**atmospheric**", meant to be used for outdoor applications
-
 **CF=1** is meant to be used for indoor or controlled environment applications
-
 However, PurpleAir uses CF=1 values on the map. This value is lower than the ATM value in higher measured concentrations.
