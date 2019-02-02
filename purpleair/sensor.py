@@ -13,7 +13,7 @@ requests_cache.install_cache(expire_after=timedelta(hours=24))
 
 
 class Sensor():
-    """Class for a single PurpleAir sensor; set initialize=True to fetch data from the API"""
+    '''Class for a single PurpleAir sensor; set initialize=True to fetch data from the API'''
     def __init__(self, id, json=None, parse_location=False):
         self.id = id
         self.json = json
@@ -24,7 +24,7 @@ class Sensor():
 
 
     def get_data(self) -> dict:
-        """Get new data if no data is provided"""
+        '''Get new data if no data is provided'''
         # Fetch the JSON and exclude the child sensors
         if not self.json:
             response = requests.get(f'{API_ROOT}?show={self.id}')
@@ -35,7 +35,7 @@ class Sensor():
 
 
     def setup(self) -> None:
-        """Initiailze metadata and real data for a sensor; for detailed info see docs"""
+        '''Initiailze metadata and real data for a sensor; for detailed info see docs'''
         # Meta
         self.lat = self.data['Lat']
         self.lon = self.data['Lon']
@@ -114,7 +114,7 @@ class Sensor():
 
 
     def get_location(self) -> Location:
-        """Set the location for a Sensor using geopy"""
+        '''Set the location for a Sensor using geopy'''
         geolocator = Nominatim(user_agent="purple_air_api")
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
         self.location = location
@@ -122,14 +122,14 @@ class Sensor():
 
 
     def get_field(self, field) -> None:
-        """Gets the thingspeak data for a sensor"""
+        '''Gets the thingspeak data for a sensor'''
         self.thingspeak_data[field] = {}
         self.thingspeak_data[field]['channel_a'] = json.loads(self.channel_a.get_field(field=field))
         self.thingspeak_data[field]['channel_b'] = json.loads(self.channel_b.get_field(field=field))
 
 
     def is_useful(self) -> bool:
-        """Function to dump broken sensors; expanded like this so we can collect metrics later"""
+        '''Function to dump broken sensors; expanded like this so we can collect metrics later'''
         if self.hidden:
             return False
         elif self.flagged:
@@ -151,8 +151,9 @@ class Sensor():
             return False
         return True
 
+
     def __repr__(self):
-        """String representation of the class"""
+        '''String representation of the class'''
         try:
             return f"Sensor {self.id} at {self.location}"
         except AttributeError:
