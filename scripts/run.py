@@ -7,7 +7,7 @@ p = purpleair.PurpleAir()
 print(len(p.useful_sensors))
 s = p.useful_sensors[0] # First confirmed useful sensor
 # s.get_location()
-print(s)
+print(s.as_flat_dict())
 
 
 # Single sensor

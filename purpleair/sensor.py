@@ -152,6 +152,56 @@ class Sensor():
         return True
 
 
+    def as_dict(self) -> dict:
+        '''Returns a dictionary representation of the sensor data'''
+        d = {
+            'meta': {
+                'lat': self.lat,
+                'lon': self.lon,
+                'parent': self.parent,
+                'name': self.name,
+                'locaction_type': self.location_type
+            },
+            'data': {
+                'pm_2.5': self.current_pm2_5,
+                'temp_f': self.current_temp_f,
+                'temp_c': self.current_temp_c,
+                'humidity': self.current_humidity,
+                'pressure': self.current_pressure
+            },
+            'statistics': {
+                '10min_avg': self.m10avg,
+                '30min_avg': self.m30avg,
+                '1hour_avg': self.h1ravg,
+                '6hour_avg': self.h6ravg,
+                '1week_avg': self.w1avg
+            },
+            'diagnostic': {
+                'last_seen': self.last_seen,
+                'model': self.model,
+                'hidden': self.hidden,
+                'flagged': self.flagged,
+                'downgraded': self.downgraded,
+                'age': self.age
+            }
+        }
+
+        if self.parse_location:
+            d['meta']['location'] = self.location
+
+        return d
+
+
+    def as_flat_dict(self) -> dict:
+        '''Returns a flat dictionart representation of the Sensor data'''
+        d = {}
+        src = self.as_dict()
+        for data_category in src:
+            for data in src[data_category]:
+                d[data] = src[data_category][data]
+        return d
+
+
     def __repr__(self):
         '''String representation of the class'''
         try:
