@@ -156,6 +156,7 @@ class Sensor():
         '''Returns a dictionary representation of the sensor data'''
         d = {
             'meta': {
+                'id': self.id,
                 'lat': self.lat,
                 'lon': self.lon,
                 'parent': self.parent,

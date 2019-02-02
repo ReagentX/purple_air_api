@@ -4,11 +4,11 @@ from purpleair import sensor
 
 # All Sensors
 p = purpleair.PurpleAir()
-print(len(p.useful_sensors))
+# print(len(p.useful_sensors))
 s = p.useful_sensors[0] # First confirmed useful sensor
 # s.get_location()
-print(s.as_flat_dict())
-
+# print(s.as_flat_dict())
+print(p.to_dataframe())
 
 # Single sensor
 se = sensor.Sensor('2891', parse_location=True)
