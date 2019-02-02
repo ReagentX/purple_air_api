@@ -27,3 +27,5 @@ class PurpleAir():
     
     def to_dataframe(self) -> list:
         '''Converts dictionary representation of a list of sensors to a Pandas Dataframe'''
+        df = pd.DataFrame([s.as_flat_dict() for s in self.useful_sensors])
+        return df
