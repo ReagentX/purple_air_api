@@ -53,9 +53,9 @@ class Sensor():
             if f_temp > 150 or f_temp < -100:
                 self.current_temp_f = None
                 self.current_temp_c = None
-
-            self.current_temp_f = float(self.data['temp_f'])
-            self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
+            else:
+                self.current_temp_f = float(self.data['temp_f'])
+                self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
         except TypeError:
             self.current_temp_f = None
             self.current_temp_c = None
