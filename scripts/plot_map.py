@@ -3,16 +3,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from purpleair import purpleair
 from purpleair import sensor
+import random
 
 
 # Get the purpleair data
 p = purpleair.PurpleAir()
 df = p.to_dataframe()
+var_to_viz = 'temp_f'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot
 lat = df['lat'].values
 lon = df['lon'].values
+colors = df[var_to_viz].values  # Variable on which to generate the color gradient
 
-margin = 1  # buffer to add to the range
+margin = 0  # buffer to add to the range
 lat_min = min(lat) - margin
 lat_max = max(lat) + margin
 lon_min = min(lon) - margin
@@ -42,5 +45,6 @@ m.fillcontinents(color = land, lake_color=water)
 # convert lat and lon to map projection coordinates
 lons, lats = m(lon, lat)
 # plot points as red dots
-m.scatter(lons, lats, marker='o', color='r', zorder=5, alpha=0.25, s=2)
-plt.savefig('sensor_map.png')
+m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
+plt.colorbar().set_label(f'{var_to_viz}', rotation=270)
+plt.savefig('sensor_map.png', dpi=300)
