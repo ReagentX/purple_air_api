@@ -9,11 +9,12 @@ import random
 # Get the purpleair data
 p = purpleair.PurpleAir()
 df = p.to_dataframe()
-var_to_viz = 'temp_f'  # The dict item that we want to visualize
+var_to_viz = 'temp_c'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot
 lat = df['lat'].values
 lon = df['lon'].values
 colors = df[var_to_viz].values  # Variable on which to generate the color gradient
+# print(min(colors), max(colors))
 
 margin = 0  # buffer to add to the range
 lat_min = min(lat) - margin
@@ -47,4 +48,4 @@ lons, lats = m(lon, lat)
 # plot points as red dots
 m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
 plt.colorbar().set_label(f'{var_to_viz}', rotation=270)
-plt.savefig('sensor_map.png', dpi=300)
+plt.savefig('maps/sensor_map.png', dpi=300)
