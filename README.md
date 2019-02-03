@@ -25,6 +25,21 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
     s = sensor.Sensor('2891', parse_location=True)
     print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, USA
 
+### Make a DataFrame from all current sensor data
+
+    from purpleair import purpleair
+    df = p.to_dataframe('all')  # Other options include 'outdoor' and 'useful'
+
+    # Will print
+              age  downgraded  flagged  hidden  humidity           last_seen  ...                  name   parent  pm_2.5 pressure     temp_c  temp_f
+    id                                                                        ...
+    24115   36026       False    False   False      0.15 2019-01-09 20:33:05  ...   2nd South 12th East      NaN    0.15   869.14  31.666667    89.0
+    16791       0       False    False   False      0.60 2019-02-03 20:59:26  ...                DW0435      NaN    1.96  1009.82  30.000000    86.0
+    16792       0       False    False   False      0.60 2019-02-03 20:59:29  ...              DW0435 B  16791.0    1.65  1009.77  30.000000    86.0
+    14633       0       False    False   False      0.55 2019-02-03 20:59:48  ...     Hazelwood canary       NaN    0.29  1000.25  18.333333    65.0
+    6522   538227       False    False   False      0.22 2018-01-26 02:32:25  ...                Indoor      NaN    1.33   837.97  23.888889    75.0
+
+
 ### Get historical data for a single sensor
 
     from purpleair import sensor
