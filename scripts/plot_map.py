@@ -9,7 +9,7 @@ import random
 
 # Get the purpleair data
 p = purpleair.PurpleAir()
-df = p.to_dataframe()
+df = p.to_dataframe('all')
 var_to_viz = 'temp_c'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot
 lat = df['lat'].values
