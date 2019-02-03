@@ -8,7 +8,8 @@ from .sensor import Sensor
 
 
 # Setup cache for requests
-requests_cache.install_cache(expire_after=timedelta(hours=24))
+requests_cache.install_cache(expire_after=timedelta(hours=1))
+requests_cache.core.remove_expired_responses()
 
 class PurpleAir():
     def __init__(self, parse_location=False):

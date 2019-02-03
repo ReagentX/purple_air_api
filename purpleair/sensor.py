@@ -12,6 +12,7 @@ from geopy.location import Location
 
 # Setup cache for requests
 requests_cache.install_cache(expire_after=timedelta(hours=1))
+requests_cache.core.remove_expired_responses()
 
 
 class Sensor():
