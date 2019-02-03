@@ -2,6 +2,8 @@
 
 A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas Dataframe with several utility methods.
 
+![](https://github.com/ReagentX/purple_air_api/blob/master/maps/sensor_map.png)
+
 ## Installation
 
 - Clone this repo
