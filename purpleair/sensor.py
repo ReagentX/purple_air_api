@@ -49,6 +49,11 @@ class Sensor():
         # Data
         self.current_pm2_5 = self.data['PM2_5Value']
         try:
+            f_temp = float(self.data['temp_f'])
+            if f_temp > 150 or f_temp < -100:
+                self.current_temp_f = None
+                self.current_temp_c = None
+
             self.current_temp_f = float(self.data['temp_f'])
             self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
         except TypeError:
