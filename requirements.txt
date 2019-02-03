@@ -1,15 +1,33 @@
 astroid==2.1.0
+-e git+https://github.com/matplotlib/basemap.git@dce77e4242a25f5d521d5ae9106c037991ae1d0a#egg=basemap
 certifi==2018.11.29
 chardet==3.0.4
+cycler==0.10.0
+Cython==0.29.4
+docopt==0.6.2
 geographiclib==1.49
 geopy==1.18.1
 idna==2.8
 isort==4.3.4
+kiwisolver==1.0.1
 lazy-object-proxy==1.3.1
+matplotlib==3.0.2
 mccabe==0.6.1
+numpy==1.16.1
+pandas==0.24.0
+Pillow==5.4.1
+-e git+https://github.com/ReagentX/purple_air_api.git@4de077055fa020555f3dd01d3e0aaa6883508045#egg=purpleair_api
 pylint==2.2.2
+pyparsing==2.3.1
+pyproj==1.9.6
+pyshp==2.0.1
+python-dateutil==2.7.5
+pytz==2018.9
 requests==2.21.0
 requests-cache==0.4.13
+Shapely==1.6.4.post2
 six==1.12.0
+thingspeak==0.4.1
 urllib3==1.24.1
+versioneer==0.18
 wrapt==1.10.11
