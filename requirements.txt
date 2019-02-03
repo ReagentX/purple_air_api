@@ -16,7 +16,7 @@ mccabe==0.6.1
 numpy==1.16.1
 pandas==0.24.0
 Pillow==5.4.1
--e git+https://github.com/ReagentX/purple_air_api.git@086013cf513873f3f9fecf611bb19f8ede41807e#egg=purpleair_api
+-e git+https://github.com/ReagentX/purple_air_api.git@6d8a7285798795c7f92762bc5089ece859929ea1#egg=purpleair_api
 pylint==2.2.2
 pyparsing==2.3.1
 pyproj==1.9.6
