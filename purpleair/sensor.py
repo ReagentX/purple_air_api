@@ -236,6 +236,7 @@ class Sensor():
                            'field7': 'Unused',
                            'field8': 'PM25 CF=1 ug/m3'
                            }, inplace=True)
+        df['created_at'] = pd.to_datetime(df['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
         return df
 
 
