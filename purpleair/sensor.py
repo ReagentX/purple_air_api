@@ -227,16 +227,19 @@ class Sensor():
                 to_week = to_week - timedelta(weeks=1)
                 url = f'https://thingspeak.com/channels/{self.tp_a}/feed.csv?api_key={self.tp_a_key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
                 df = pd.concat([df, pd.read_csv(url)])
+
+        # Handle formatting the DataFrame
         df.rename(columns={'field1': 'PM1 CF=ATM ug/m3',
                            'field2': 'PM25 CF=ATM ug/m3',
                            'field3': 'PM10 CF=ATM ug/m3',
                            'field4': 'Free HEAP memory',
                            'field5': 'ADC0 Voltage',
-                           'field6': 'SENSOR FIRMWARE',
+                           'field6': 'Sensor Firmware',
                            'field7': 'Unused',
                            'field8': 'PM25 CF=1 ug/m3'
                            }, inplace=True)
         df['created_at'] = pd.to_datetime(df['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
+        df.index = df.pop('entry_id')
         return df
 
 
