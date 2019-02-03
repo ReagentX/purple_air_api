@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from purpleair import purpleair
 from purpleair import sensor
+import datetime
 import random
 
 
@@ -46,6 +47,7 @@ m.fillcontinents(color = land, lake_color=water)
 # convert lat and lon to map projection coordinates
 lons, lats = m(lon, lat)
 # plot points as red dots
-m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
+m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=2)
 plt.colorbar().set_label(f'{var_to_viz}', rotation=270)
+plt.title(f'Global {var_to_viz} at {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
 plt.savefig('maps/sensor_map.png', dpi=300)
