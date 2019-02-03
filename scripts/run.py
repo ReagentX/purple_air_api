@@ -8,7 +8,8 @@ p = purpleair.PurpleAir()
 s = p.useful_sensors[0] # First confirmed useful sensor
 # s.get_location()
 # print(s.as_flat_dict())
-print(p.to_dataframe())
+df = p.to_dataframe()
+print(df)
 
 # Single sensor
 se = sensor.Sensor('2891', parse_location=True)
