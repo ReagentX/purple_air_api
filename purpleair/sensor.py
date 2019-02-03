@@ -183,13 +183,6 @@ class Sensor():
                 'humidity': self.current_humidity,
                 'pressure': self.current_pressure
             },
-            'statistics': {
-                '10min_avg': self.m10avg,
-                '30min_avg': self.m30avg,
-                '1hour_avg': self.h1ravg,
-                '6hour_avg': self.h6ravg,
-                '1week_avg': self.w1avg
-            },
             'diagnostic': {
                 'last_seen': self.last_seen,
                 'model': self.model,
@@ -199,6 +192,23 @@ class Sensor():
                 'age': self.age
             }
         }
+
+        if self.data['Stats']:
+            d['statistics']: {
+                '10min_avg': self.m10avg,
+                '30min_avg': self.m30avg,
+                '1hour_avg': self.h1ravg,
+                '6hour_avg': self.h6ravg,
+                '1week_avg': self.w1avg
+            }
+        else:
+            d['statistics']: {
+                '10min_avg': None,
+                '30min_avg': None,
+                '1hour_avg': None,
+                '6hour_avg': None,
+                '1week_avg': None
+            }
 
         if self.parse_location:
             d['meta']['location'] = self.location
