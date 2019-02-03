@@ -1,5 +1,6 @@
 import json
 import thingspeak
+import pandas as pd
 import requests
 import requests_cache
 from datetime import timedelta
@@ -212,6 +213,30 @@ class Sensor():
             for data in src[data_category]:
                 d[data] = src[data_category][data]
         return d
+
+
+    def get_historical(self, weeks_to_get: int) -> pd.DataFrame:
+        '''Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past'''
+        from_week = datetime.now()
+        to_week = from_week - timedelta(weeks=1)
+        url = f'https://thingspeak.com/channels/{self.tp_a}/feed.csv?api_key={self.tp_a_key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+        df = pd.read_csv(url)
+        if weeks_to_get > 1:
+            for i in range(weeks_to_get):
+                from_week = to_week  # DateTimes are immutable so this reference is not a problem
+                to_week = to_week - timedelta(weeks=1)
+                url = f'https://thingspeak.com/channels/{self.tp_a}/feed.csv?api_key={self.tp_a_key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+                df = pd.concat([df, pd.read_csv(url)])
+        df.rename(columns={'field1': 'PM1 CF=ATM ug/m3',
+                           'field2': 'PM25 CF=ATM ug/m3',
+                           'field3': 'PM10 CF=ATM ug/m3',
+                           'field4': 'Free HEAP memory',
+                           'field5': 'ADC0 Voltage',
+                           'field6': 'SENSOR FIRMWARE',
+                           'field7': 'Unused',
+                           'field8': 'PM25 CF=1 ug/m3'
+                           }, inplace=True)
+        return df
 
 
     def __repr__(self):
