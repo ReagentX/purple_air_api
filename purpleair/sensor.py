@@ -8,8 +8,9 @@ from .api_data import API_ROOT
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
+
 # Setup cache for requests
-requests_cache.install_cache(expire_after=timedelta(hours=24))
+requests_cache.install_cache(expire_after=timedelta(hours=1))
 
 
 class Sensor():
@@ -215,7 +216,7 @@ class Sensor():
 
     def __repr__(self):
         '''String representation of the class'''
-        try:
+        if self.parse_location:
             return f"Sensor {self.id} at {self.location}"
-        except AttributeError:
+        else:
             return f"Sensor {self.id}"
