@@ -47,7 +47,10 @@ class Sensor():
             self.get_location()
 
         # Data
-        self.current_pm2_5 = self.data['PM2_5Value']
+        if self.data['PM2_5Value'] != None:
+            self.current_pm2_5 = float(self.data['PM2_5Value'])
+        else: 
+            self.current_pm2_5 = self.data['PM2_5Value']
         try:
             f_temp = float(self.data['temp_f'])
             if f_temp > 150 or f_temp < -100:
@@ -140,6 +143,8 @@ class Sensor():
         elif self.flagged:
             return False
         elif self.downgraded:
+            return False
+        elif self.current_pm2_5 == None:
             return False
         elif self.current_temp_f == None:
             return False
