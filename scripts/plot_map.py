@@ -48,9 +48,6 @@ water = '#46bcec'
 land = '#ffffff'
 m.drawmapboundary(fill_color=water)
 m.fillcontinents(color = land, lake_color=water)
-
-
-#%%
 # convert lat and lon to map projection coordinates
 lons, lats = m(lon, lat)
 # plot points as red dots
