@@ -3,7 +3,7 @@ astroid==2.1.0
 attrs==19.1.0
 backcall==0.1.0
 -e git+https://github.com/matplotlib/basemap.git@dce77e4242a25f5d521d5ae9106c037991ae1d0a#egg=basemap
-bleach==3.1.1
+bleach==3.1.4
 certifi==2018.11.29
 chardet==3.0.4
 cycler==0.10.0
