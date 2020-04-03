@@ -8,9 +8,12 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 
 - Clone this repo
 - `cd` to the folder
+- Create a virtual environment (`python -m venv venv`)
+- Activate the virtual environment (`source venv/bin/activate`)
 - `python setup.py develop`
+- `pip install -r requirements.txt`
 
-## Example code:
+## Example code
 
 ### Listing all useful sensors
 
