@@ -2,7 +2,7 @@ appnope==0.1.0
 astroid==2.1.0
 attrs==19.1.0
 backcall==0.1.0
-bleach==3.1.4
+bleach>=3.1.4
 certifi==2018.11.29
 chardet==3.0.4
 cycler==0.10.0
@@ -41,7 +41,7 @@ pandocfilters==1.4.2
 parso==0.4.0
 pexpect==4.7.0
 pickleshare==0.7.5
-Pillow==5.4.1
+Pillow>=6.2.2
 prometheus-client==0.6.0
 prompt-toolkit==2.0.9
 ptyprocess==0.6.0
