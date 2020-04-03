@@ -40,20 +40,24 @@ class Sensor():
     def setup(self) -> None:
         '''Initiailze metadata and real data for a sensor; for detailed info see docs'''
         # Meta
-        self.lat = self.data['Lat']
-        self.lon = self.data['Lon']
-        self.parent = self.data['ParentID']
-        self.name = self.data['Label']
-        self.location_type = self.data['DEVICE_LOCATIONTYPE']
+        print(self.data)
+        self.lat = self.data.get('Lat', None)
+        self.lon = self.data.get('Lon', None)
+        self.id = self.data.get('ID', None)
+        self.name = self.data.get('Label', None)
+        self.location_type = self.data['DEVICE_LOCATIONTYPE'] if 'DEVICE_LOCATIONTYPE' in self.data else ''
         # Parse the location (slow, so must be manually enabled)
         if self.parse_location:
             self.get_location()
 
         # Data
-        if self.data['PM2_5Value'] != None:
-            self.current_pm2_5 = float(self.data['PM2_5Value'])
-        else: 
-            self.current_pm2_5 = self.data['PM2_5Value']
+        if 'PM2_5Value' in self.data:
+            if self.data['PM2_5Value'] != None:
+                self.current_pm2_5 = float(self.data['PM2_5Value'])
+            else: 
+                self.current_pm2_5 = self.data['PM2_5Value']
+        else:
+            self.current_pm2_5 = ''
         try:
             f_temp = float(self.data['temp_f'])
             if f_temp > 150 or f_temp < -100:
@@ -68,12 +72,17 @@ class Sensor():
         except ValueError:
             self.current_temp_f = None
             self.current_temp_c = None
+        except KeyError:
+            self.current_temp_f = None
+            self.current_temp_c = None
 
         try: 
             self.current_humidity = int(self.data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
         except ValueError:
+            self.current_humidity = None
+        except KeyError:
             self.current_humidity = None
 
         try:
@@ -82,9 +91,11 @@ class Sensor():
             self.current_pressure = None
         except ValueError:
             self.current_pressure = None
+        except KeyError:
+            self.current_pressure = None
 
         # Statistics
-        stats = self.data['Stats']
+        stats = self.data.get('Stats', None)
         if stats:
             self.pm2_5stats = json.loads(self.data['Stats'])
             self.m10avg = self.pm2_5stats['v1']
@@ -117,10 +128,10 @@ class Sensor():
 
         # Diagnostic
         self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
-        self.model = self.data['Type']
+        self.model = self.data['Type'] if 'Type' in self.data else ''
         self.hidden = False if self.data['Hidden'] == 'false' else True
-        self.flagged = True if self.data['Flag'] == 1 else False
-        self.downgraded = True if self.data['A_H'] == 'true' else False
+        self.flagged = True if 'Flag' in self.data and self.data['Flag'] == 1 else False
+        self.downgraded = True if 'A_H' in self.data and self.data['A_H'] == 'true' else False
         self.age = int(self.data['AGE']) # Number of minutes old the data is
 
 
@@ -155,7 +166,7 @@ class Sensor():
             return False
         elif self.current_pressure == None:
             return False
-        elif not self.data['Stats']:
+        elif not self.data.get('Stats', None):
             # Happens before stats because they will be missing if this is missing
             return False
         elif self.last_modified_stats == None:
@@ -172,7 +183,7 @@ class Sensor():
                 'id': self.id,
                 'lat': self.lat,
                 'lon': self.lon,
-                'parent': self.parent,
+                'id': self.id,
                 'name': self.name,
                 'locaction_type': self.location_type
             },
