@@ -40,7 +40,6 @@ class Sensor():
     def setup(self) -> None:
         '''Initiailze metadata and real data for a sensor; for detailed info see docs'''
         # Meta
-        print(self.data)
         self.lat = self.data.get('Lat', None)
         self.lon = self.data.get('Lon', None)
         self.id = self.data.get('ID', None)
