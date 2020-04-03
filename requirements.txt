@@ -2,8 +2,7 @@ appnope==0.1.0
 astroid==2.1.0
 attrs==19.1.0
 backcall==0.1.0
--e git+https://github.com/matplotlib/basemap.git@dce77e4242a25f5d521d5ae9106c037991ae1d0a#egg=basemap
-bleach==3.1.0
+bleach==3.1.4
 certifi==2018.11.29
 chardet==3.0.4
 cycler==0.10.0
@@ -46,7 +45,7 @@ Pillow==5.4.1
 prometheus-client==0.6.0
 prompt-toolkit==2.0.9
 ptyprocess==0.6.0
--e git+https://github.com/ReagentX/purple_air_api.git@70bb6fd3565c842d1bd2c681622f4b63af075756#egg=purpleair_api
+-e git+https://github.com/ReagentX/purple_air_api.git@ef65ca7498ad2eb33b24f5a3b3283b5a0a0ce4ec#egg=purpleair_api
 Pygments==2.3.1
 pylint==2.2.2
 pyparsing==2.3.1
@@ -64,10 +63,10 @@ Shapely==1.6.4.post2
 six==1.12.0
 terminado==0.8.2
 testpath==0.4.2
-thingspeak==0.4.1
+thingspeak==1.0.0
 tornado==6.0.2
 traitlets==4.3.2
-urllib3==1.25
+urllib3==1.24.3
 versioneer==0.18
 wcwidth==0.1.7
 webencodings==0.5.1
