@@ -151,26 +151,28 @@ class Sensor():
 
     def is_useful(self) -> bool:
         '''Function to dump broken sensors; expanded like this so we can collect metrics later'''
+        if self.lat is None or self.lon is None:
+            return False
         if self.hidden:
             return False
         elif self.flagged:
             return False
         elif self.downgraded:
             return False
-        elif self.current_pm2_5 == None:
+        elif self.current_pm2_5 is None:
             return False
-        elif self.current_temp_f == None:
+        elif self.current_temp_f is None:
             return False
-        elif self.current_humidity == None:
+        elif self.current_humidity is None:
             return False
-        elif self.current_pressure == None:
+        elif self.current_pressure is None:
             return False
         elif not self.data.get('Stats', None):
             # Happens before stats because they will be missing if this is missing
             return False
-        elif self.last_modified_stats == None:
+        elif self.last_modified_stats is None:
             return False
-        elif self.last2_modified == None:
+        elif self.last2_modified is None:
             return False
         return True
 
