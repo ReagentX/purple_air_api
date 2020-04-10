@@ -238,29 +238,46 @@ class Sensor():
         return d
 
 
-    def get_historical(self, weeks_to_get: int) -> pd.DataFrame:
+    def get_historical(self, weeks_to_get: int, sensor_channel: str) -> pd.DataFrame:
         '''Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past'''
+        if sensor_channel not in ('a', 'b'):
+            raise ValueError(f'Invalid sensor channel: {sensor_channel}')
+        channel = self.tp_a if sensor_channel == 'a' else self.tp_b
+        key = self.tp_a_key if sensor_channel == 'a' else self.tp_b_key
+        columns_a = {
+            'field1': 'PM1 CF=ATM ug/m3',
+            'field2': 'PM25 CF=ATM ug/m3',
+            'field3': 'PM10 CF=ATM ug/m3',
+            'field4': 'Uptime (Minutes)',
+            'field5': 'RSSI (WiFi Signal Strength)',
+            'field6': 'Temperature (F)',
+            'field7': 'Humidity %',
+            'field8': 'PM25 CF=1 ug/m3'
+        }
+        columns_b = {
+            'field1': 'PM1 CF=ATM ug/m3',
+            'field2': 'PM25 CF=ATM ug/m3',
+            'field3': 'PM10 CF=ATM ug/m3',
+            'field4': 'Free HEAP memory',
+            'field5': 'ADC0 Voltage',
+            'field6': 'Sensor Firmware',
+            'field7': 'Unused',
+            'field8': 'PM25 CF=1 ug/m3'
+        }
+        columns = columns_a if sensor_channel == 'a' else columns_b
         from_week = datetime.now()
         to_week = from_week - timedelta(weeks=1)
-        url = f'https://thingspeak.com/channels/{self.tp_a}/feed.csv?api_key={self.tp_a_key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
         df = pd.read_csv(url)
         if weeks_to_get > 1:
             for i in range(weeks_to_get):
                 from_week = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
-                url = f'https://thingspeak.com/channels/{self.tp_a}/feed.csv?api_key={self.tp_a_key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+                url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
                 df = pd.concat([df, pd.read_csv(url)])
 
         # Handle formatting the DataFrame
-        df.rename(columns={'field1': 'PM1 CF=ATM ug/m3',
-                           'field2': 'PM25 CF=ATM ug/m3',
-                           'field3': 'PM10 CF=ATM ug/m3',
-                           'field4': 'Free HEAP memory',
-                           'field5': 'ADC0 Voltage',
-                           'field6': 'Sensor Firmware',
-                           'field7': 'Unused',
-                           'field8': 'PM25 CF=1 ug/m3'
-                           }, inplace=True)
+        df.rename(columns=columns, inplace=True)
         df['created_at'] = pd.to_datetime(df['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
         df.index = df.pop('entry_id')
         return df
