@@ -240,7 +240,7 @@ class Sensor():
 
     def get_historical(self, weeks_to_get: int, sensor_channel: str) -> pd.DataFrame:
         '''Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past'''
-        if sensor_channel not in ('a', 'b'):
+        if sensor_channel not in {'a', 'b'}:
             raise ValueError(f'Invalid sensor channel: {sensor_channel}')
         channel = self.tp_a if sensor_channel == 'a' else self.tp_b
         key = self.tp_a_key if sensor_channel == 'a' else self.tp_b_key
