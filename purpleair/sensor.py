@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -51,11 +52,11 @@ class Sensor():
         # Data
         if 'PM2_5Value' in self.data:
             if self.data['PM2_5Value'] != None:
-                self.current_pm2_5 = float(self.data['PM2_5Value'])
+                self.current_pm2_5: Optional[float] = float(self.data['PM2_5Value'])
             else:
                 self.current_pm2_5 = self.data['PM2_5Value']
         else:
-            self.current_pm2_5 = ''
+            self.current_pm2_5 = None
         try:
             f_temp = float(self.data['temp_f'])
             if f_temp > 150 or f_temp < -100:
@@ -75,7 +76,7 @@ class Sensor():
             self.current_temp_c = None
 
         try:
-            self.current_humidity = int(self.data['humidity']) / 100
+            self.current_humidity: Optional[float]  = int(self.data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
         except ValueError:
@@ -84,7 +85,7 @@ class Sensor():
             self.current_humidity = None
 
         try:
-            self.current_pressure = self.data['pressure']
+            self.current_pressure: Optional[float] = self.data['pressure']
         except TypeError:
             self.current_pressure = None
         except ValueError:
@@ -103,7 +104,7 @@ class Sensor():
             self.d1avg = self.pm2_5stats['v5']
             self.w1avg = self.pm2_5stats['v6']
             try:
-                self.last_modified_stats = datetime.utcfromtimestamp(
+                self.last_modified_stats: Optional[datetime]  = datetime.utcfromtimestamp(
                     int(self.pm2_5stats['lastModified']) / 1000)
             except TypeError:
                 self.last_modified_stats = None
@@ -207,7 +208,7 @@ class Sensor():
         }
 
         if 'Stats' in self.data and self.data['Stats']:
-            d['statistics']: {
+            d['statistics'] = {
                 '10min_avg': self.m10avg,
                 '30min_avg': self.m30avg,
                 '1hour_avg': self.h1ravg,
@@ -215,7 +216,7 @@ class Sensor():
                 '1week_avg': self.w1avg
             }
         else:
-            d['statistics']: {
+            d['statistics'] = {
                 '10min_avg': None,
                 '30min_avg': None,
                 '1hour_avg': None,
