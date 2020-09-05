@@ -1,13 +1,18 @@
-# purple_air_api
+# Purple Air API
 
-A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas Dataframe with several utility methods.
+A Python 3.x API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame with several utility methods.
 
 ![](maps/sensor_map.png)
 
 ## Installation
 
 * To use
-  * `pip install purple-air-api`
+  * Create a virtual environment
+    * `python -m venv venv`
+  * Activate the virtual environment
+    * `source venv/bin/activate`
+  * Install this package
+    * `pip install purpleair`
 * To hack
   * Clone this repo
   * `cd` to the folder
