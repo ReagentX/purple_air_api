@@ -6,13 +6,17 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 
 ## Installation
 
-* Clone this repo
-* `cd` to the folder
-* Create a virtual environment ( `python -m venv venv` )
-* Activate the virtual environment ( `source venv/bin/activate` )
-* `python setup.py develop`
-* `pip install -r requirements/common.txt`
-  * Install development requirements with `pip install -r requirements/dev.txt`
+* Basic
+  * `pip install purple-air-api`
+* Developer
+  * Clone this repo
+  * `cd` to the folder
+  * Create a virtual environment ( `python -m venv venv` )
+  * Activate the virtual environment ( `source venv/bin/activate` )
+  * `python setup.py develop`
+  * `pip install -r requirements/common.txt`
+    * Install development requirements with `pip install -r requirements/dev.txt`
+    * Install example file requirements with `pip install -r requirements/examples.txt`
 
 ## Example code
 
@@ -37,8 +41,11 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ```python
 from purpleair import purpleair
 df = p.to_dataframe('all')  # Other options include 'outdoor' and 'useful'
+```
 
-# Will print
+Result:
+
+```log
             age  downgraded  flagged  hidden  humidity           last_seen  ...                  name   parent  pm_2.5 pressure     temp_c  temp_f
 id                                                                        ...
 24115   36026       False    False   False      0.15 2019-01-09 20:33:05  ...   2nd South 12th East      NaN    0.15   869.14  31.666667    89.0
@@ -54,8 +61,11 @@ id                                                                        ...
 from purpleair import sensor
 se = sensor.Sensor('2891', parse_location=True)
 print(se.get_historical(weeks_to_get=1, sensor_channel='a').head())
+```
 
-# Will print
+Result:
+
+```log
                         created_at  PM1 CF=ATM ug/m3  PM25 CF=ATM ug/m3  PM10 CF=ATM ug/m3  Free HEAP memory  ADC0 Voltage  Sensor Firmware  Unused  PM25 CF=1 ug/m3
 entry_id
 536245   2019-01-27 00:00:35+00:00             12.87              17.70              18.39           30032.0          0.02           973.99     NaN            17.70
