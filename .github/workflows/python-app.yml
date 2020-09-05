@@ -28,7 +28,7 @@ jobs:
         pip install mypy pylint bandit
     - name: Lint with pylint
       run: |
-        pylint purpleair
+        pylint -d R0912 -d R0915 -d R0902 -d R0911 purpleair
     - name: Static Analysis with mypy
       run: |
         mypy . --ignore-missing-imports
