@@ -36,5 +36,5 @@ jobs:
       run: |
         bandit -rll purpleair
     - name: Test with stdlib unittest
-        run: |
-          python -m unittest discover -v
+      run: |
+        python -m unittest discover -v
