@@ -17,6 +17,7 @@ requests_cache.core.remove_expired_responses()
 
 class Sensor():
     '''Class for a single PurpleAir sensor; set initialize=True to fetch data from the API'''
+
     def __init__(self, id, json=None, parse_location=False):
         self.id = id
         self.json = json
@@ -24,7 +25,6 @@ class Sensor():
         self.parse_location = parse_location
         self.thingspeak_data = {}
         self.setup()
-
 
     def get_data(self) -> dict:
         '''Get new data if no data is provided'''
@@ -35,7 +35,6 @@ class Sensor():
             return data['results'][0]
         else:
             return self.json
-
 
     def setup(self) -> None:
         '''Initiailze metadata and real data for a sensor; for detailed info see docs'''
@@ -53,7 +52,7 @@ class Sensor():
         if 'PM2_5Value' in self.data:
             if self.data['PM2_5Value'] != None:
                 self.current_pm2_5 = float(self.data['PM2_5Value'])
-            else: 
+            else:
                 self.current_pm2_5 = self.data['PM2_5Value']
         else:
             self.current_pm2_5 = ''
@@ -75,7 +74,7 @@ class Sensor():
             self.current_temp_f = None
             self.current_temp_c = None
 
-        try: 
+        try:
             self.current_humidity = int(self.data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
@@ -104,7 +103,8 @@ class Sensor():
             self.d1avg = self.pm2_5stats['v5']
             self.w1avg = self.pm2_5stats['v6']
             try:
-                self.last_modified_stats = datetime.utcfromtimestamp(int(self.pm2_5stats['lastModified']) / 1000)
+                self.last_modified_stats = datetime.utcfromtimestamp(
+                    int(self.pm2_5stats['lastModified']) / 1000)
             except TypeError:
                 self.last_modified_stats = None
             except ValueError:
@@ -113,7 +113,8 @@ class Sensor():
                 self.last_modified_stats = None
 
             try:
-                self.last2_modified = self.pm2_5stats['timeSinceModified'] # MS since last update to stats
+                # MS since last update to stats
+                self.last2_modified = self.pm2_5stats['timeSinceModified']
             except KeyError:
                 self.last2_modified = None
 
@@ -122,8 +123,10 @@ class Sensor():
         self.tp_a_key = self.data['THINGSPEAK_PRIMARY_ID_READ_KEY']
         self.tp_b = self.data['THINGSPEAK_SECONDARY_ID']
         self.tp_b_key = self.data['THINGSPEAK_SECONDARY_ID_READ_KEY']
-        self.channel_a = thingspeak.Channel(id=self.tp_a, api_key=self.tp_a_key)
-        self.channel_b =thingspeak.Channel(id=self.tp_b, api_key=self.tp_b_key)
+        self.channel_a = thingspeak.Channel(
+            id=self.tp_a, api_key=self.tp_a_key)
+        self.channel_b = thingspeak.Channel(
+            id=self.tp_b, api_key=self.tp_b_key)
 
         # Diagnostic
         self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
@@ -131,8 +134,7 @@ class Sensor():
         self.hidden = False if self.data['Hidden'] == 'false' else True
         self.flagged = True if 'Flag' in self.data and self.data['Flag'] == 1 else False
         self.downgraded = True if 'A_H' in self.data and self.data['A_H'] == 'true' else False
-        self.age = int(self.data['AGE']) # Number of minutes old the data is
-
+        self.age = int(self.data['AGE'])  # Number of minutes old the data is
 
     def get_location(self) -> Location:
         '''Set the location for a Sensor using geopy'''
@@ -141,13 +143,13 @@ class Sensor():
         self.location = location
         return location
 
-
     def get_field(self, field) -> None:
         '''Gets the thingspeak data for a sensor'''
         self.thingspeak_data[field] = {}
-        self.thingspeak_data[field]['channel_a'] = json.loads(self.channel_a.get_field(field=field))
-        self.thingspeak_data[field]['channel_b'] = json.loads(self.channel_b.get_field(field=field))
-
+        self.thingspeak_data[field]['channel_a'] = json.loads(
+            self.channel_a.get_field(field=field))
+        self.thingspeak_data[field]['channel_b'] = json.loads(
+            self.channel_b.get_field(field=field))
 
     def is_useful(self) -> bool:
         '''Function to dump broken sensors; expanded like this so we can collect metrics later'''
@@ -175,7 +177,6 @@ class Sensor():
         elif self.last2_modified is None:
             return False
         return True
-
 
     def as_dict(self) -> dict:
         '''Returns a dictionary representation of the sensor data'''
@@ -205,7 +206,7 @@ class Sensor():
             }
         }
 
-        if self.data['Stats']:
+        if 'Stats' in self.data and self.data['Stats']:
             d['statistics']: {
                 '10min_avg': self.m10avg,
                 '30min_avg': self.m30avg,
@@ -227,7 +228,6 @@ class Sensor():
 
         return d
 
-
     def as_flat_dict(self) -> dict:
         '''Returns a flat dictionart representation of the Sensor data'''
         d = {}
@@ -236,7 +236,6 @@ class Sensor():
             for data in src[data_category]:
                 d[data] = src[data_category][data]
         return d
-
 
     def get_historical(self, weeks_to_get: int, sensor_channel: str) -> pd.DataFrame:
         '''Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past'''
@@ -278,10 +277,10 @@ class Sensor():
 
         # Handle formatting the DataFrame
         df.rename(columns=columns, inplace=True)
-        df['created_at'] = pd.to_datetime(df['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
+        df['created_at'] = pd.to_datetime(
+            df['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
         df.index = df.pop('entry_id')
         return df
-
 
     def __repr__(self):
         '''String representation of the class'''
