@@ -1,0 +1,7 @@
+# Requirements for example scripts
+
+## plot_city.py and plot_map.py
+matplotlib
+pillow
+
+# Install basemap dependency with https://matplotlib.org/basemap/users/installing.html
