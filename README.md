@@ -59,3 +59,4 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
     536249   2019-01-27 00:05:55+00:00             15.16              19.71              20.56           30776.0          0.02           974.05     NaN            19.71
 
 See examples in `/scripts` for more detail.
+
