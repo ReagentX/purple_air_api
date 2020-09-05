@@ -35,5 +35,6 @@ jobs:
     - name: Security Analysis with Bandit
       run: |
         bandit -rll purpleair
-    - name: Test run
-      run: |
+    - name: Test with stdlib unittest
+        run: |
+          python -m unittest discover -v
