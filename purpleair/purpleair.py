@@ -22,11 +22,11 @@ class PurpleAir():
         '''Get all data from the API'''
         response = requests.get(f'{API_ROOT}')
         data = json.loads(response.content)
-        print(f"Initialized {len(data['results'])} sensors!")
+        print(f"Initialized {len(data['results']):,} sensors!")
         return data['results']
 
     
-    def to_dataframe(self, sensor_group: str) -> list:
+    def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         '''Converts dictionary representation of a list of sensors to a Pandas Dataframe
         where sensor_group determines which group of sensors are used'''
         if sensor_group not in {'useful', 'outside', 'all'}:
