@@ -1,14 +1,14 @@
 import json
-import thingspeak
+from datetime import datetime, timedelta
+
 import pandas as pd
 import requests
 import requests_cache
-from datetime import timedelta
-from datetime import datetime
-from .api_data import API_ROOT
+import thingspeak
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
+from .api_data import API_ROOT
 
 # Setup cache for requests
 requests_cache.install_cache(expire_after=timedelta(hours=1))
