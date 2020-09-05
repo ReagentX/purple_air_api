@@ -1,14 +1,14 @@
+"""
+Install requirements with `pip install -r requirements/common.txt`
+"""
+
 from mpl_toolkits.basemap import Basemap
-import numpy as np
 import matplotlib.pyplot as plt
 from purpleair import purpleair
-from purpleair import sensor
-import random
-
 
 # Get the purpleair data
 p = purpleair.PurpleAir()
-df = p.to_dataframe()
+df = p.to_dataframe('all')
 var_to_viz = 'temp_c'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot
 lat = df['lat'].values
@@ -27,12 +27,14 @@ m = Basemap(llcrnrlon=-118.5,
             epsg=3498  # Lookup via https://epsg.io
             )
 
-m.arcgisimage(service='ESRI_Imagery_World_2D', xpixels=2000)
+# This line does not work: https://github.com/matplotlib/basemap/issues/499
+# m.arcgisimage(xpixels=2000, verbose=True)
+m.shadedrelief(scale=1)
 m.drawcoastlines()
 
 # convert lat and lon to map projection coordinates
 lons, lats = m(lon, lat)
 # plot points as red dots
 m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
-plt.colorbar().set_label(f'{var_to_viz}', rotation=270)
+plt.colorbar().set_label(f'{var_to_viz}\n', rotation=270)
 plt.savefig('maps/city_map.png', dpi=300)

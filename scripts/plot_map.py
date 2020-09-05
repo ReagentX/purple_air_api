@@ -1,11 +1,13 @@
+"""
+Install requirements with `pip install -r requirements/common.txt`
+"""
+
 #%%
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
 from purpleair import purpleair
-from purpleair import sensor
 import datetime
-import random
 
 
 #%%
