@@ -6,12 +6,10 @@ import datetime
 
 import matplotlib.pyplot as plt
 import numpy as np
-# %%
 from mpl_toolkits.basemap import Basemap
 
 from purpleair import purpleair
 
-# %%
 # Get the purpleair data
 p = purpleair.PurpleAir()
 df = p.to_dataframe('all')
@@ -24,7 +22,6 @@ colors = df[var_to_viz].values
 print(min(colors), max(colors))
 
 
-# %%
 margin = 0  # buffer to add to the range
 lat_min = min(lat) - margin
 lat_max = max(lat) + margin
@@ -46,7 +43,6 @@ m.drawcountries()
 m.drawstates()
 
 
-# %%
 # Colors
 water = '#46bcec'
 land = '#ffffff'
