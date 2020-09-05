@@ -11,10 +11,14 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 * To hack
   * Clone this repo
   * `cd` to the folder
-  * Create a virtual environment ( `python -m venv venv` )
-  * Activate the virtual environment ( `source venv/bin/activate` )
-  * `python setup.py develop`
-  * `pip install -r requirements/common.txt`
+  * Create a virtual environment
+    * `python -m venv venv`
+  * Activate the virtual environment
+    * `source venv/bin/activate`
+  * Install as dependency in the virtual environment
+    * `python setup.py develop`
+  * Install third party dependencies
+    * Required to run: `pip install -r requirements/common.txt`
     * Install development requirements with `pip install -r requirements/dev.txt`
     * Install example file requirements with `pip install -r requirements/examples.txt`
 
