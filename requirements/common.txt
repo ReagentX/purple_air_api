@@ -1,0 +1,6 @@
+# Usage requirements
+requests
+requests_cache
+thingspeak
+geopy
+pandas

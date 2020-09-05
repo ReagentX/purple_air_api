@@ -10,8 +10,8 @@ In the case of a fault, the channel may be marked as flagged or downgraded (susp
 
 The simplest way to download the data is using the download page available at [https://www.purpleair.com/sensorlist](https://www.purpleair.com/sensorlist). This page provides an easy to use interface to download data based on a date range.
 
-- Find and mark the sensor/s in the list you want to download - use CTRL + F to quickly search by sensor name.
-- Return to the top of the page and enter the desired date range, then click Download Selected.
+* Find and mark the sensor/s in the list you want to download - use CTRL + F to quickly search by sensor name.
+* Return to the top of the page and enter the desired date range, then click Download Selected.
 
 ## JSON data available from PurpleAir
 
@@ -21,9 +21,9 @@ PurpleAir provides access to our real time data in a JSON format. This format al
 
 There are two ways to access the JSON data:
 
-- All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json)
+* All sensors: [https://www.purpleair.com/json](https://www.purpleair.com/json)
 
-- One entry: `https://www.purpleair.com/json?show=ID` where ID is the “ID” of the sensor you want (in the case of dual laser where ParentID is “null”).
+* One entry: `https://www.purpleair.com/json?show=ID` where ID is the “ID” of the sensor you want (in the case of dual laser where ParentID is “null”).
 
 ### PurpleAir JSON fields description and example values
 
@@ -188,7 +188,7 @@ Each sensor contains two identical laser counters, hence channel A and B. If the
 
 ## Plantower PMS sensor notes
 
-- **ATM** is "**atmospheric**", meant to be used for outdoor applications
-- **CF=1** is meant to be used for indoor or controlled environment applications
-  - However, PurpleAir uses CF=1 values on the map
-  - This value is lower than the ATM value in higher measured concentrations
+* **ATM** is "**atmospheric**", meant to be used for outdoor applications
+* **CF=1** is meant to be used for indoor or controlled environment applications
+  * However, PurpleAir uses CF=1 values on the map
+  * This value is lower than the ATM value in higher measured concentrations

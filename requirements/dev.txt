@@ -1,0 +1,8 @@
+# Also install common requirements
+-r common.txt
+
+# Development Requirements
+mypy
+pylint
+autopep8
+bandit
