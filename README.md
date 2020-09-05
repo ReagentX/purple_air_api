@@ -47,7 +47,7 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 
     from purpleair import sensor
     se = sensor.Sensor('2891', parse_location=True)
-    print(se.get_historical(3).head())
+    print(se.get_historical(3, 'a').head())
 
     # Will print
                             created_at  PM1 CF=ATM ug/m3  PM25 CF=ATM ug/m3  PM10 CF=ATM ug/m3  Free HEAP memory  ADC0 Voltage  Sensor Firmware  Unused  PM25 CF=1 ug/m3
@@ -59,3 +59,4 @@ A Python 3.7 API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
     536249   2019-01-27 00:05:55+00:00             15.16              19.71              20.56           30776.0          0.02           974.05     NaN            19.71
 
 See examples in `/scripts` for more detail.
+
