@@ -36,5 +36,5 @@ m.drawcoastlines()
 lons, lats = m(lon, lat)
 # plot points as red dots
 m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
-plt.colorbar().set_label(f'{var_to_viz}\n', rotation=270)
+plt.colorbar().set_label(f'{var_to_viz}\n\n\n\n', rotation=90)
 plt.savefig('maps/city_map.png', dpi=300)
