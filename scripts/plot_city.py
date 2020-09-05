@@ -2,8 +2,9 @@
 Install requirements with `pip install -r requirements/common.txt`
 """
 
-from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+
 from purpleair import purpleair
 
 # Get the purpleair data
@@ -13,7 +14,8 @@ var_to_viz = 'temp_c'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot
 lat = df['lat'].values
 lon = df['lon'].values
-colors = df[var_to_viz].values  # Variable on which to generate the color gradient
+# Variable on which to generate the color gradient
+colors = df[var_to_viz].values
 
 # Coorinates for Los Angeles, CA
 m = Basemap(llcrnrlon=-118.5,
@@ -23,7 +25,7 @@ m = Basemap(llcrnrlon=-118.5,
             lat_0=34.,
             lon_0=-118.,
             projection='lcc',
-            resolution = 'i',
+            resolution='i',
             epsg=3498  # Lookup via https://epsg.io
             )
 

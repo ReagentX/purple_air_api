@@ -1,7 +1,15 @@
-
-.vscode/*
-venv/*
+# Generated files
 *.pyc
-cache.sqlite
 puepleair_api.egg-info/*
 purpleair_api.egg-info/*
+Purple_Air_API.egg-info/*
+purpleair.egg-info/*
+build/*
+dist/*
+
+# Requests cache
+cache.sqlite
+
+# Dev env
+venv/*
+.vscode/*
