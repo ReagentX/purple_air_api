@@ -46,7 +46,7 @@ df = p.to_dataframe('all')  # Other options include 'outdoor' and 'useful'
 Result:
 
 ```log
-            age  downgraded  flagged  hidden  humidity           last_seen  ...                  name   parent  pm_2.5 pressure     temp_c  temp_f
+            age  downgraded  flagged  hidden  humidity         last_seen  ...                  name   parent  pm_2.5 pressure     temp_c  temp_f
 id                                                                        ...
 24115   36026       False    False   False      0.15 2019-01-09 20:33:05  ...   2nd South 12th East      NaN    0.15   869.14  31.666667    89.0
 16791       0       False    False   False      0.60 2019-02-03 20:59:26  ...                DW0435      NaN    1.96  1009.82  30.000000    86.0
