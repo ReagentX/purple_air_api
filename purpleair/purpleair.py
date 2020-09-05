@@ -32,7 +32,7 @@ class PurpleAir():
             s for s in self.all_sensors if s.location_type == 'outside']
         self.useful_sensors = [s for s in self.all_sensors if s.is_useful()]
 
-    def get_all_data(self) -> dict:
+    def get_all_data(self):
         """
         Get all data from the API
         """
