@@ -5,7 +5,6 @@ Install requirements with `pip install -r requirements/common.txt`
 import datetime
 
 import matplotlib.pyplot as plt
-import numpy as np
 from mpl_toolkits.basemap import Basemap
 
 from purpleair import purpleair
