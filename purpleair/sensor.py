@@ -12,7 +12,6 @@ import requests
 import requests_cache
 import thingspeak
 from geopy.geocoders import Nominatim
-from geopy.location import Location
 
 from .api_data import API_ROOT
 
