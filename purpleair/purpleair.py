@@ -5,6 +5,7 @@ PurpleAir API Client Class
 
 import json
 from datetime import timedelta
+from json.decoder import JSONDecodeError
 
 import pandas as pd
 import requests
@@ -37,7 +38,10 @@ class PurpleAir():
         Get all data from the API
         """
         response = requests.get(f'{API_ROOT}')
-        data = json.loads(response.content)
+        try:
+            data = json.loads(response.content)
+        except JSONDecodeError as err:
+            raise ValueError(f'Invalid json returned from network.\nSnippet: ...{response.text[err.colno - 10:err.colno + 10]}...')
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
