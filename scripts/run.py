@@ -12,7 +12,7 @@ df = p.to_dataframe('useful')
 print(df.head())
 
 # Single sensor
-se = Sensor('2891', parse_location=True)
+se = Sensor('2891')
 se.get_field('field3')
 se.get_field('field4')
 print(se.thingspeak_data.keys())
