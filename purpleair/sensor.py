@@ -12,7 +12,6 @@ import requests
 import requests_cache
 import thingspeak
 from geopy.geocoders import Nominatim
-from geopy.location import Location
 
 from .api_data import API_ROOT
 
@@ -152,15 +151,18 @@ class Sensor():
         self.downgraded = True if 'A_H' in self.data and self.data['A_H'] == 'true' else False
         self.age = int(self.data['AGE'])  # Number of minutes old the data is
 
-    def get_location(self) -> Location:
-        """Set the location for a Sensor using geopy"""
+    def get_location(self) -> None:
+        """
+        Set the location for a Sensor using geopy
+        """
         geolocator = Nominatim(user_agent="purple_air_api")
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
         self.location = location
-        return location
 
     def get_field(self, field) -> None:
-        """Gets the thingspeak data for a sensor"""
+        """
+        Gets the thingspeak data for a sensor
+        """
         self.thingspeak_data[field] = {}
         self.thingspeak_data[field]['channel_a'] = json.loads(
             self.channel_a.get_field(field=field))
@@ -168,7 +170,9 @@ class Sensor():
             self.channel_b.get_field(field=field))
 
     def is_useful(self) -> bool:
-        """Function to dump broken sensors; expanded like this so we can collect metrics later"""
+        """
+        Function to dump broken sensors; expanded like this so we can collect metrics later
+        """
         if self.lat is None or self.lon is None:
             return False
         if self.hidden:
