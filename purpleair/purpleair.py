@@ -41,7 +41,7 @@ class PurpleAir():
         try:
             data = json.loads(response.content)
         except JSONDecodeError as err:
-            raise ValueError(f'Invalid JSON data returned from network.')
+            raise ValueError('Invalid JSON data returned from network!') from err
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
