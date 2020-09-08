@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='purpleair',
-    version='1.0.1',
+    version='1.0.2',
     description='Python API Client to get and transform PurpleAir data.',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
