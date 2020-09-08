@@ -1,9 +1,9 @@
-from purpleair.purpleair import PurpleAir
+from purpleair.network import SensorList
 from purpleair.sensor import Sensor
 
 
 # All Sensors
-p = PurpleAir()
+p = SensorList()
 print(len(p.useful_sensors))
 s = p.useful_sensors[0] # First confirmed useful sensor
 s.get_location()
