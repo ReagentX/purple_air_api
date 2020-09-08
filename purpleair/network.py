@@ -19,7 +19,7 @@ requests_cache.install_cache(expire_after=timedelta(hours=1))
 requests_cache.core.remove_expired_responses()
 
 
-class PurpleAir():
+class SensorList():
     """
     PurpleAir Sensor Network Representation
     """

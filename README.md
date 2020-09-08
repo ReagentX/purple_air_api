@@ -2,7 +2,7 @@
 
 A Python 3.x API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame with several utility methods.
 
-![](maps/sensor_map.png)
+![Global Sensor Map with Celsius Scale](maps/sensor_map.png)
 
 ## Installation
 
@@ -32,8 +32,8 @@ A Python 3.x API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 ### Listing all useful sensors
 
 ```python
-from purpleair.purpleair import PurpleAir
-p = PurpleAir()  # Initialized 18,877 sensors!
+from purpleair.network import SensorList
+p = SensorList()  # Initialized 18,877 sensors!
 print(len(p.useful_sensors))  # 7174, List of sensors with no defects
 ```
 
@@ -48,8 +48,8 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ### Make a DataFrame from all current sensor data
 
 ```python
-from purpleair.purpleair import PurpleAir
-p = PurpleAir()  # Initialized 18,877 sensors!
+from purpleair.network import SensorList
+p = SensorList()  # Initialized 18,877 sensors!
 df = p.to_dataframe('all')  # Other options include 'outdoor' and 'useful'
 ```
 
