@@ -1,5 +1,5 @@
 import unittest
-from purpleair import purpleair, sensor
+from purpleair import sensor
 
 
 class TestSensorMethods(unittest.TestCase):

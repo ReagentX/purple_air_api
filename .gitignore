@@ -1,9 +1,6 @@
 # Generated files
 *.pyc
-puepleair_api.egg-info/*
-purpleair_api.egg-info/*
-Purple_Air_API.egg-info/*
-purpleair.egg-info/*
+*.egg-info/*
 build/*
 dist/*
 

@@ -5,13 +5,12 @@ Install requirements with `pip install -r requirements/common.txt`
 import datetime
 
 import matplotlib.pyplot as plt
-import numpy as np
 from mpl_toolkits.basemap import Basemap
 
-from purpleair import purpleair
+from purpleair.network import SensorList
 
 # Get the purpleair data
-p = purpleair.PurpleAir()
+p = SensorList()
 df = p.to_dataframe('all')
 var_to_viz = 'temp_c'  # The dict item that we want to visualize
 # Store the lat and lon coords to plot

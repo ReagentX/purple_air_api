@@ -5,6 +5,7 @@ PurpleAir API Client Class
 
 import json
 from datetime import timedelta
+from json.decoder import JSONDecodeError
 
 import pandas as pd
 import requests
@@ -18,7 +19,7 @@ requests_cache.install_cache(expire_after=timedelta(hours=1))
 requests_cache.core.remove_expired_responses()
 
 
-class PurpleAir():
+class SensorList():
     """
     PurpleAir Sensor Network Representation
     """
@@ -37,7 +38,10 @@ class PurpleAir():
         Get all data from the API
         """
         response = requests.get(f'{API_ROOT}')
-        data = json.loads(response.content)
+        try:
+            data = json.loads(response.content)
+        except JSONDecodeError as err:
+            raise ValueError('Invalid JSON data returned from network!') from err
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
