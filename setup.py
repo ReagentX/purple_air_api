@@ -1,3 +1,9 @@
+"""
+Install purpleair as a development copy by running this file
+`python setup.py develop`
+"""
+
+
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
@@ -5,12 +11,12 @@ with open("README.md", "r") as fh:
 
 setup(
     name='purpleair',
-    version='1.0.4',
+    version='1.0.5',
     description='Python API Client to get and transform PurpleAir data.',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     author='Christopher Sardegna',
-    author_email='github@reagentx.net',
+    author_email='purpleair@reagentx.net',
     url='https://github.com/ReagentX/purple_air_api/',
     packages=find_packages(),
     install_requires=['requests', 'requests_cache', 'thingspeak', 'geopy', 'pandas'],
