@@ -1,3 +1,9 @@
+"""
+Install purpleair as a development copy by running this file
+`python setup.py develop`
+"""
+
+
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
