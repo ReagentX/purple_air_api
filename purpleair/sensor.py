@@ -41,7 +41,7 @@ class Sensor():
 
     def setup(self) -> None:
         """
-        Initiailze metadata and real data for a sensor; for detailed info see docs
+        Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
         self.lat = self.data.get('Lat', None)
@@ -204,7 +204,7 @@ class Sensor():
                 'lat': self.lat,
                 'lon': self.lon,
                 'name': self.name,
-                'locaction_type': self.location_type
+                'location_type': self.location_type
             },
             'data': {
                 'pm_2.5': self.current_pm2_5,
@@ -247,7 +247,7 @@ class Sensor():
 
     def as_flat_dict(self) -> dict:
         """
-        Returns a flat dictionart representation of the Sensor data
+        Returns a flat dictionary representation of the Sensor data
         """
         out_d = {}
         src = self.as_dict()

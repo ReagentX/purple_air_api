@@ -37,12 +37,20 @@ class SensorList():
         except JSONDecodeError as err:
             raise ValueError(
                 'Invalid JSON data returned from network!') from err
+
+        # Handle rate limit or other error message
+        if 'results' not in data:
+            message = data.get('message')
+            error_message = message if message is not None else data
+            raise ValueError(
+                f'No sensor data returned from PurpleAIR: {error_message}')
+
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
     def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         """
-        Converts dictionary representation of a list of sensors to a Pandas Dataframe
+        Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
         if sensor_group not in {'useful', 'outside', 'all'}:
