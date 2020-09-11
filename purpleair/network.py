@@ -42,7 +42,7 @@ class SensorList():
 
     def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         """
-        Converts dictionary representation of a list of sensors to a Pandas Dataframe
+        Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
         if sensor_group not in {'useful', 'outside', 'all'}:
