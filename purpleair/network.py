@@ -24,14 +24,22 @@ class SensorList():
     PurpleAir Sensor Network Representation
     """
 
-    def __init__(self, parse_location=False):
+    def __init__(self, parse_location=False, local_data_path=None):
         self.data = {}
-        self.get_all_data()
+        
+        if local_data_path:
+            self._load_data_from_file(local_data_path)
+        else:
+            self.get_all_data()
         self.all_sensors = [
             Sensor(s['ID'], json_data=s, parse_location=parse_location) for s in self.data]
         self.outside_sensors = [
             s for s in self.all_sensors if s.location_type == 'outside']
         self.useful_sensors = [s for s in self.all_sensors if s.is_useful()]
+
+    def _load_data_from_file(self, path):
+        buf = open(path).read()
+        self.data = json.loads(buf)
 
     def get_all_data(self):
         """
@@ -44,6 +52,13 @@ class SensorList():
             raise ValueError('Invalid JSON data returned from network!') from err
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
+
+    def write_to_disk(self, path):
+        """
+        Write last data retrieval to disk at target path.
+        """
+        with open(path, 'w') as fh:
+            fh.write(json.dumps(self.data))
 
     def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         """
