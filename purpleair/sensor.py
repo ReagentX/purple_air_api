@@ -6,23 +6,13 @@ PurpleAir Sensor Client
 import json
 from typing import Optional
 from datetime import datetime, timedelta
-from sqlite3 import OperationalError
 
 import pandas as pd
 import requests
-import requests_cache
 import thingspeak
 from geopy.geocoders import Nominatim
 
 from .api_data import API_ROOT
-
-# Setup cache for requests
-try:
-    requests_cache.install_cache(expire_after=timedelta(hours=1))
-    requests_cache.core.remove_expired_responses()
-except OperationalError:
-    print('Unable to open cache database, requests will not be cached!!!')
-
 
 class Sensor():
     """
