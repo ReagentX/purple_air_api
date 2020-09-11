@@ -6,6 +6,7 @@ PurpleAir Sensor Client
 import json
 from typing import Optional
 from datetime import datetime, timedelta
+from sqlite3 import OperationalError
 
 import pandas as pd
 import requests
@@ -16,8 +17,11 @@ from geopy.geocoders import Nominatim
 from .api_data import API_ROOT
 
 # Setup cache for requests
-requests_cache.install_cache(expire_after=timedelta(hours=1))
-requests_cache.core.remove_expired_responses()
+try:
+    requests_cache.install_cache(expire_after=timedelta(hours=1))
+    requests_cache.core.remove_expired_responses()
+except OperationalError:
+    print('Unable to open cache database, requests will not be cached!!!')
 
 
 class Sensor():
@@ -63,7 +67,8 @@ class Sensor():
         # Data
         if 'PM2_5Value' in self.data:
             if self.data['PM2_5Value'] is not None:
-                self.current_pm2_5: Optional[float] = float(self.data['PM2_5Value'])
+                self.current_pm2_5: Optional[float] = float(
+                    self.data['PM2_5Value'])
             else:
                 self.current_pm2_5 = self.data['PM2_5Value']
         else:
@@ -87,7 +92,8 @@ class Sensor():
             self.current_temp_c = None
 
         try:
-            self.current_humidity: Optional[float]  = int(self.data['humidity']) / 100
+            self.current_humidity: Optional[float] = int(
+                self.data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
         except ValueError:
@@ -115,7 +121,7 @@ class Sensor():
             self.d1avg = self.pm2_5stats['v5']
             self.w1avg = self.pm2_5stats['v6']
             try:
-                self.last_modified_stats: Optional[datetime]  = datetime.utcfromtimestamp(
+                self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
                     int(self.pm2_5stats['lastModified']) / 1000)
             except TypeError:
                 self.last_modified_stats = None
