@@ -37,6 +37,13 @@ class SensorList():
         except JSONDecodeError as err:
             raise ValueError(
                 'Invalid JSON data returned from network!') from err
+
+        # Handle rate limit or other error message
+        if 'results' not in data:
+            message = data.get('message')
+            raise ValueError(
+                f'No sensor data returned from PurpleAIR: {message if message is not None else data}')
+
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
