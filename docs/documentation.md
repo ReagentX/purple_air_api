@@ -6,7 +6,7 @@ There are two main components of this program: `SensorList` and `Sensor`. A `Sen
 
 PurpleAir sensor network representation
 
-### class `SensorList`(parse_location: bool)
+### `class SensorList(parse_location: bool)`
 
 `SensorList` parent class. Initialize with `SensorList()`.
 
@@ -20,19 +20,19 @@ To parse location of all sensors from coordinates to addresses, pass `SensorList
   * `useful_sensors`
     * Sensors without faults in the PurpleAir network
 
-#### get_all_data()
+#### `get_all_data()`
 
 Automatically run on instantiation. Retrieves the current network data from the PurpleAir API.
 
-#### to_dataframe(sensor_group: str)
+#### `to_dataframe(sensor_group: str) -> pd.DataFrame`
 
 Converts dictionary representation of a list of sensors to a Pandas DataFrame where `sensor_group` determines which group of sensors are used.
 
-* useful
-  * Sensors with no faults
-* outside
+* `'useful'`
+  * Sensors with no faults, as determined by [`is_useful()`](#is_useful())
+* `'outside'`
   * Outdoor sensors only
-* all
+* `'all'`
   * Do not filter sensors
 
 If `sensor_group` is not in the above set, `to_dataframe()`  will raise a `ValueError`.
@@ -41,7 +41,7 @@ If `sensor_group` is not in the above set, `to_dataframe()`  will raise a `Value
 
 Representation of a single PurpleAir sensor
 
-### class Sensor(identifier, json_data: dict, parse_location: bool)
+### `class Sensor(identifier, json_data: dict, parse_location: bool)`
 
 Initialize a new sensor.
 
@@ -121,39 +121,39 @@ Initialize a new sensor.
   * `age`
     * Number of minutes old the data returned by the sensor is
 
-#### get_data()
+#### `get_data() -> dict`
 
 If `json_data` is not provided to the constructor, it calls this method to get the metadata for the identified sensor.
 
-#### setup()
+#### `setup()`
 
 This converts the JSON metadata to Python class members, exposing data in a pythonic way.
 
-#### get_location()
+#### `get_location()`
 
-Set the location for a Sensor using `geopy`.
+Set the location for a Sensor using `geopy`. Sets the `location` property to the result.
 
-#### get_field('field': str)
+#### `get_field('field': str)`
 
-Gets the ThingSpeak data from `field` for a sensor.
+Gets the ThingSpeak data from `field` for a sensor. Sets the properties `channel_a` and `channel_b` to the data returned by ThingSpeak.
 
-#### is_useful()
+#### `is_useful() -> bool`
 
 Used to determine if a sensor has useful data or not. Not all bad sensors are flagged or downgraded, so this performs additional checks. Useful sensors are guaranteed to have all of the following properties:
 
-* lat
-* lon
-* hidden
-* flagged
-* downgraded
-* current_pm2_5
-* current_temp_f
-* current_humidity
-* current_pressure
-* last_modified_stats
-* last2_modified
+* `lat`
+* `lon`
+* `hidden`
+* `flagged`
+* `downgraded`
+* `current_pm2_5`
+* `current_temp_f`
+* `current_humidity`
+* `current_pressure`
+* `last_modified_stats`
+* `last2_modified`
 
-#### as_dict()
+#### `as_dict() -> dict`
 
 Return a dictionary representation of a sensor. The data is shaped like this:
 
@@ -192,7 +192,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
 }
 ```
 
-#### as_flat_dict()
+#### `as_flat_dict() -> dict`
 
 Returns a flat dictionary representation of the Sensor data. The data is shaped like this:
 
@@ -222,7 +222,7 @@ Returns a flat dictionary representation of the Sensor data. The data is shaped 
 }
 ```
 
-#### get_historical(weeks_to_get: int, sensor_channel: str)
+#### `get_historical(weeks_to_get: int, sensor_channel: str) -> pd.DataFrame`
 
 Get data from the ThingSpeak API from channel `sensor_channel` one week at a time up to `weeks_to_get` weeks in the past.
 
