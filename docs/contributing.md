@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-## tl; dr
+## tl;dr
 
 * Release branch is for releases only, all PRs should be to `develop`
 * No pull request shall be behind `develop`
