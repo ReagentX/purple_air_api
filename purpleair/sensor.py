@@ -9,16 +9,10 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
-import requests_cache
 import thingspeak
 from geopy.geocoders import Nominatim
 
 from .api_data import API_ROOT
-
-# Setup cache for requests
-requests_cache.install_cache(expire_after=timedelta(hours=1))
-requests_cache.core.remove_expired_responses()
-
 
 class Sensor():
     """
@@ -47,7 +41,7 @@ class Sensor():
 
     def setup(self) -> None:
         """
-        Initiailze metadata and real data for a sensor; for detailed info see docs
+        Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
         self.lat = self.data.get('Lat', None)
@@ -63,7 +57,8 @@ class Sensor():
         # Data
         if 'PM2_5Value' in self.data:
             if self.data['PM2_5Value'] is not None:
-                self.current_pm2_5: Optional[float] = float(self.data['PM2_5Value'])
+                self.current_pm2_5: Optional[float] = float(
+                    self.data['PM2_5Value'])
             else:
                 self.current_pm2_5 = self.data['PM2_5Value']
         else:
@@ -87,7 +82,8 @@ class Sensor():
             self.current_temp_c = None
 
         try:
-            self.current_humidity: Optional[float]  = int(self.data['humidity']) / 100
+            self.current_humidity: Optional[float] = int(
+                self.data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
         except ValueError:
@@ -115,7 +111,7 @@ class Sensor():
             self.d1avg = self.pm2_5stats['v5']
             self.w1avg = self.pm2_5stats['v6']
             try:
-                self.last_modified_stats: Optional[datetime]  = datetime.utcfromtimestamp(
+                self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
                     int(self.pm2_5stats['lastModified']) / 1000)
             except TypeError:
                 self.last_modified_stats = None
@@ -208,7 +204,7 @@ class Sensor():
                 'lat': self.lat,
                 'lon': self.lon,
                 'name': self.name,
-                'locaction_type': self.location_type
+                'location_type': self.location_type
             },
             'data': {
                 'pm_2.5': self.current_pm2_5,
@@ -251,7 +247,7 @@ class Sensor():
 
     def as_flat_dict(self) -> dict:
         """
-        Returns a flat dictionart representation of the Sensor data
+        Returns a flat dictionary representation of the Sensor data
         """
         out_d = {}
         src = self.as_dict()

@@ -28,7 +28,7 @@ class TestSensorMethods(unittest.TestCase):
                 'lat': 0,
                 'lon': 0,
                 'name': 0,
-                'locaction_type': 0
+                'location_type': 0
             },
             'data': {
                 'pm_2.5': 0,
