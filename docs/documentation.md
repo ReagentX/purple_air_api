@@ -127,7 +127,7 @@ If `json_data` is not provided to the constructor, it calls this method to get t
 
 #### `setup()`
 
-This converts the JSON metadata to Python class members, exposing data in a pythonic way.
+This converts the JSON metadata to Python class members, exposing data in a Pythonic way.
 
 #### `get_location()`
 
