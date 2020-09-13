@@ -13,11 +13,11 @@ PurpleAir sensor network representation
 To parse location of all sensors from coordinates to addresses, pass `SensorList(parse_location=True)`.
 
 * Members
-  * all_sensors
+  * `all_sensors`
     * All sensors in the PurpleAir network
-  * outside_sensors
+  * `outside_sensors`
     * Outdoor sensors in the PurpleAir network
-  * useful_sensors
+  * `useful_sensors`
     * Sensors without faults in the PurpleAir network
 
 #### get_all_data()
@@ -52,73 +52,73 @@ Initialize a new sensor.
 `parse_location` is an optional boolean parameter to use `geopy` to parse the rough address of the location of the sensor based on the latitude and longitude from the sensor's metadata.
 
 * Members
-  * identifier
+  * `identifier`
     * The sensor's ordinal identification number
-  * json
+  * `json`
     * metadata in JSON format about the sensor
-  * data
+  * `data`
     * metadata in Python dictionary format about the sensor
-  * thingspeak_data
+  * `thingspeak_data`
     * Dictionary of data returned by the ThingSpeak API
-  * location
+  * `location`
     * Location string if `parse_location` was true, otherwise empty string
-  * lat
+  * `lat`
     * Sensor latitude
-  * lon
+  * `lon`
     * Sensor longitude
-  * name
+  * `name`
     * Sensor name
-  * location_type
+  * `location_type`
     * Sensor location type {'outdoor', 'indoor', ''}
-  * current_pm2_5
+  * `current_pm2_5`
     * Current pm2.5 value
-  * current_temp_f
+  * `current_temp_f`
     * Current temperature in Fahrenheit
-  * current_temp_c
+  * `current_temp_c`
     * Current temperature in Celsius
-  * current_humidity
+  * `current_humidity`
     * Current humidity expressed as decimal (i.e., 0.1 = 10%)
-  * current_pressure
+  * `current_pressure`
     * Current atmospheric pressure
-  * m10avg
+  * `m10avg`
     * Average pm2.5 value for the most recent 10 minutes
-  * m30avg
+  * `m30avg`
     * Average pm2.5 value for the most recent 30 minutes
-  * h1ravg
+  * `h1ravg`
     * Average pm2.5 value for the most recent 1 hour
-  * h6ravg
+  * `h6ravg`
     * Average pm2.5 value for the most recent 6 hours
-  * d1avg
+  * `d1avg`
     * Average pm2.5 value for the most recent day
-  * w1avg
+  * `w1avg`
     * Average pm2.5 value for the most recent week
-  * last_modified_stats
+  * `last_modified_stats`
     * The date and time at which the stats were last updated
-  * last2_modified
+  * `last2_modified`
     * Milliseconds since last statistics update
-  * tp_a
+  * `tp_a`
     * ThingSpeak primary identifier
-  * tp_a_key
+  * `tp_a_key`
     * ThingSpeak primary read key
-  * tp_b
+  * `tp_b`
     * ThingSpeak secondary identifier
-  * tp_b_key
+  * `tp_b_key`
     * ThingSpeak secondary read key
-  * channel_a
+  * `channel_a`
     * `thingspeak.Channel` for primary channel
-  * channel_b
+  * `channel_b`
     * `thingspeak.Channel` for secondary channel
-  * last_seen
+  * `last_seen`
     * The last time the sensor was online
-  * model
+  * `model`
     * The model number of the sensor
-  * hidden
+  * `hidden`
     * Whether a sensor is hidden from the network
-  * flagged
+  * `flagged`
     * Whether a sensor has been flagged for bad data
-  * downgraded
+  * `downgraded`
     * Whether a sensor has previously been flagged for bad data
-  * age
+  * `age`
     * Number of minutes old the data returned by the sensor is
 
 #### get_data()
@@ -127,11 +127,11 @@ If `json_data` is not provided to the constructor, it calls this method to get t
 
 #### setup()
 
-This converts the JSON metadata to python class members, exposing data in a pythonic way.
+This converts the JSON metadata to Python class members, exposing data in a pythonic way.
 
 #### get_location()
 
-Set the location for a Sensor using geopy.
+Set the location for a Sensor using `geopy`.
 
 #### get_field('field': str)
 
