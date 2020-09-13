@@ -9,7 +9,7 @@ Automatically run on instantiation. Retrieves the current network data from the 
 Converts dictionary representation of a list of sensors to a Pandas DataFrame where `sensor_group` determines which group of sensors are used.
 
 * `'useful'`
-  * Sensors with no faults, as determined by [`is_useful()`](/docs/api/sensor_methods.md#is_useful)
+  * Sensors with no faults, as determined by [`is_useful()`](/docs/api/sensor_methods.md#is_useful---bool)
 * `'outside'`
   * Outdoor sensors only
 * `'all'`
