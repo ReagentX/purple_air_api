@@ -43,7 +43,7 @@ class SensorList():
             message = data.get('message')
             error_message = message if message is not None else data
             raise ValueError(
-                f'No sensor data returned from PurpleAIR: {error_message}')
+                f'No sensor data returned from PurpleAir: {error_message}')
 
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
