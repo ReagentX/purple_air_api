@@ -4,8 +4,10 @@ PurpleAir Sensor Client
 
 
 import json
-from typing import Optional
+import os
 from datetime import datetime, timedelta
+from re import sub
+from typing import Optional
 
 import pandas as pd
 import requests
@@ -14,9 +16,10 @@ from geopy.geocoders import Nominatim
 
 from .api_data import API_ROOT
 
+
 class Sensor():
     """
-    Class for a single PurpleAir sensor; set initialize=True to fetch data from the API
+    Representation of a single PurpleAir sensor
     """
 
     def __init__(self, identifier, json_data=None, parse_location=False):
@@ -150,8 +153,19 @@ class Sensor():
     def get_location(self) -> None:
         """
         Set the location for a Sensor using geopy
+
+        UA Rules: https://operations.osmfoundation.org/policies/nominatim/
+        We do not want to have every user use the same UA, so we generate one per-user here
         """
-        geolocator = Nominatim(user_agent="purple_air_api")
+        root_ua = 'pypi_purple_air_api_'
+        try:
+            user_agent = os.getcwd()
+            user_agent = root_ua + sub(r'\/|\\| ', '', user_agent)
+        except OSError:
+            print('Unable to read current direcory name to generate Nominatim user agent!')
+            user_agent = f'{root_ua}anonymous_github_com_reagentx_purple_air_api'
+
+        geolocator = Nominatim(user_agent=user_agent)
         location = geolocator.reverse(f'{self.lat}, {self.lon}')
         self.location = location
 
