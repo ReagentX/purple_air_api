@@ -208,7 +208,7 @@ class Sensor():
                 'lat': self.lat,
                 'lon': self.lon,
                 'name': self.name,
-                'locaction_type': self.location_type
+                'location_type': self.location_type
             },
             'data': {
                 'pm_2.5': self.current_pm2_5,
