@@ -16,7 +16,7 @@ from .api_data import API_ROOT
 
 class Sensor():
     """
-    Class for a single PurpleAir sensor; set initialize=True to fetch data from the API
+    Representation of a single PurpleAir sensor
     """
 
     def __init__(self, identifier, json_data=None, parse_location=False):
