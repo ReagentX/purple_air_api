@@ -25,6 +25,8 @@ A Python 3.x API Class to turn data from the PurpleAir/ThingSpeak API into a Pan
 
 ## Example code
 
+For detailed documentation, see the [docs](docs/documentation.md) file.
+
 ### Listing all useful sensors
 
 ```python
