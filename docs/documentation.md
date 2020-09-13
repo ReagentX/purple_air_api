@@ -229,20 +229,20 @@ Get data from the ThingSpeak API from channel `sensor_channel` one week at a tim
 `sensor_channel` is one of {'a', 'b'}.
 
 * Channel `a` data
-  * 'field1': 'PM1 CF=ATM ug/m3',
-  * 'field2': 'PM25 CF=ATM ug/m3',
-  * 'field3': 'PM10 CF=ATM ug/m3',
-  * 'field4': 'Uptime (Minutes)',
-  * 'field5': 'RSSI (WiFi Signal Strength)',
-  * 'field6': 'Temperature (F)',
-  * 'field7': 'Humidity %',
-  * 'field8': 'PM25 CF=1 ug/m3'
+  * `'field1': 'PM1 CF=ATM ug/m3'`
+  * `'field2': 'PM25 CF=ATM ug/m3'`
+  * `'field3': 'PM10 CF=ATM ug/m3'`
+  * `'field4': 'Uptime (Minutes)'`
+  * `'field5': 'RSSI (WiFi Signal Strength)'`
+  * `'field6': 'Temperature (F)'`
+  * `'field7': 'Humidity %'`
+  * `'field8': 'PM25 CF=1 ug/m3/`
 * Channel `b` data
-  * 'field1': 'PM1 CF=ATM ug/m3',
-  * 'field2': 'PM25 CF=ATM ug/m3',
-  * 'field3': 'PM10 CF=ATM ug/m3',
-  * 'field4': 'Free HEAP memory',
-  * 'field5': 'ADC0 Voltage',
-  * 'field6': 'Sensor Firmware',
-  * 'field7': 'Unused',
-  * 'field8': 'PM25 CF=1 ug/m3'
+  * `'field1': 'PM1 CF=ATM ug/m3'`
+  * `'field2': 'PM25 CF=ATM ug/m3'`
+  * `'field3': 'PM10 CF=ATM ug/m3'`
+  * `'field4': 'Free HEAP memory'`
+  * `'field5': 'ADC0 Voltage'`
+  * `'field6': 'Sensor Firmware'`
+  * `'field7': 'Unused'`
+  * `'field8': 'PM25 CF=1 ug/m3'`
