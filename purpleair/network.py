@@ -4,19 +4,13 @@ PurpleAir API Client Class
 
 
 import json
-from datetime import timedelta
 from json.decoder import JSONDecodeError
 
 import pandas as pd
 import requests
-import requests_cache
 
 from .api_data import API_ROOT
 from .sensor import Sensor
-
-# Setup cache for requests
-requests_cache.install_cache(expire_after=timedelta(hours=1))
-requests_cache.core.remove_expired_responses()
 
 
 class SensorList():
@@ -49,7 +43,16 @@ class SensorList():
         try:
             data = json.loads(response.content)
         except JSONDecodeError as err:
-            raise ValueError('Invalid JSON data returned from network!') from err
+            raise ValueError(
+                'Invalid JSON data returned from network!') from err
+
+        # Handle rate limit or other error message
+        if 'results' not in data:
+            message = data.get('message')
+            error_message = message if message is not None else data
+            raise ValueError(
+                f'No sensor data returned from PurpleAIR: {error_message}')
+
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
 
@@ -62,16 +65,19 @@ class SensorList():
 
     def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         """
-        Converts dictionary representation of a list of sensors to a Pandas Dataframe
+        Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
         if sensor_group not in {'useful', 'outside', 'all'}:
             raise ValueError(f'{sensor_group} is an invalid sensor group!')
         if sensor_group == 'all':
-            sensor_data = pd.DataFrame([s.as_flat_dict() for s in self.all_sensors])
+            sensor_data = pd.DataFrame([s.as_flat_dict()
+                                        for s in self.all_sensors])
         elif sensor_group == 'outside':
-            sensor_data = pd.DataFrame([s.as_flat_dict() for s in self.outside_sensors])
+            sensor_data = pd.DataFrame([s.as_flat_dict()
+                                        for s in self.outside_sensors])
         elif sensor_group == 'useful':
-            sensor_data = pd.DataFrame([s.as_flat_dict() for s in self.useful_sensors])
+            sensor_data = pd.DataFrame([s.as_flat_dict()
+                                        for s in self.useful_sensors])
         sensor_data.index = sensor_data.pop('id')
         return sensor_data
