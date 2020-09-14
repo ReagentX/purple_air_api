@@ -4,7 +4,9 @@ PurpleAir API Client Class
 
 
 import json
+import time
 from json.decoder import JSONDecodeError
+from typing import List
 
 import pandas as pd
 import requests
@@ -19,15 +21,21 @@ class SensorList():
     """
 
     def __init__(self, parse_location=False):
-        self.data = {}
-        self.get_all_data()
-        self.all_sensors = [
-            Sensor(s['ID'], json_data=s, parse_location=parse_location) for s in self.data]
-        self.outside_sensors = [
-            s for s in self.all_sensors if s.location_type == 'outside']
-        self.useful_sensors = [s for s in self.all_sensors if s.is_useful()]
+        self.parse_location = parse_location
 
-    def get_all_data(self):
+        self.data = {}
+        self.get_all_data()  # Populate `data`
+
+        self.all_sensors: List[Sensor] = []
+        self.generate_sensor_list()  # Populate `all_sensors`
+
+        # Commonly requested/used filters
+        self.outside_sensors: List[Sensor] = [
+            s for s in self.all_sensors if s.location_type == 'outside']
+        self.useful_sensors: List[Sensor] = [
+            s for s in self.all_sensors if s.is_useful()]
+
+    def get_all_data(self) -> None:
         """
         Get all data from the API
         """
@@ -47,6 +55,21 @@ class SensorList():
 
         print(f"Initialized {len(data['results']):,} sensors!")
         self.data = data['results']
+
+    def generate_sensor_list(self) -> None:
+        """
+        Generator for Sensor objects, delated if `parse_location` is true per Nominatim policy
+        """
+        if self.parse_location:
+            # pylint: disable=line-too-long
+            print('Warning: location parsing enabled! This reduces sensor parsing speed to less than 1 per second.')
+        for sensor in self.data:
+            if self.parse_location:
+                # Required by https://operations.osmfoundation.org/policies/nominatim/
+                time.sleep(1)
+            self.all_sensors.append(Sensor(sensor['ID'],
+                                           json_data=sensor,
+                                           parse_location=self.parse_location))
 
     def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
         """
