@@ -4,54 +4,43 @@ Install requirements with `pip install -r requirements/common.txt`
 
 import datetime
 
+import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 
 from purpleair.network import SensorList
 
-# Get the purpleair data
+
+VAR_TO_VIZ = 'temp_c'  # The dict item that we want to visualize
+
+# Get PurpleAir data
 p = SensorList()
 df = p.to_dataframe('all')
-var_to_viz = 'temp_c'  # The dict item that we want to visualize
+
 # Store the lat and lon coords to plot
 lat = df['lat'].values
 lon = df['lon'].values
-# Variable on which to generate the color gradient
-colors = df[var_to_viz].values
-print(min(colors), max(colors))
 
+# Variable from which to generate the color gradient
+colors = df[VAR_TO_VIZ].values
 
-margin = 0  # buffer to add to the range
-lat_min = min(lat) - margin
-lat_max = max(lat) + margin
-lon_min = min(lon) - margin
-lon_max = max(lon) + margin
+# Create the figure and the axes
+fig = plt.figure(figsize=(10, 5))
+ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
-m = Basemap(llcrnrlon=lon_min,
-            llcrnrlat=lat_min,
-            urcrnrlon=lon_max,
-            urcrnrlat=lat_max,
-            lat_0=(lat_max - lat_min)/2,
-            lon_0=(lon_max-lon_min)/2,
-            projection='merc',
-            resolution='h',
-            area_thresh=10000.,
-            )
-m.drawcoastlines()
-m.drawcountries()
-m.drawstates()
+# Display some map info
+ax.set_global()  # Show whole globe
+ax.stock_img()  # Use default background image
+ax.coastlines()  # Draw coastlines with higher contrast
 
+# Add scatter points for each coordinate pair
+scatter = ax.scatter(lon, lat, marker='o', c=colors, cmap='plasma', zorder=5, s=3)
 
-# Colors
-water = '#46bcec'
-land = '#ffffff'
-m.drawmapboundary(fill_color=water)
-m.fillcontinents(color=land, lake_color=water)
-# convert lat and lon to map projection coordinates
-lons, lats = m(lon, lat)
-# plot points as red dots
-m.scatter(lons, lats, marker='o', c=colors, cmap='plasma', zorder=5, s=2)
-plt.colorbar().set_label(f'{var_to_viz}', rotation=90)
+# Add scale
+sm = plt.cm.ScalarMappable(cmap='plasma') 
+cb = plt.colorbar(scatter).set_label(f'{VAR_TO_VIZ}', rotation=90)
+
+# Draw title and save
+ax.set_aspect('auto', adjustable=None)
 plt.title(
-    f'Global {var_to_viz} at {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-plt.savefig('maps/sensor_map.png', dpi=300)
+    f'Global {VAR_TO_VIZ} at {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+plt.savefig('maps/sensor_map.png', dpi=300, bbox_inches='tight')

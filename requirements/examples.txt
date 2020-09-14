@@ -3,5 +3,6 @@
 ## plot_city.py and plot_map.py
 matplotlib
 pillow
-
-# Install basemap dependency with https://matplotlib.org/basemap/users/installing.html
+cartopy
+pykdtree  # Possibly need to set `export USE_OMP=0`
+scipy
