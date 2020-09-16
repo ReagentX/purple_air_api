@@ -10,6 +10,7 @@ from re import sub
 from typing import Optional
 
 import pandas as pd
+from pandas.core.indexes.base import Index
 import requests
 import thingspeak
 from geopy.geocoders import Nominatim
@@ -24,8 +25,9 @@ class Sensor():
 
     def __init__(self, identifier, json_data=None, parse_location=False):
         self.identifier = identifier
-        self.json = json_data
-        self.data = self.get_data()
+        self.data = json_data if json_data is not None else self.get_data()
+        self.parent_data = self.data[0]
+        self.child_data = self.data[1]
         self.parse_location = parse_location
         self.thingspeak_data = {}
         self.location = ''
@@ -35,44 +37,58 @@ class Sensor():
         """
         Get new data if no data is provided
         """
-        # Fetch the JSON and exclude the child sensors
-        if not self.json:
-            response = requests.get(f'{API_ROOT}?show={self.identifier}')
+        # Fetch the JSON for parent and child sensors
+        response = requests.get(f'{API_ROOT}?show={self.identifier}')
+        data = json.loads(response.content)
+        channel_data = data.get('results')
+
+        # Handle various API problems
+        if channel_data is None:
+            raise ValueError(f'Results missing from data: {data}')
+        elif len(channel_data) == 1:
+            print('Child sensor requested, acquiring parent instead.')
+            try:
+                parent_id = channel_data[0]["ParentID"]
+            except IndexError:
+                raise IndexError(f'Parent sensor for {self.identifier} does not exist!')
+            response = requests.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
-            return data['results'][0]
-        return self.json
+            channel_data = data.get('results')
+        elif len(channel_data) > 2:
+            raise ValueError(f'More than 2 channels found for {self.identifier}')
+        return channel_data
 
     def setup(self) -> None:
         """
         Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
-        self.lat = self.data.get('Lat', None)
-        self.lon = self.data.get('Lon', None)
-        self.identifier = self.data.get('ID', None)
-        self.name = self.data.get('Label', None)
+        self.lat = self.parent_data.get('Lat', None)
+        self.lon = self.parent_data.get('Lon', None)
+        self.identifier = self.parent_data.get('ID', None)
+        self.name = self.parent_data.get('Label', None)
         # pylint: disable=line-too-long
-        self.location_type = self.data['DEVICE_LOCATIONTYPE'] if 'DEVICE_LOCATIONTYPE' in self.data else ''
+        self.location_type = self.parent_data['DEVICE_LOCATIONTYPE'] if 'DEVICE_LOCATIONTYPE' in self.parent_data else ''
         # Parse the location (slow, so must be manually enabled)
         if self.parse_location:
             self.get_location()
 
         # Data
-        if 'PM2_5Value' in self.data:
-            if self.data['PM2_5Value'] is not None:
+        if 'PM2_5Value' in self.parent_data:
+            if self.parent_data['PM2_5Value'] is not None:
                 self.current_pm2_5: Optional[float] = float(
-                    self.data['PM2_5Value'])
+                    self.parent_data['PM2_5Value'])
             else:
-                self.current_pm2_5 = self.data['PM2_5Value']
+                self.current_pm2_5 = self.parent_data['PM2_5Value']
         else:
             self.current_pm2_5 = None
         try:
-            f_temp = float(self.data['temp_f'])
+            f_temp = float(self.parent_data['temp_f'])
             if f_temp > 150 or f_temp < -100:
                 self.current_temp_f = None
                 self.current_temp_c = None
             else:
-                self.current_temp_f = float(self.data['temp_f'])
+                self.current_temp_f = float(self.parent_data['temp_f'])
                 self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
         except TypeError:
             self.current_temp_f = None
@@ -86,7 +102,7 @@ class Sensor():
 
         try:
             self.current_humidity: Optional[float] = int(
-                self.data['humidity']) / 100
+                self.parent_data['humidity']) / 100
         except TypeError:
             self.current_humidity = None
         except ValueError:
@@ -95,7 +111,7 @@ class Sensor():
             self.current_humidity = None
 
         try:
-            self.current_pressure: Optional[float] = self.data['pressure']
+            self.current_pressure: Optional[float] = self.parent_data['pressure']
         except TypeError:
             self.current_pressure = None
         except ValueError:
@@ -104,9 +120,9 @@ class Sensor():
             self.current_pressure = None
 
         # Statistics
-        stats = self.data.get('Stats', None)
+        stats = self.parent_data.get('Stats', None)
         if stats:
-            self.pm2_5stats = json.loads(self.data['Stats'])
+            self.pm2_5stats = json.loads(self.parent_data['Stats'])
             self.m10avg = self.pm2_5stats['v1']
             self.m30avg = self.pm2_5stats['v2']
             self.h1ravg = self.pm2_5stats['v3']
@@ -130,25 +146,25 @@ class Sensor():
                 self.last2_modified = None
 
         # Thingspeak IDs
-        self.tp_a = self.data['THINGSPEAK_PRIMARY_ID']
-        self.tp_a_key = self.data['THINGSPEAK_PRIMARY_ID_READ_KEY']
-        self.tp_b = self.data['THINGSPEAK_SECONDARY_ID']
-        self.tp_b_key = self.data['THINGSPEAK_SECONDARY_ID_READ_KEY']
+        self.tp_a = self.parent_data['THINGSPEAK_PRIMARY_ID']
+        self.tp_a_key = self.parent_data['THINGSPEAK_PRIMARY_ID_READ_KEY']
+        self.tp_b = self.parent_data['THINGSPEAK_SECONDARY_ID']
+        self.tp_b_key = self.parent_data['THINGSPEAK_SECONDARY_ID_READ_KEY']
         self.channel_a = thingspeak.Channel(
             id=self.tp_a, api_key=self.tp_a_key)
         self.channel_b = thingspeak.Channel(
             id=self.tp_b, api_key=self.tp_b_key)
 
         # Diagnostic
-        self.last_seen = datetime.utcfromtimestamp(self.data['LastSeen'])
-        self.model = self.data['Type'] if 'Type' in self.data else ''
+        self.last_seen = datetime.utcfromtimestamp(self.parent_data['LastSeen'])
+        self.model = self.parent_data['Type'] if 'Type' in self.parent_data else ''
         # pylint: disable=simplifiable-if-expression
-        self.hidden = False if self.data['Hidden'] == 'false' else True
+        self.hidden = False if self.parent_data['Hidden'] == 'false' else True
         # pylint: disable=simplifiable-if-expression
-        self.flagged = True if 'Flag' in self.data and self.data['Flag'] == 1 else False
+        self.flagged = True if 'Flag' in self.parent_data and self.parent_data['Flag'] == 1 else False
         # pylint: disable=simplifiable-if-expression
-        self.downgraded = True if 'A_H' in self.data and self.data['A_H'] == 'true' else False
-        self.age = int(self.data['AGE'])  # Number of minutes old the data is
+        self.downgraded = True if 'A_H' in self.parent_data and self.parent_data['A_H'] == 'true' else False
+        self.age = int(self.parent_data['AGE'])  # Number of minutes old the data is
 
     def get_location(self) -> None:
         """
@@ -199,7 +215,7 @@ class Sensor():
             return False
         if self.current_pressure is None:
             return False
-        if not self.data.get('Stats', None):
+        if not self.parent_data.get('Stats', None):
             # Happens before stats because they will be missing if this is missing
             return False
         if self.last_modified_stats is None:
@@ -237,7 +253,7 @@ class Sensor():
             }
         }
 
-        if 'Stats' in self.data and self.data['Stats']:
+        if 'Stats' in self.parent_data and self.parent_data['Stats']:
             out_d['statistics'] = {
                 '10min_avg': self.m10avg,
                 '30min_avg': self.m30avg,
