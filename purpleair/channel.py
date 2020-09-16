@@ -132,7 +132,10 @@ class Channel():
         # Number of minutes old the data is
         self.age = int(self.channel_data['AGE'])
 
-    def get_historical(self, weeks_to_get: int, sensor_channel: str, thingspeak_field: str) -> pd.DataFrame:
+    def get_historical(self,
+                       weeks_to_get: int,
+                       sensor_channel: str,
+                       thingspeak_field: str) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past
         """
@@ -140,6 +143,7 @@ class Channel():
             raise ValueError(
                 f'Invalid sensor channel: {sensor_channel}. Must be in {{"a", "b"}}')
         if thingspeak_field not in {'primary', 'secondary'}:
+            # pylint: disable=line-too-long
             raise ValueError(
                 f'Invalid ThingSpeak key: {thingspeak_field}. Must be in {{"primary", "secondary"}}')
 
