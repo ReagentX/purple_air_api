@@ -2,7 +2,89 @@
 
 ## `get_data() -> dict`
 
-If `json_data` is not provided to the constructor, it calls this method to get the metadata for the identified sensor.
+If `json_data` is not provided to the constructor, it calls this method to get the metadata for the identified sensor. 
+
+The JSON data contains a `results` array where the 0th index is the parent sensor and the 1st index is an optional child sensor. The data looks like this:
+
+```json
+{
+    "mapVersion": "0.19",
+    "baseVersion": "7",
+    "mapVersionString": "",
+    "results": [
+        {
+            "ID": 2892,
+            "Label": "Imola - 1",
+            "DEVICE_LOCATIONTYPE": "outside",
+            "THINGSPEAK_PRIMARY_ID": "317405",
+            "THINGSPEAK_PRIMARY_ID_READ_KEY": "50UQJX9NR475QBWH",
+            "THINGSPEAK_SECONDARY_ID": "317406",
+            "THINGSPEAK_SECONDARY_ID_READ_KEY": "SOE9YW475VW6WZLA",
+            "Lat": 38.280572,
+            "Lon": -122.273712,
+            "PM2_5Value": "5.69",
+            "LastSeen": 1571048794,
+            "Type": "PMS5003+PMS5003+BME280",
+            "Hidden": "false",
+            "DEVICE_BRIGHTNESS": "15",
+            "DEVICE_HARDWAREDISCOVERED": "2.0+BME280+PMSX003-B+PMSX003-A",
+            "Version": "4.10",
+            "LastUpdateCheck": 1571047712,
+            "Created": 1502745962,
+            "Uptime": "3511208",
+            "RSSI": "-79",
+            "Adc": "0.0",
+            "p_0_3_um": "728.19",
+            "p_0_5_um": "200.53",
+            "p_1_0_um": "26.16",
+            "p_2_5_um": "2.89",
+            "p_5_0_um": "0.6",
+            "p_10_0_um": "0.0",
+            "pm1_0_cf_1": "3.99",
+            "pm2_5_cf_1": "5.69",
+            "pm10_0_cf_1": "6.69",
+            "pm1_0_atm": "3.99",
+            "pm2_5_atm": "5.69",
+            "pm10_0_atm": "6.69",
+            "isOwner": 0,
+            "humidity": "54",
+            "temp_f": "55",
+            "pressure": "1008.76",
+            "AGE": 487182,
+            "Stats": "{...truncated...}"
+        },
+        {
+            "ID": 2893,
+            "ParentID": 2892,
+            "Label": "Imola - 1 B",
+            "THINGSPEAK_PRIMARY_ID": "317407",
+            "THINGSPEAK_PRIMARY_ID_READ_KEY": "V0FJ8SKLX6BOLB26",
+            "THINGSPEAK_SECONDARY_ID": "317408",
+            "THINGSPEAK_SECONDARY_ID_READ_KEY": "AYUATIO1HW0BIWR5",
+            "PM2_5Value": "5.96",
+            "LastSeen": 1571048794,
+            "Hidden": "false",
+            "Created": 1502745962,
+            "Adc": "0.01",
+            "p_0_3_um": "901.52",
+            "p_0_5_um": "263.74",
+            "p_1_0_um": "36.33",
+            "p_2_5_um": "0.91",
+            "p_5_0_um": "0.2",
+            "p_10_0_um": "0.0",
+            "pm1_0_cf_1": "4.39",
+            "pm2_5_cf_1": "5.96",
+            "pm10_0_cf_1": "6.01",
+            "pm1_0_atm": "4.39",
+            "pm2_5_atm": "5.96",
+            "pm10_0_atm": "6.01",
+            "isOwner": 0,
+            "AGE": 487182,
+            "Stats": "{...truncated...}"
+        }
+    ]
+}
+```
 
 ## `get_field('field': str)`
 
