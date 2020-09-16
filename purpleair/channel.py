@@ -152,11 +152,11 @@ class Channel():
             channel = self.tp_a
             thingspeak_field = self.tp_a_key
             columns_a = CHANNEL_A_PRIMARY_COLS
-            columns_b = CHANNEL_A_SECONDARY_COLS
+            columns_b = CHANNEL_B_PRIMARY_COLS
         elif thingspeak_field == 'secondary':
             channel = self.tp_b
             thingspeak_field = self.tp_b_key
-            columns_a = CHANNEL_B_PRIMARY_COLS
+            columns_a = CHANNEL_A_SECONDARY_COLS
             columns_b = CHANNEL_B_SECONDARY_COLS
         else:
             raise ValueError(f'Invalid ThingSpeak key: {thingspeak_field}')
