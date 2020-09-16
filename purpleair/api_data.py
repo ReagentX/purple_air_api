@@ -25,7 +25,7 @@ CHANNEL_A_PRIMARY_COLS = {
     'field3': 'PM10.0_CF_ATM_ug/m3',
     'field4': 'UptimeMinutes',
     'field5': 'ADC',
-    'field6': 'Tempertautre_F',
+    'field6': 'Temperature_F',
     'field7': 'Humidity_%',
     'field8': 'PM2.5_CF_1_ug/m3',
 }

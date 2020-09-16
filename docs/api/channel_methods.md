@@ -21,7 +21,7 @@ Channel A Primary:
 - PM10.0_CF_ATM_ug/m3: mass concentration calculated from count data for particle sizes ~0.3um to ~10um for “atmospheric” particles (From Plantower 5003/1003)
 - UptimeMinutes: the amount time the unit CPU has been running since it was powered up (From ESP8266 WiFi chip)
 - ADC: Voltage (From ESP8266 WiFi chip)
-- Tempertautre_F: Temperature inside of the sensor housing in Fahrenheit. On average, this is 8F higher than ambient conditions. (From BME280)
+- Temperature_F: Temperature inside of the sensor housing in Fahrenheit. On average, this is 8F higher than ambient conditions. (From BME280)
 - Humidity_%: Relative humidity inside of the sensor housing as a percentage. On average, this is 4% lower than ambient conditions (From BME280)
 - PM2.5_CF_1_ug/m3: mass concentration calculated from count data for particle sizes ~0.3um to ~2.5um for “standard” particles (From Plantower 5003/1003)
 
