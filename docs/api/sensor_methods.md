@@ -36,7 +36,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
 {
     'parent': {
         'meta': {
-            'id': self.identifier,
+            'id': identifier,
             'lat': a.lat,
             'lon': a.lon,
             'name': a.name,
@@ -67,7 +67,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
     },
     'child':{
         'meta': {
-            'id': self.identifier,
+            'id': identifier,
             'lat': b.lat,
             'lon': b.lon,
             'name': b.name,
