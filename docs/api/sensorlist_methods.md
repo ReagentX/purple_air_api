@@ -4,9 +4,11 @@
 
 Automatically run on instantiation. Retrieves the current network data from the PurpleAir API.
 
-## `to_dataframe(sensor_group: str) -> pd.DataFrame`
+## `to_dataframe(sensor_group: str, channel: str) -> pd.DataFrame`
 
 Converts dictionary representation of a list of sensors to a Pandas DataFrame where `sensor_group` determines which group of sensors are used.
+
+`channel` is one of `{'a', 'b'}`.
 
 * `'useful'`
   * Sensors with no faults, as determined by [`is_useful()`](/docs/api/sensor_methods.md#is_useful---bool)
