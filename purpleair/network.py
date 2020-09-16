@@ -53,8 +53,48 @@ class SensorList():
             raise ValueError(
                 f'No sensor data returned from PurpleAir: {error_message}')
 
-        print(f"Initialized {len(data['results']):,} sensors!")
-        self.data = data['results']
+        self.parse_raw_result(data['results'])
+        print(f"Initialized {len(self.data):,} sensors!")
+
+
+    def parse_raw_result(self, flat_sensor_data: dict) -> None:
+        """
+        O(2n) algorithm to build the network map
+        """
+        out_l: List[List[dict]] = []
+
+        # First pass: build map of parent and child sensor data
+        parent_map = {}
+        child_map = {}
+        for sensor in flat_sensor_data:
+            if 'ParentID' in sensor:
+                child_map[sensor['ID']] = sensor
+            else:
+                parent_map[sensor['ID']] = sensor
+
+        # Second pass: build list of complete sensors
+        for child_sensor_id in child_map:
+            parent_sensor_id = child_map[child_sensor_id]['ParentID']
+            if parent_sensor_id not in parent_map:
+                # pylint: disable=line-too-long
+                raise ValueError(
+                    f'Child {child_sensor_id} lists parent {parent_sensor_id}, but parent does not exist!')
+            channels = [
+                parent_map[parent_sensor_id],
+                child_map[child_sensor_id]
+            ]
+            # Any unused parents will be left over
+            del parent_map[parent_sensor_id]
+            out_l.append(channels)
+
+        # Handle remaining parent sensors
+        for remaining_parent in parent_map:
+            channels = [
+                parent_map[remaining_parent],
+            ]
+            out_l.append(channels)
+
+        self.data = out_l
 
     def generate_sensor_list(self) -> None:
         """
@@ -67,25 +107,32 @@ class SensorList():
             if self.parse_location:
                 # Required by https://operations.osmfoundation.org/policies/nominatim/
                 time.sleep(1)
-            self.all_sensors.append(Sensor(sensor['ID'],
+            # sensor[0] is always the parent sensor
+            self.all_sensors.append(Sensor(sensor[0]['ID'],
                                            json_data=sensor,
                                            parse_location=self.parse_location))
 
-    def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
+    def to_dataframe(self, sensor_filter: str, channel: str) -> pd.DataFrame:
         """
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
-        if sensor_group not in {'useful', 'outside', 'all'}:
-            raise ValueError(f'{sensor_group} is an invalid sensor group!')
-        if sensor_group == 'all':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        if sensor_filter not in {'useful', 'outside', 'all'}:
+            # pylint: disable=line-too-long
+            raise ValueError(
+                f'{sensor_filter} is an invalid sensor group! Must be in {{"useful", "outside", "all"}}')
+        if channel not in {'a', 'b'}:
+            raise ValueError(
+                f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
+
+        if sensor_filter == 'all':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.all_sensors])
-        elif sensor_group == 'outside':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        elif sensor_filter == 'outside':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.outside_sensors])
-        elif sensor_group == 'useful':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        elif sensor_filter == 'useful':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.useful_sensors])
         sensor_data.index = sensor_data.pop('id')
         return sensor_data

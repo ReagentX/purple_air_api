@@ -4,14 +4,6 @@
 
 If `json_data` is not provided to the constructor, it calls this method to get the metadata for the identified sensor.
 
-## `setup()`
-
-This converts the JSON metadata to Python class members, exposing data in a Pythonic way.
-
-## `get_location()`
-
-Set the location for a Sensor using `geopy`. Sets the `location` property to the result.
-
 ## `get_field('field': str)`
 
 Gets the ThingSpeak data from `field` for a sensor. Sets the properties `channel_a` and `channel_b` to the data returned by ThingSpeak.
@@ -32,48 +24,88 @@ Used to determine if a sensor has useful data or not. Not all bad sensors are fl
 * `last_modified_stats`
 * `last2_modified`
 
+## `get_location()`
+
+Set the location for a Sensor using `geopy`. Sets the `location` property to the result.
+
 ## `as_dict() -> dict`
 
 Return a dictionary representation of a sensor. The data is shaped like this:
 
 ```python
 {
-    'meta': {
-        'id': self.identifier,
-        'lat': self.lat,
-        'lon': self.lon,
-        'name': self.name,
-        'location_type': self.location_type
-        'location': self.location
+    'parent': {
+        'meta': {
+            'id': self.identifier,
+            'lat': a.lat,
+            'lon': a.lon,
+            'name': a.name,
+            'location_type': a.location_type
+        },
+        'data': {
+            'pm_2.5': a.current_pm2_5,
+            'temp_f': a.current_temp_f,
+            'temp_c': a.current_temp_c,
+            'humidity': a.current_humidity,
+            'pressure': a.current_pressure
+        },
+        'diagnostic': {
+            'last_seen': a.last_seen,
+            'model': a.model,
+            'hidden': a.hidden,
+            'flagged': a.flagged,
+            'downgraded': a.downgraded,
+            'age': a.age
+        }
+        'statistics': {
+            '10min_avg': a.m10avg,
+            '30min_avg': a.m30avg,
+            '1hour_avg': a.h1ravg,
+            '6hour_avg': a.h6ravg,
+            '1week_avg': a.w1avg
+        }
     },
-    'data': {
-        'pm_2.5': self.current_pm2_5,
-        'temp_f': self.current_temp_f,
-        'temp_c': self.current_temp_c,
-        'humidity': self.current_humidity,
-        'pressure': self.current_pressure
-    },
-    'diagnostic': {
-        'last_seen': self.last_seen,
-        'model': self.model,
-        'hidden': self.hidden,
-        'flagged': self.flagged,
-        'downgraded': self.downgraded,
-        'age': self.age
-    },
-    'statistics': {
-        '10min_avg': self.m10avg,
-        '30min_avg': self.m30avg,
-        '1hour_avg': self.h1ravg,
-        '6hour_avg': self.h6ravg,
-        '1week_avg': self.w1avg
+    'child':{
+        'meta': {
+            'id': self.identifier,
+            'lat': b.lat,
+            'lon': b.lon,
+            'name': b.name,
+            'location_type': b.location_type,
+        },
+        'data': {
+            'pm_2.5': b.current_pm2_5,
+            'temp_f': b.current_temp_f,
+            'temp_c': b.current_temp_c,
+            'humidity': b.current_humidity,
+            'pressure': b.current_pressure,
+        },
+        'diagnostic': {
+            'last_seen': b.last_seen,
+            'model': b.model,
+            'hidden': b.hidden,
+            'flagged': b.flagged,
+            'downgraded': b.downgraded,
+            'age': b.age
+        }
+        'statistics': {
+            '10min_avg': b.m10avg,
+            '30min_avg': b.m30avg,
+            '1hour_avg': b.h1ravg,
+            '6hour_avg': b.h6ravg,
+            '1week_avg': b.w1avg
+        }
     }
 }
 ```
 
-## `as_flat_dict() -> dict`
+## `as_flat_dict(channel: str) -> dict`
 
-Returns a flat dictionary representation of the Sensor data. The data is shaped like this:
+Returns a flat dictionary representation of the Sensor data.
+
+`channel` is one of `{'a', 'b'}`.
+
+The data is shaped like this:
 
 ```python
 {
@@ -100,28 +132,3 @@ Returns a flat dictionary representation of the Sensor data. The data is shaped 
     '1week_avg': 41.49
 }
 ```
-
-## `get_historical(weeks_to_get: int, sensor_channel: str) -> pd.DataFrame`
-
-Get data from the ThingSpeak API from channel `sensor_channel` one week at a time up to `weeks_to_get` weeks in the past.
-
-`sensor_channel` is one of {'a', 'b'}.
-
-* Channel `a` data
-  * `'field1': 'PM1 CF=ATM ug/m3'`
-  * `'field2': 'PM25 CF=ATM ug/m3'`
-  * `'field3': 'PM10 CF=ATM ug/m3'`
-  * `'field4': 'Uptime (Minutes)'`
-  * `'field5': 'RSSI (WiFi Signal Strength)'`
-  * `'field6': 'Temperature (F)'`
-  * `'field7': 'Humidity %'`
-  * `'field8': 'PM25 CF=1 ug/m3/`
-* Channel `b` data
-  * `'field1': 'PM1 CF=ATM ug/m3'`
-  * `'field2': 'PM25 CF=ATM ug/m3'`
-  * `'field3': 'PM10 CF=ATM ug/m3'`
-  * `'field4': 'Free HEAP memory'`
-  * `'field5': 'ADC0 Voltage'`
-  * `'field6': 'Sensor Firmware'`
-  * `'field7': 'Unused'`
-  * `'field8': 'PM25 CF=1 ug/m3'`

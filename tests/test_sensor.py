@@ -32,13 +32,6 @@ class TestSensorMethods(unittest.TestCase):
         se = sensor.Sensor('14633')
         self.assertEqual(se.is_useful(), True)
 
-    def test_is_not_useful_no_f(self):
-        """
-        Test that we ensure a not useful sensor is missing temp
-        """
-        se = sensor.Sensor('9655')
-        self.assertEqual(se.is_useful(), False)
-
     def test_is_not_useful_flagged(self):
         """
         Test that we ensure a not useful sensor is flagged
@@ -53,54 +46,73 @@ class TestSensorMethods(unittest.TestCase):
         se = sensor.Sensor('18463')
         self.assertEqual(se.is_useful(), False)
 
-    def test_is_not_useful_no_location(self):
-        """
-        Test that we ensure a not useful sensor is missing location
-        """
-        se = sensor.Sensor('23170')
-        self.assertEqual(se.is_useful(), False)
-
-    def test_is_not_useful_no_pm2(self):
-        """
-        Test that we ensure a not useful sensor is missing pm2
-        """
-        se = sensor.Sensor('15329')
-        self.assertEqual(se.is_useful(), False)
-
     def test_as_dict(self):
         """
         Test that the dictionary export data is shaped correctly
         """
         se = sensor.Sensor('2891')
         expected_shape = {
-            'meta': {
-                'id': 0,
-                'lat': 0,
-                'lon': 0,
-                'name': 0,
-                'location_type': 0
+            'parent': {
+                'meta': {
+                    'id': 0,
+                    'lat': 0,
+                    'lon': 0,
+                    'name': 0,
+                    'location_type': 0
+                },
+                'data': {
+                    'pm_2.5': 0,
+                    'temp_f': 0,
+                    'temp_c': 0,
+                    'humidity': 0,
+                    'pressure': 0
+                },
+                'statistics': {
+                    '10min_avg': 0,
+                    '30min_avg': 0,
+                    '1hour_avg': 0,
+                    '6hour_avg': 0,
+                    '1week_avg': 0
+                },
+                'diagnostic': {
+                    'last_seen': 0,
+                    'model': 0,
+                    'hidden': 0,
+                    'flagged': 0,
+                    'downgraded': 0,
+                    'age': 0
+                }
             },
-            'data': {
-                'pm_2.5': 0,
-                'temp_f': 0,
-                'temp_c': 0,
-                'humidity': 0,
-                'pressure': 0
-            },
-            'statistics': {
-                '10min_avg': 0,
-                '30min_avg': 0,
-                '1hour_avg': 0,
-                '6hour_avg': 0,
-                '1week_avg': 0
-            },
-            'diagnostic': {
-                'last_seen': 0,
-                'model': 0,
-                'hidden': 0,
-                'flagged': 0,
-                'downgraded': 0,
-                'age': 0
+            'child': {
+                'meta': {
+                    'id': 0,
+                    'lat': 0,
+                    'lon': 0,
+                    'name': 0,
+                    'location_type': 0
+                },
+                'data': {
+                    'pm_2.5': 0,
+                    'temp_f': 0,
+                    'temp_c': 0,
+                    'humidity': 0,
+                    'pressure': 0
+                },
+                'statistics': {
+                    '10min_avg': 0,
+                    '30min_avg': 0,
+                    '1hour_avg': 0,
+                    '6hour_avg': 0,
+                    '1week_avg': 0
+                },
+                'diagnostic': {
+                    'last_seen': 0,
+                    'model': 0,
+                    'hidden': 0,
+                    'flagged': 0,
+                    'downgraded': 0,
+                    'age': 0
+                }
             }
         }
         src = se.as_dict()
@@ -137,7 +149,7 @@ class TestSensorMethods(unittest.TestCase):
             '6hour_avg': 0,
             '1week_avg': 0
         }
-        src = se.as_flat_dict()
+        src = se.as_flat_dict(channel='a')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:
