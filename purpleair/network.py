@@ -111,21 +111,24 @@ class SensorList():
                                            json_data=sensor,
                                            parse_location=self.parse_location))
 
-    def to_dataframe(self, sensor_group: str) -> pd.DataFrame:
+    def to_dataframe(self, sensor_filter: str, channel: str) -> pd.DataFrame:
         """
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
-        if sensor_group not in {'useful', 'outside', 'all'}:
-            raise ValueError(f'{sensor_group} is an invalid sensor group!')
-        if sensor_group == 'all':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        if sensor_filter not in {'useful', 'outside', 'all'}:
+            raise ValueError(f'{sensor_filter} is an invalid sensor group! Must be in {{"useful", "outside", "all"}}')
+        if channel not in {'a', 'b'}:
+            raise ValueError(f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
+
+        if sensor_filter == 'all':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.all_sensors])
-        elif sensor_group == 'outside':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        elif sensor_filter == 'outside':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.outside_sensors])
-        elif sensor_group == 'useful':
-            sensor_data = pd.DataFrame([s.as_flat_dict()
+        elif sensor_filter == 'useful':
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
                                         for s in self.useful_sensors])
         sensor_data.index = sensor_data.pop('id')
         return sensor_data
