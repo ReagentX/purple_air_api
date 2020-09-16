@@ -53,8 +53,47 @@ class SensorList():
             raise ValueError(
                 f'No sensor data returned from PurpleAir: {error_message}')
 
-        print(f"Initialized {len(data['results']):,} sensors!")
-        self.data = data['results']
+        parsed_data = self.parse_raw_result(data['results'])
+
+        print(f"Initialized {len(parsed_data):,} sensors!")
+        self.data = parsed_data
+
+    def parse_raw_result(self, flat_sensor_data: dict) -> List[List[dict]]:
+        """
+        O(2n) algorithm to build the network map
+        """
+        out_l: List[List[dict]] = []
+
+        # First pass: build map of parent and child sensor data
+        parent_map = {}
+        child_map = {}
+        for sensor in flat_sensor_data:
+            if 'ParentID' in sensor:
+                child_map[sensor['ID']] = sensor
+            else:
+                parent_map[sensor['ID']] = sensor
+
+        # Second pass: build list of complete sensors
+        for child_sensor_id in child_map:
+            parent_sensor_id = child_map[child_sensor_id]['ParentID']
+            if parent_sensor_id not in parent_map:
+                # pylint: disable=line-too-long
+                raise ValueError(f'Child {child_sensor_id} lists parent {parent_sensor_id}, but parent does not exist!')
+            channels =[
+                parent_map[parent_sensor_id],
+                child_map[child_sensor_id]
+            ]
+            del parent_map[parent_sensor_id]  # Any unused parents will be left over
+            out_l.append(channels)
+
+        # Handle remaining parent sensors
+        for remaining_parent in parent_map:
+            channels = [
+                parent_map[remaining_parent],
+            ]
+            out_l.append(channels)
+
+        return out_l
 
     def generate_sensor_list(self) -> None:
         """
@@ -67,7 +106,8 @@ class SensorList():
             if self.parse_location:
                 # Required by https://operations.osmfoundation.org/policies/nominatim/
                 time.sleep(1)
-            self.all_sensors.append(Sensor(sensor['ID'],
+            # sensor[0] is always the parent sensor
+            self.all_sensors.append(Sensor(sensor[0]['ID'],
                                            json_data=sensor,
                                            parse_location=self.parse_location))
 
