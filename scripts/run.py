@@ -3,7 +3,6 @@ Sample script to run quick tests
 """
 
 
-from purpleair import channel
 from purpleair.network import SensorList
 from purpleair.sensor import Sensor
 
