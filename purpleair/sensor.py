@@ -26,9 +26,9 @@ class Sensor():
         self.child_data = self.data[1] if len(self.data) > 1 else None
         self.parse_location = parse_location
         self.thingspeak_data = {}
-        self.channel_a = Channel(channel_data=self.parent_data,)
-        self.channel_b = Channel(channel_data=self.child_data) if self.child_data else None
-        self.location_type = self.channel_a.location_type
+        self.parent = Channel(channel_data=self.parent_data,)
+        self.child = Channel(channel_data=self.child_data) if self.child_data else None
+        self.location_type = self.parent.location_type
         # Parse the location (slow, so must be manually enabled)
         self.location = ''
         if self.parse_location:
@@ -67,42 +67,42 @@ class Sensor():
 
         # Primary
         self.thingspeak_data[field]['primary']['channel_a'] = json.loads(
-            self.channel_a.thingspeak_primary.get_field(field=field))
+            self.parent.thingspeak_primary.get_field(field=field))
         self.thingspeak_data[field]['primary']['channel_b'] = json.loads(
-            self.channel_b.thingspeak_primary.get_field(field=field))
+            self.child.thingspeak_primary.get_field(field=field))
 
         # Secondary
         self.thingspeak_data[field]['secondary']['channel_a'] = json.loads(
-            self.channel_a.thingspeak_secondary.get_field(field=field))
+            self.parent.thingspeak_secondary.get_field(field=field))
         self.thingspeak_data[field]['secondary']['channel_b'] = json.loads(
-            self.channel_b.thingspeak_secondary.get_field(field=field))
+            self.child.thingspeak_secondary.get_field(field=field))
 
     def is_useful(self) -> bool:
         """
         Function to dump broken sensors; expanded like this so we can collect metrics later
         """
-        if self.channel_a.lat is None or self.channel_a.lon is None:
+        if self.parent.lat is None or self.parent.lon is None:
             return False
-        if self.channel_a.hidden:
+        if self.parent.hidden:
             return False
-        if self.channel_a.flagged:
+        if self.parent.flagged:
             return False
-        if self.channel_a.downgraded:
+        if self.parent.downgraded:
             return False
-        if self.channel_a.current_pm2_5 is None:
+        if self.parent.current_pm2_5 is None:
             return False
-        if self.channel_a.current_temp_f is None:
+        if self.parent.current_temp_f is None:
             return False
-        if self.channel_a.current_humidity is None:
+        if self.parent.current_humidity is None:
             return False
-        if self.channel_a.current_pressure is None:
+        if self.parent.current_pressure is None:
             return False
-        if not self.channel_a.channel_data.get('Stats', None):
+        if not self.parent.channel_data.get('Stats', None):
             # Happens before stats because they will be missing if this is missing
             return False
-        if self.channel_a.last_modified_stats is None:
+        if self.parent.last_modified_stats is None:
             return False
-        if self.channel_a.last2_modified is None:
+        if self.parent.last2_modified is None:
             return False
         return True
 
@@ -123,7 +123,7 @@ class Sensor():
             user_agent = f'{root_ua}anonymous_github_com_reagentx_purple_air_api'
 
         geolocator = Nominatim(user_agent=user_agent)
-        location = geolocator.reverse(f'{self.channel_a.lat}, {self.channel_a.lon}')
+        location = geolocator.reverse(f'{self.parent.lat}, {self.parent.lon}')
         self.location = location
 
     def as_dict(self) -> dict:
@@ -133,9 +133,9 @@ class Sensor():
 
         # Shorthand names for brevity here
         # pylint: disable=invalid-name
-        a = self.channel_a
+        a = self.parent
         # pylint: disable=invalid-name
-        b = self.channel_b
+        b = self.child
         out_d = {
             'channel_a': {
                 'meta': {
