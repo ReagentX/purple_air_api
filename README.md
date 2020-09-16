@@ -31,15 +31,15 @@ For detailed documentation, see the [docs](docs/documentation.md) file.
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 18,877 sensors!
-print(len(p.useful_sensors))  # 7174, List of sensors with no defects
+p = SensorList()  # Initialized 10,812 sensors!
+print(len(p.useful_sensors))  # 10047, List of sensors with no defects
 ```
 
 ### Get location for a single sensor
 
 ```python
 from purpleair.sensor import Sensor
-s = Sensor('2891', parse_location=True)
+s = Sensor('2890', parse_location=True)
 print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, USA
 ```
 
@@ -47,20 +47,22 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 18,877 sensors!
-df = p.to_dataframe('all')  # Other options include 'outdoor' and 'useful'
+p = SensorList()  # Initialized 10,812 sensors!
+df = p.to_dataframe(sensor_filter='all' channel='a')  # Other options include 'outside' and 'useful'
 ```
 
 Result:
 
 ```log
-            age  downgraded  flagged  hidden  humidity         last_seen  ...                  name   parent  pm_2.5 pressure     temp_c  temp_f
-id                                                                        ...
-24115   36026       False    False   False      0.15 2019-01-09 20:33:05  ...   2nd South 12th East      NaN    0.15   869.14  31.666667    89.0
-16791       0       False    False   False      0.60 2019-02-03 20:59:26  ...                DW0435      NaN    1.96  1009.82  30.000000    86.0
-16792       0       False    False   False      0.60 2019-02-03 20:59:29  ...              DW0435 B  16791.0    1.65  1009.77  30.000000    86.0
-14633       0       False    False   False      0.55 2019-02-03 20:59:48  ...     Hazelwood canary       NaN    0.29  1000.25  18.333333    65.0
-6522   538227       False    False   False      0.22 2018-01-26 02:32:25  ...                Indoor      NaN    1.33   837.97  23.888889    75.0
+             lat         lon                          name location_type  pm_2.5  temp_f     temp_c  ...  downgraded age 10min_avg 30min_avg  1hour_avg  6hour_avg  1week_avg
+id                                                                                                   ...
+14633  37.275561 -121.964134             Hazelwood canary        outside    7.15    92.0  33.333333  ...       False   1      6.50      5.13       4.11      12.44      42.94
+25999  30.053808  -95.494643   Villages of Bridgestone AQI       outside   10.16   103.0  39.444444  ...       False   1      9.96     10.63      12.51      18.40      14.55
+14091  37.883620 -122.070087                   WC Hillside       outside   11.36    89.0  31.666667  ...       False   1     10.31      8.74       7.21      20.03      63.44
+42073  47.185173 -122.176855                            #1       outside   99.46    73.0  22.777778  ...       False   0    100.06    100.31     101.36     106.93      68.40
+53069  47.190197 -122.177992                            #2       outside  109.82    79.0  26.111111  ...       False   0    109.52    108.72     109.33     116.64      74.52
+
+[5 rows x 20 columns]
 ```
 
 ### Get historical data for a single sensor
@@ -74,13 +76,21 @@ print(se.get_historical(weeks_to_get=1, sensor_channel='a').head())
 Result:
 
 ```log
-                        created_at  PM1 CF=ATM ug/m3  PM25 CF=ATM ug/m3  PM10 CF=ATM ug/m3  Free HEAP memory  ADC0 Voltage  Sensor Firmware  Unused  PM25 CF=1 ug/m3
+                        created_at  PM1.0_CF_ATM_ug/m3  PM2.5_CF_ATM_ug/m3  PM10.0_CF_ATM_ug/m3  UptimeMinutes  RSSI_dbm  Pressure_hpa  Blank  PM2.5_CF_1_ug/m3
 entry_id
-536245   2019-01-27 00:00:35+00:00             12.87              17.70              18.39           30032.0          0.02           973.99     NaN            17.70
-536246   2019-01-27 00:01:55+00:00             13.04              18.13              18.53           30584.0          0.02           974.00     NaN            18.13
-536247   2019-01-27 00:03:15+00:00             14.80              18.91              20.33           30632.0          0.02           973.97     NaN            18.91
-536248   2019-01-27 00:04:36+00:00             14.64              19.22              20.98           30720.0          0.02           974.03     NaN            19.22
-536249   2019-01-27 00:05:55+00:00             15.16              19.71              20.56           30776.0          0.02           974.05     NaN            19.71
+1005219  2020-09-09 00:01:06+00:00              194.84               61.16                 5.53           0.00      0.00          0.00   0.45              0.60
+1005220  2020-09-09 00:03:06+00:00              224.95               69.07                 4.19           0.00      0.00          0.00   0.63              0.86
+1005221  2020-09-09 00:05:06+00:00              238.37               71.58                 5.42           0.02      0.02          0.02   0.51              0.88
+1005222  2020-09-09 00:07:06+00:00              259.61               79.00                 8.11           0.96      0.43          0.43   0.71              1.48
+1005223  2020-09-09 00:09:06+00:00              254.69               76.66                 6.47           0.81      0.67          0.00   0.95              1.50
+...                            ...                 ...                 ...                  ...            ...       ...           ...    ...               ...
+1010248  2020-09-15 23:51:09+00:00             1737.05              544.09                79.97           3.76      0.43          0.00   9.91             14.17
+1010249  2020-09-15 23:53:08+00:00             1766.79              547.12                83.47           7.76      1.83          0.47  10.02             15.93
+1010250  2020-09-15 23:55:08+00:00             1836.70              561.65                81.63           3.68      0.55          0.00  10.67             15.03
+1010251  2020-09-15 23:57:08+00:00             1803.92              565.08                77.66           1.85      0.56          0.00  10.73             14.80
+1010252  2020-09-15 23:59:09+00:00             1787.13              552.25                78.69           6.53      0.78          0.27   9.78             15.22
+
+[5034 rows x 9 columns]
 ```
 
 See examples in `/scripts` for more detail.
