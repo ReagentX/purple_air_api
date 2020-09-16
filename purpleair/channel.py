@@ -20,7 +20,6 @@ class Channel():
 
     def __init__(self, channel_data: dict):
         self.channel_data = channel_data
-        self.location = ''
         self.setup()
 
     def setup(self) -> None:
