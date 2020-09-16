@@ -27,7 +27,8 @@ class Sensor():
         self.parse_location = parse_location
         self.thingspeak_data = {}
         self.parent = Channel(channel_data=self.parent_data,)
-        self.child = Channel(channel_data=self.child_data) if self.child_data else None
+        self.child = Channel(
+            channel_data=self.child_data) if self.child_data else None
         self.location_type = self.parent.location_type
         # Parse the location (slow, so must be manually enabled)
         self.location = ''
@@ -51,12 +52,14 @@ class Sensor():
             try:
                 parent_id = channel_data[0]["ParentID"]
             except IndexError:
-                raise IndexError(f'Parent sensor for {self.identifier} does not exist!')
+                raise IndexError(
+                    f'Parent sensor for {self.identifier} does not exist!')
             response = requests.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
             channel_data = data.get('results')
         elif len(channel_data) > 2:
-            raise ValueError(f'More than 2 channels found for {self.identifier}')
+            raise ValueError(
+                f'More than 2 channels found for {self.identifier}')
         return channel_data
 
     def get_field(self, field) -> None:
@@ -137,7 +140,7 @@ class Sensor():
         # pylint: disable=invalid-name
         b = self.child
         out_d = {
-            'channel_a': {
+            'parent': {
                 'meta': {
                     'id': self.identifier,
                     'lat': a.lat,
@@ -161,7 +164,7 @@ class Sensor():
                     'age': a.age
                 }
             },
-            'channel_b':{
+            'child': {
                 'meta': {
                     'id': self.identifier,
                     'lat': b.lat if b is not None else None,
@@ -188,7 +191,7 @@ class Sensor():
         }
 
         if 'Stats' in a.channel_data and a.channel_data['Stats']:
-            out_d['channel_a']['statistics'] = {
+            out_d['parent']['statistics'] = {
                 '10min_avg': a.m10avg,
                 '30min_avg': a.m30avg,
                 '1hour_avg': a.h1ravg,
@@ -196,7 +199,7 @@ class Sensor():
                 '1week_avg': a.w1avg
             }
         else:
-            out_d['channel_a']['statistics'] = {
+            out_d['parent']['statistics'] = {
                 '10min_avg': None,
                 '30min_avg': None,
                 '1hour_avg': None,
@@ -205,7 +208,7 @@ class Sensor():
             }
 
         if b and 'Stats' in b.channel_data and b.channel_data['Stats']:
-            out_d['channel_b']['statistics'] = {
+            out_d['child']['statistics'] = {
                 '10min_avg': b.m10avg if b is not None else None,
                 '30min_avg': b.m30avg if b is not None else None,
                 '1hour_avg': b.h1ravg if b is not None else None,
@@ -213,7 +216,7 @@ class Sensor():
                 '1week_avg': b.w1avg if b is not None else None
             }
         else:
-            out_d['channel_b']['statistics'] = {
+            out_d['child']['statistics'] = {
                 '10min_avg': None,
                 '30min_avg': None,
                 '1hour_avg': None,
@@ -227,13 +230,14 @@ class Sensor():
         """
         Returns a flat dictionary representation of the Sensor data
         """
-        if channel not in {'a', 'b'}:
+        channel_map = {'a': 'parent', 'b': 'child'}
+        if channel not in channel_map:
             raise ValueError(f'Invalid sensor channel: {channel}')
         out_d = {}
         src = self.as_dict()
-        for data_category in src[f'channel_{channel}']:
-            for data in src[f'channel_{channel}'][data_category]:
-                out_d[data] = src[f'channel_{channel}'][data_category][data]
+        for data_category in src[channel_map[channel]]:
+            for data in src[channel_map[channel]][data_category]:
+                out_d[data] = src[channel_map[channel]][data_category][data]
         return out_d
 
     def __repr__(self):

@@ -34,7 +34,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
 
 ```python
 {
-    'channel_a': {
+    'parent': {
         'meta': {
             'id': self.identifier,
             'lat': a.lat,
@@ -65,7 +65,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
             '1week_avg': a.w1avg
         }
     },
-    'channel_b':{
+    'child':{
         'meta': {
             'id': self.identifier,
             'lat': b.lat,
