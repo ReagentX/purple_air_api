@@ -26,6 +26,6 @@ se.get_field('field3')
 se.get_field('field4')
 print(se.thingspeak_data.keys())
 df = se.parent.get_historical(weeks_to_get=1,
-                                 sensor_channel='a',
-                                 thingspeak_field='secondary')
+                              sensor_channel='a',
+                              thingspeak_field='secondary')
 print(df.head())
