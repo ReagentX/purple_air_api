@@ -47,12 +47,12 @@ class Sensor():
         # Handle various API problems
         if channel_data is None:
             raise ValueError(f'Results missing from data: {data}')
-        elif len(channel_data) == 1:
+        if len(channel_data) == 1:
             print('Child sensor requested, acquiring parent instead.')
             try:
                 parent_id = channel_data[0]["ParentID"]
             except IndexError:
-                raise IndexError(
+                raise IndexError from IndexError(
                     f'Parent sensor for {self.identifier} does not exist!')
             response = requests.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
