@@ -53,12 +53,11 @@ class SensorList():
             raise ValueError(
                 f'No sensor data returned from PurpleAir: {error_message}')
 
-        parsed_data = self.parse_raw_result(data['results'])
+        self.parse_raw_result(data['results'])
+        print(f"Initialized {len(self.data):,} sensors!")
 
-        print(f"Initialized {len(parsed_data):,} sensors!")
-        self.data = parsed_data
 
-    def parse_raw_result(self, flat_sensor_data: dict) -> List[List[dict]]:
+    def parse_raw_result(self, flat_sensor_data: dict) -> None:
         """
         O(2n) algorithm to build the network map
         """
@@ -78,12 +77,14 @@ class SensorList():
             parent_sensor_id = child_map[child_sensor_id]['ParentID']
             if parent_sensor_id not in parent_map:
                 # pylint: disable=line-too-long
-                raise ValueError(f'Child {child_sensor_id} lists parent {parent_sensor_id}, but parent does not exist!')
-            channels =[
+                raise ValueError(
+                    f'Child {child_sensor_id} lists parent {parent_sensor_id}, but parent does not exist!')
+            channels = [
                 parent_map[parent_sensor_id],
                 child_map[child_sensor_id]
             ]
-            del parent_map[parent_sensor_id]  # Any unused parents will be left over
+            # Any unused parents will be left over
+            del parent_map[parent_sensor_id]
             out_l.append(channels)
 
         # Handle remaining parent sensors
@@ -93,7 +94,7 @@ class SensorList():
             ]
             out_l.append(channels)
 
-        return out_l
+        self.data = out_l
 
     def generate_sensor_list(self) -> None:
         """
@@ -117,9 +118,12 @@ class SensorList():
         where sensor_group determines which group of sensors are used
         """
         if sensor_filter not in {'useful', 'outside', 'all'}:
-            raise ValueError(f'{sensor_filter} is an invalid sensor group! Must be in {{"useful", "outside", "all"}}')
+            # pylint: disable=line-too-long
+            raise ValueError(
+                f'{sensor_filter} is an invalid sensor group! Must be in {{"useful", "outside", "all"}}')
         if channel not in {'a', 'b'}:
-            raise ValueError(f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
+            raise ValueError(
+                f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
 
         if sensor_filter == 'all':
             sensor_data = pd.DataFrame([s.as_flat_dict(channel)
