@@ -38,15 +38,37 @@ Initialize a new sensor.
 
 * Members
   * `identifier`
-    * The sensor's ordinal identification number
-  * `json`
-    * metadata in JSON format about the sensor
+    * Sensor ID Number
   * `data`
-    * metadata in Python dictionary format about the sensor
+    * JSON blob of parent and child sensor data where the 0th index is the parent and the 1st index is the optional child
+  * `parent_data`
+    * Reference to parent JSON data
+  * `child_data`
+    * Reference to child JSON data
+  * `parse_location`
+    * `True` if we want to parse the location of the sensor, default `False`
   * `thingspeak_data`
-    * Dictionary of data returned by the ThingSpeak API
+    * Empty dictionary that we optionally populate with `get_field()`
+  * `parent`
+    * Channel instance for parent data
+  * `child`
+    * Channel instance for child data
+  * `location_type`
+    * The location type of the sensor, one of `{'indoor', 'outdoor', 'unknown'}`
   * `location`
     * Location string if `parse_location` was true, otherwise empty string
+
+See [api/sensor_methods.md](api/sensor_methods.md) for method documentation.
+
+## Channel
+
+Representation of a sensor channel, either `a` or `b`. For channel `b` (child) some of the data may be missing.
+
+### class Channel(channel_data: dict)
+
+* Members
+  * `channel_data`
+    * metadata in Python dictionary format about the channel
   * `lat`
     * Sensor latitude
   * `lon`
@@ -106,4 +128,4 @@ Initialize a new sensor.
   * `age`
     * Number of minutes old the data returned by the sensor is
 
-See [api/sensor_methods.md](api/sensor_methods.md) for method documentation.
+See [api/channel_methods.md](api/sensorlist_methods.md) for method documentation.
