@@ -30,6 +30,7 @@ class Sensor():
         self.channel_b = Channel(channel_data=self.child_data) if self.child_data else None
         self.location_type = self.channel_a.location_type
         # Parse the location (slow, so must be manually enabled)
+        self.location = ''
         if self.parse_location:
             self.get_location()
 
