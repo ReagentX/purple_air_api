@@ -26,11 +26,11 @@ See [api/sensorlist_methods.md](api/sensorlist_methods.md) for method documentat
 
 Representation of a single PurpleAir sensor
 
-### `class Sensor(identifier, json_data: dict, parse_location: bool)`
+### `class Sensor(identifier: int, json_data: dict, parse_location: bool)`
 
 Initialize a new sensor.
 
-`identifier` is the sensor ID from the PurpleAir network.
+`identifier` is the sensor ID number from the PurpleAir network.
 
 `json_data` is an optional dict parameter of JSON data representing metadata about the sensor. If we are initializing a sensor without using `SensorList()`, we need this metadata to use the sensor. Since this metadata is returned by the PurpleAir API, sensors created through `SensorList()` do not need to make an additional API call to get sensor data.
 
@@ -48,11 +48,12 @@ Initialize a new sensor.
   * `parse_location`
     * `True` if we want to parse the location of the sensor, default `False`
   * `thingspeak_data`
-    * Empty dictionary that we optionally populate with `get_field()`
+    * Empty dictionary that we optionally populate with [`get_field()`](api/sensor_methods.md#get_fieldfield-str)
   * `parent`
-    * Channel instance for parent data
+    * [Channel](#channel) instance for parent data
   * `child`
-    * Channel instance for child data
+    * [Channel](#channel) instance for child data
+    * Not all parent data is available from the child sensor
   * `location_type`
     * The location type of the sensor, one of `{'indoor', 'outdoor', 'unknown'}`
   * `location`
@@ -64,7 +65,7 @@ See [api/sensor_methods.md](api/sensor_methods.md) for method documentation.
 
 Representation of a sensor channel, either `a` or `b`. For channel `b` (child) some of the data may be missing.
 
-### class Channel(channel_data: dict)
+### `class Channel(channel_data: dict)`
 
 * Members
   * `channel_data`
@@ -128,4 +129,4 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
   * `age`
     * Number of minutes old the data returned by the sensor is
 
-See [api/channel_methods.md](api/sensorlist_methods.md) for method documentation.
+See [api/channel_methods.md](api/channel_methods.md) for method documentation.
