@@ -5,17 +5,13 @@ PurpleAir Sensor Client
 
 import json
 import os
-from datetime import datetime, timedelta
 from re import sub
-from typing import Optional
 
-import pandas as pd
-from pandas.core.indexes.base import Index
 import requests
-import thingspeak
 from geopy.geocoders import Nominatim
 
 from .api_data import API_ROOT
+from .channel import Channel
 
 
 class Sensor():
@@ -27,11 +23,15 @@ class Sensor():
         self.identifier = identifier
         self.data = json_data if json_data is not None else self.get_data()
         self.parent_data = self.data[0]
-        self.child_data = self.data[1]
+        self.child_data = self.data[1] if len(self.data) > 1 else None
         self.parse_location = parse_location
         self.thingspeak_data = {}
-        self.location = ''
-        self.setup()
+        self.channel_a = Channel(channel_data=self.parent_data,)
+        self.channel_b = Channel(channel_data=self.child_data) if self.child_data else None
+        self.location_type = self.channel_a.location_type
+        # Parse the location (slow, so must be manually enabled)
+        if self.parse_location:
+            self.get_location()
 
     def get_data(self) -> dict:
         """
@@ -58,113 +58,52 @@ class Sensor():
             raise ValueError(f'More than 2 channels found for {self.identifier}')
         return channel_data
 
-    def setup(self) -> None:
+    def get_field(self, field) -> None:
         """
-        Initialize metadata and real data for a sensor; for detailed info see docs
+        Gets the thingspeak data for a sensor
         """
-        # Meta
-        self.lat = self.parent_data.get('Lat', None)
-        self.lon = self.parent_data.get('Lon', None)
-        self.identifier = self.parent_data.get('ID', None)
-        self.name = self.parent_data.get('Label', None)
-        # pylint: disable=line-too-long
-        self.location_type = self.parent_data['DEVICE_LOCATIONTYPE'] if 'DEVICE_LOCATIONTYPE' in self.parent_data else ''
-        # Parse the location (slow, so must be manually enabled)
-        if self.parse_location:
-            self.get_location()
+        self.thingspeak_data[field] = {'primary': {}, 'secondary': {}}
 
-        # Data
-        if 'PM2_5Value' in self.parent_data:
-            if self.parent_data['PM2_5Value'] is not None:
-                self.current_pm2_5: Optional[float] = float(
-                    self.parent_data['PM2_5Value'])
-            else:
-                self.current_pm2_5 = self.parent_data['PM2_5Value']
-        else:
-            self.current_pm2_5 = None
-        try:
-            f_temp = float(self.parent_data['temp_f'])
-            if f_temp > 150 or f_temp < -100:
-                self.current_temp_f = None
-                self.current_temp_c = None
-            else:
-                self.current_temp_f = float(self.parent_data['temp_f'])
-                self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
-        except TypeError:
-            self.current_temp_f = None
-            self.current_temp_c = None
-        except ValueError:
-            self.current_temp_f = None
-            self.current_temp_c = None
-        except KeyError:
-            self.current_temp_f = None
-            self.current_temp_c = None
+        # Primary
+        self.thingspeak_data[field]['primary']['channel_a'] = json.loads(
+            self.channel_a.thingspeak_primary.get_field(field=field))
+        self.thingspeak_data[field]['primary']['channel_b'] = json.loads(
+            self.channel_b.thingspeak_primary.get_field(field=field))
 
-        try:
-            self.current_humidity: Optional[float] = int(
-                self.parent_data['humidity']) / 100
-        except TypeError:
-            self.current_humidity = None
-        except ValueError:
-            self.current_humidity = None
-        except KeyError:
-            self.current_humidity = None
+        # Secondary
+        self.thingspeak_data[field]['secondary']['channel_a'] = json.loads(
+            self.channel_a.thingspeak_secondary.get_field(field=field))
+        self.thingspeak_data[field]['secondary']['channel_b'] = json.loads(
+            self.channel_b.thingspeak_secondary.get_field(field=field))
 
-        try:
-            self.current_pressure: Optional[float] = self.parent_data['pressure']
-        except TypeError:
-            self.current_pressure = None
-        except ValueError:
-            self.current_pressure = None
-        except KeyError:
-            self.current_pressure = None
-
-        # Statistics
-        stats = self.parent_data.get('Stats', None)
-        if stats:
-            self.pm2_5stats = json.loads(self.parent_data['Stats'])
-            self.m10avg = self.pm2_5stats['v1']
-            self.m30avg = self.pm2_5stats['v2']
-            self.h1ravg = self.pm2_5stats['v3']
-            self.h6ravg = self.pm2_5stats['v4']
-            self.d1avg = self.pm2_5stats['v5']
-            self.w1avg = self.pm2_5stats['v6']
-            try:
-                self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
-                    int(self.pm2_5stats['lastModified']) / 1000)
-            except TypeError:
-                self.last_modified_stats = None
-            except ValueError:
-                self.last_modified_stats = None
-            except KeyError:
-                self.last_modified_stats = None
-
-            try:
-                # MS since last update to stats
-                self.last2_modified = self.pm2_5stats['timeSinceModified']
-            except KeyError:
-                self.last2_modified = None
-
-        # Thingspeak IDs
-        self.tp_a = self.parent_data['THINGSPEAK_PRIMARY_ID']
-        self.tp_a_key = self.parent_data['THINGSPEAK_PRIMARY_ID_READ_KEY']
-        self.tp_b = self.parent_data['THINGSPEAK_SECONDARY_ID']
-        self.tp_b_key = self.parent_data['THINGSPEAK_SECONDARY_ID_READ_KEY']
-        self.channel_a = thingspeak.Channel(
-            id=self.tp_a, api_key=self.tp_a_key)
-        self.channel_b = thingspeak.Channel(
-            id=self.tp_b, api_key=self.tp_b_key)
-
-        # Diagnostic
-        self.last_seen = datetime.utcfromtimestamp(self.parent_data['LastSeen'])
-        self.model = self.parent_data['Type'] if 'Type' in self.parent_data else ''
-        # pylint: disable=simplifiable-if-expression
-        self.hidden = False if self.parent_data['Hidden'] == 'false' else True
-        # pylint: disable=simplifiable-if-expression
-        self.flagged = True if 'Flag' in self.parent_data and self.parent_data['Flag'] == 1 else False
-        # pylint: disable=simplifiable-if-expression
-        self.downgraded = True if 'A_H' in self.parent_data and self.parent_data['A_H'] == 'true' else False
-        self.age = int(self.parent_data['AGE'])  # Number of minutes old the data is
+    def is_useful(self) -> bool:
+        """
+        Function to dump broken sensors; expanded like this so we can collect metrics later
+        """
+        if self.channel_a.lat is None or self.channel_a.lon is None:
+            return False
+        if self.channel_a.hidden:
+            return False
+        if self.channel_a.flagged:
+            return False
+        if self.channel_a.downgraded:
+            return False
+        if self.channel_a.current_pm2_5 is None:
+            return False
+        if self.channel_a.current_temp_f is None:
+            return False
+        if self.channel_a.current_humidity is None:
+            return False
+        if self.channel_a.current_pressure is None:
+            return False
+        if not self.channel_a.channel_data.get('Stats', None):
+            # Happens before stats because they will be missing if this is missing
+            return False
+        if self.channel_a.last_modified_stats is None:
+            return False
+        if self.channel_a.last2_modified is None:
+            return False
+        return True
 
     def get_location(self) -> None:
         """
@@ -178,91 +117,85 @@ class Sensor():
             user_agent = os.getcwd()
             user_agent = root_ua + sub(r'\/|\\| ', '', user_agent)
         except OSError:
-            print('Unable to read current direcory name to generate Nominatim user agent!')
+            print(
+                'Unable to read current direcory name to generate Nominatim user agent!')
             user_agent = f'{root_ua}anonymous_github_com_reagentx_purple_air_api'
 
         geolocator = Nominatim(user_agent=user_agent)
-        location = geolocator.reverse(f'{self.lat}, {self.lon}')
+        location = geolocator.reverse(f'{self.channel_a.lat}, {self.channel_a.lon}')
         self.location = location
-
-    def get_field(self, field) -> None:
-        """
-        Gets the thingspeak data for a sensor
-        """
-        self.thingspeak_data[field] = {}
-        self.thingspeak_data[field]['channel_a'] = json.loads(
-            self.channel_a.get_field(field=field))
-        self.thingspeak_data[field]['channel_b'] = json.loads(
-            self.channel_b.get_field(field=field))
-
-    def is_useful(self) -> bool:
-        """
-        Function to dump broken sensors; expanded like this so we can collect metrics later
-        """
-        if self.lat is None or self.lon is None:
-            return False
-        if self.hidden:
-            return False
-        if self.flagged:
-            return False
-        if self.downgraded:
-            return False
-        if self.current_pm2_5 is None:
-            return False
-        if self.current_temp_f is None:
-            return False
-        if self.current_humidity is None:
-            return False
-        if self.current_pressure is None:
-            return False
-        if not self.parent_data.get('Stats', None):
-            # Happens before stats because they will be missing if this is missing
-            return False
-        if self.last_modified_stats is None:
-            return False
-        if self.last2_modified is None:
-            return False
-        return True
 
     def as_dict(self) -> dict:
         """
         Returns a dictionary representation of the sensor data
         """
+
+        # Shorthand names for brevity here
+        # pylint: disable=invalid-name
+        a = self.channel_a
+        # pylint: disable=invalid-name
+        b = self.channel_b
         out_d = {
-            'meta': {
-                'id': self.identifier,
-                'lat': self.lat,
-                'lon': self.lon,
-                'name': self.name,
-                'location_type': self.location_type
+            'channel_a': {
+                'meta': {
+                    'id': self.identifier,
+                    'lat': a.lat,
+                    'lon': a.lon,
+                    'name': a.name,
+                    'location_type': a.location_type
+                },
+                'data': {
+                    'pm_2.5': a.current_pm2_5,
+                    'temp_f': a.current_temp_f,
+                    'temp_c': a.current_temp_c,
+                    'humidity': a.current_humidity,
+                    'pressure': a.current_pressure
+                },
+                'diagnostic': {
+                    'last_seen': a.last_seen,
+                    'model': a.model,
+                    'hidden': a.hidden,
+                    'flagged': a.flagged,
+                    'downgraded': a.downgraded,
+                    'age': a.age
+                }
             },
-            'data': {
-                'pm_2.5': self.current_pm2_5,
-                'temp_f': self.current_temp_f,
-                'temp_c': self.current_temp_c,
-                'humidity': self.current_humidity,
-                'pressure': self.current_pressure
-            },
-            'diagnostic': {
-                'last_seen': self.last_seen,
-                'model': self.model,
-                'hidden': self.hidden,
-                'flagged': self.flagged,
-                'downgraded': self.downgraded,
-                'age': self.age
+            'channel_b':{
+                'meta': {
+                    'id': self.identifier,
+                    'lat': b.lat if b is not None else None,
+                    'lon': b.lon if b is not None else None,
+                    'name': b.name if b is not None else None,
+                    'location_type': b.location_type if b is not None else None,
+                },
+                'data': {
+                    'pm_2.5': b.current_pm2_5 if b is not None else None,
+                    'temp_f': b.current_temp_f if b is not None else None,
+                    'temp_c': b.current_temp_c if b is not None else None,
+                    'humidity': b.current_humidity if b is not None else None,
+                    'pressure': b.current_pressure if b is not None else None,
+                },
+                'diagnostic': {
+                    'last_seen': b.last_seen if b is not None else None,
+                    'model': b.model if b is not None else None,
+                    'hidden': b.hidden if b is not None else None,
+                    'flagged': b.flagged if b is not None else None,
+                    'downgraded': b.downgraded if b is not None else None,
+                    'age': b.age if b is not None else None
+                }
             }
         }
 
-        if 'Stats' in self.parent_data and self.parent_data['Stats']:
-            out_d['statistics'] = {
-                '10min_avg': self.m10avg,
-                '30min_avg': self.m30avg,
-                '1hour_avg': self.h1ravg,
-                '6hour_avg': self.h6ravg,
-                '1week_avg': self.w1avg
+        if 'Stats' in a.channel_data and a.channel_data['Stats']:
+            out_d['channel_a']['statistics'] = {
+                '10min_avg': a.m10avg,
+                '30min_avg': a.m30avg,
+                '1hour_avg': a.h1ravg,
+                '6hour_avg': a.h6ravg,
+                '1week_avg': a.w1avg
             }
         else:
-            out_d['statistics'] = {
+            out_d['channel_a']['statistics'] = {
                 '10min_avg': None,
                 '30min_avg': None,
                 '1hour_avg': None,
@@ -270,75 +203,42 @@ class Sensor():
                 '1week_avg': None
             }
 
-        if self.parse_location:
-            out_d['meta']['location'] = self.location
+        if b and 'Stats' in b.channel_data and b.channel_data['Stats']:
+            out_d['channel_b']['statistics'] = {
+                '10min_avg': b.m10avg if b is not None else None,
+                '30min_avg': b.m30avg if b is not None else None,
+                '1hour_avg': b.h1ravg if b is not None else None,
+                '6hour_avg': b.h6ravg if b is not None else None,
+                '1week_avg': b.w1avg if b is not None else None
+            }
+        else:
+            out_d['channel_b']['statistics'] = {
+                '10min_avg': None,
+                '30min_avg': None,
+                '1hour_avg': None,
+                '6hour_avg': None,
+                '1week_avg': None
+            }
 
         return out_d
 
-    def as_flat_dict(self) -> dict:
+    def as_flat_dict(self, channel: str) -> dict:
         """
         Returns a flat dictionary representation of the Sensor data
         """
+        if channel not in {'a', 'b'}:
+            raise ValueError(f'Invalid sensor channel: {channel}')
         out_d = {}
         src = self.as_dict()
-        for data_category in src:
-            for data in src[data_category]:
-                out_d[data] = src[data_category][data]
+        for data_category in src[f'channel_{channel}']:
+            for data in src[f'channel_{channel}'][data_category]:
+                out_d[data] = src[f'channel_{channel}'][data_category][data]
         return out_d
-
-    def get_historical(self, weeks_to_get: int, sensor_channel: str) -> pd.DataFrame:
-        """
-        Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past
-        """
-        if sensor_channel not in {'a', 'b'}:
-            raise ValueError(f'Invalid sensor channel: {sensor_channel}')
-        channel = self.tp_a if sensor_channel == 'a' else self.tp_b
-        key = self.tp_a_key if sensor_channel == 'a' else self.tp_b_key
-        columns_a = {
-            'field1': 'PM1 CF=ATM ug/m3',
-            'field2': 'PM25 CF=ATM ug/m3',
-            'field3': 'PM10 CF=ATM ug/m3',
-            'field4': 'Uptime (Minutes)',
-            'field5': 'RSSI (WiFi Signal Strength)',
-            'field6': 'Temperature (F)',
-            'field7': 'Humidity %',
-            'field8': 'PM25 CF=1 ug/m3'
-        }
-        columns_b = {
-            'field1': 'PM1 CF=ATM ug/m3',
-            'field2': 'PM25 CF=ATM ug/m3',
-            'field3': 'PM10 CF=ATM ug/m3',
-            'field4': 'Free HEAP memory',
-            'field5': 'ADC0 Voltage',
-            'field6': 'Sensor Firmware',
-            'field7': 'Unused',
-            'field8': 'PM25 CF=1 ug/m3'
-        }
-        columns = columns_a if sensor_channel == 'a' else columns_b
-        from_week = datetime.now()
-        to_week = from_week - timedelta(weeks=1)
-        # pylint: disable=line-too-long
-        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
-        weekly_data = pd.read_csv(url)
-        if weeks_to_get > 1:
-            for _ in range(weeks_to_get):
-                from_week = to_week  # DateTimes are immutable so this reference is not a problem
-                to_week = to_week - timedelta(weeks=1)
-                # pylint: disable=line-too-long
-                url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
-                weekly_data = pd.concat([weekly_data, pd.read_csv(url)])
-
-        # Handle formatting the DataFrame
-        weekly_data.rename(columns=columns, inplace=True)
-        weekly_data['created_at'] = pd.to_datetime(
-            weekly_data['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
-        weekly_data.index = weekly_data.pop('entry_id')
-        return weekly_data
 
     def __repr__(self):
         """
         String representation of the class
         """
-        if self.parse_location:
+        if self.location:
             return f"Sensor {self.identifier} at {self.location}"
         return f"Sensor {self.identifier}"
