@@ -68,8 +68,8 @@ id                                                                              
 ```python
 from purpleair.sensor import Sensor
 df = se.parent.get_historical(weeks_to_get=1,
-                                 sensor_channel='a',
-                                 thingspeak_field='secondary')
+                              sensor_channel='a',
+                              thingspeak_field='secondary')
 print(df.head())
 ```
 
