@@ -147,25 +147,21 @@ class Channel():
             raise ValueError(
                 f'Invalid ThingSpeak key: {thingspeak_field}. Must be in {{"primary", "secondary"}}')
 
-        # Assign columns
-        if thingspeak_field == 'primary':
-            channel = self.tp_a
-            thingspeak_field = self.tp_a_key
-            columns_a = CHANNEL_A_PRIMARY_COLS
-            columns_b = CHANNEL_B_PRIMARY_COLS
-        elif thingspeak_field == 'secondary':
-            channel = self.tp_b
-            thingspeak_field = self.tp_b_key
-            columns_a = CHANNEL_A_SECONDARY_COLS
-            columns_b = CHANNEL_B_SECONDARY_COLS
-        else:
-            raise ValueError(f'Invalid ThingSpeak key: {thingspeak_field}')
+        # Determine channel and key
+        channel = self.tp_a if sensor_channel == 'a' else self.tp_b
+        key = self.tp_a_key if sensor_channel == 'a' else self.tp_b_key
+
+        # Determine column columns
+        # pylint: disable=line-too-long
+        columns_a = CHANNEL_A_PRIMARY_COLS if thingspeak_field == 'primary' else CHANNEL_A_SECONDARY_COLS
+        # pylint: disable=line-too-long
+        columns_b = CHANNEL_B_PRIMARY_COLS if thingspeak_field == 'primary' else CHANNEL_B_SECONDARY_COLS
 
         columns = columns_a if sensor_channel == 'a' else columns_b
         from_week = datetime.now()
         to_week = from_week - timedelta(weeks=1)
         # pylint: disable=line-too-long
-        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={thingspeak_field}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
         weekly_data = pd.read_csv(url)
         if weeks_to_get > 1:
             for _ in range(weeks_to_get):
