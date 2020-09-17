@@ -74,6 +74,10 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
     * Sensor latitude
   * `lon`
     * Sensor longitude
+  * `identifier`
+    * The unique integer identifier of the sensor in the network
+  * `type`
+    * Whether the channel is for the parent or the child sensor
   * `name`
     * Sensor name
   * `location_type`
