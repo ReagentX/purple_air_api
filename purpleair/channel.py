@@ -145,6 +145,7 @@ class Channel():
                 f'Invalid ThingSpeak key: {thingspeak_field}. Must be in {{"primary", "secondary"}}')
 
         # Determine channel and key
+        # pylint: disable=line-too-long
         channel = self.tp_primary_channel if thingspeak_field == 'primary' else self.tp_secondary_channel
         key = self.tp_primary_key if thingspeak_field == 'primary' else self.tp_secondary_key
 
