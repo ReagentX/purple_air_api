@@ -17,7 +17,7 @@ except OperationalError:
 
 API_ROOT = 'https://www.purpleair.com/json'
 
-CHANNEL_A_PRIMARY_COLS = {
+PARENT_PRIMARY_COLS = {
     'created_at': 'created_at',
     'entry_id': 'entry_id',
     'field1': 'PM1.0_CF_ATM_ug/m3',
@@ -30,7 +30,7 @@ CHANNEL_A_PRIMARY_COLS = {
     'field8': 'PM2.5_CF_1_ug/m3',
 }
 
-CHANNEL_A_SECONDARY_COLS = {
+PARENT_SECONDARY_COLS = {
     'created_at': 'created_at',
     'entry_id': 'entry_id',
     'field1': '0.3um/dl',
@@ -43,7 +43,7 @@ CHANNEL_A_SECONDARY_COLS = {
     'field8': 'PM10.0_CF_1_ug/m3',
 }
 
-CHANNEL_B_PRIMARY_COLS = {
+CHILD_PRIMARY_COLS = {
     'created_at': 'created_at',
     'entry_id': 'entry_id',
     'field1': 'PM1.0_CF_ATM_ug/m3',
@@ -56,7 +56,7 @@ CHANNEL_B_PRIMARY_COLS = {
     'field8': 'PM2.5_CF_1_ug/m3',
 }
 
-CHANNEL_B_SECONDARY_COLS = {
+CHILD_SECONDARY_COLS = {
     'created_at': 'created_at',
     'entry_id': 'entry_id',
     'field1': '0.3um/dl',

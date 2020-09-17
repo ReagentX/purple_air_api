@@ -9,8 +9,8 @@ from typing import Optional
 import pandas as pd
 import thingspeak
 
-from .api_data import (CHANNEL_A_PRIMARY_COLS, CHANNEL_A_SECONDARY_COLS,
-                       CHANNEL_B_PRIMARY_COLS, CHANNEL_B_SECONDARY_COLS)
+from .api_data import (PARENT_PRIMARY_COLS, PARENT_SECONDARY_COLS,
+                       CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS)
 
 
 class Channel():
@@ -31,7 +31,7 @@ class Channel():
         self.lon = self.channel_data.get('Lon', None)
         self.identifier = self.channel_data.get('ID', None)
         self.parent = self.channel_data.get('ParentID', None)
-        self.channel = 'a' if self.parent is None else 'b'
+        self.type = 'parent' if self.parent is None else 'child'
         self.name = self.channel_data.get('Label', None)
         # pylint: disable=line-too-long
         self.location_type = self.channel_data['DEVICE_LOCATIONTYPE'] if 'DEVICE_LOCATIONTYPE' in self.channel_data else ''
@@ -150,11 +150,11 @@ class Channel():
 
         # Determine column columns
         # pylint: disable=line-too-long
-        columns_a = CHANNEL_A_PRIMARY_COLS if thingspeak_field == 'primary' else CHANNEL_A_SECONDARY_COLS
+        parent_cols = PARENT_PRIMARY_COLS if thingspeak_field == 'primary' else PARENT_SECONDARY_COLS
         # pylint: disable=line-too-long
-        columns_b = CHANNEL_B_PRIMARY_COLS if thingspeak_field == 'primary' else CHANNEL_B_SECONDARY_COLS
+        child_cols = CHILD_PRIMARY_COLS if thingspeak_field == 'primary' else CHILD_SECONDARY_COLS
 
-        columns = columns_a if self.channel == 'a' else columns_b
+        columns = parent_cols if self.type == 'parent' else child_cols
         from_week = datetime.now()
         to_week = from_week - timedelta(weeks=1)
         # pylint: disable=line-too-long
