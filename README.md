@@ -91,7 +91,7 @@ entry_id
 from purpleair.sensor import Sensor
 se = Sensor('2890')
 df = se.child.get_historical(weeks_to_get=1,
-                              thingspeak_field='secondary')
+                             thingspeak_field='secondary')
 print(df.head())
 ```
 
