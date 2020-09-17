@@ -6,7 +6,6 @@ Sample script to run quick tests
 from purpleair.network import SensorList
 from purpleair.sensor import Sensor
 
-
 # All Sensors
 p = SensorList()
 print(len(p.useful_sensors))
