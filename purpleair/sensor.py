@@ -27,21 +27,21 @@ class Sensor():
             if json_data is not None else self.get_data()
         if not self.data:
             raise ValueError(
-                'Invalid sensor: no configuration found for the given ID')
+                f'Invalid sensor: no configuration found for {identifier}')
         elif not isinstance(self.data, list):
             raise ValueError(
                 f'Sensor {identifier} created without valid data')
         self.parent_data: dict = self.data[0]
         self.child_data: Optional[dict] = self.data[1] if len(
             self.data) > 1 else None
-        self.parse_location = parse_location
-        self.thingspeak_data = {}
+        self.parse_location: bool = parse_location
+        self.thingspeak_data: dict = {}
         self.parent: Channel = Channel(channel_data=self.parent_data,)
         self.child: Optional[Channel] = Channel(
             channel_data=self.child_data) if self.child_data else None
-        self.location_type = self.parent.location_type
+        self.location_type: Optional[str] = self.parent.location_type
         # Parse the location (slow, so must be manually enabled)
-        self.location = ''
+        self.location: str = ''
         if self.parse_location:
             self.get_location()
 
