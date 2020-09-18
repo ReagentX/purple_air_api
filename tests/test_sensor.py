@@ -1,3 +1,4 @@
+from purpleair.sensor import Sensor
 import unittest
 
 from purpleair import sensor
@@ -12,45 +13,59 @@ class TestSensorMethods(unittest.TestCase):
         """
         Test that we properly parse the location of an arbitrary sensor
         """
-        se = sensor.Sensor('2891', parse_location=True)
+        se = sensor.Sensor(2891, parse_location=True)
         self.assertEqual(
             se.__repr__(),
             'Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States of America'
         )
 
+    def test_cannot_create_sensor_bad_id(self):
+        """
+        Test that we cannot create a sensor without an integer ID
+        """
+        with self.assertRaises(ValueError):
+            se = sensor.Sensor('a')
+
+    def test_cannot_create_sensor_bad_json(self):
+        """
+        Test that we cannot create a sensor without valid json
+        """
+        with self.assertRaises(ValueError):
+            se = sensor.Sensor('1', {})
+
     def test_create_sensor_no_location(self):
         """
         Test that we can initialize a sensor without location enabled
         """
-        se = sensor.Sensor('2891')
+        se = sensor.Sensor(2891)
         self.assertEqual(se.__repr__(), 'Sensor 2891')
 
     def test_is_useful(self):
         """
         Test that we ensure a useful sensor is useful
         """
-        se = sensor.Sensor('14633')
+        se = sensor.Sensor(14633)
         self.assertEqual(se.is_useful(), True)
 
     def test_is_not_useful_flagged(self):
         """
         Test that we ensure a not useful sensor is flagged
         """
-        se = sensor.Sensor('61639')
+        se = sensor.Sensor(61639)
         self.assertEqual(se.is_useful(), False)
 
     def test_is_not_useful_downgraded(self):
         """
         Test that we ensure a not useful sensor is downgraded
         """
-        se = sensor.Sensor('18463')
+        se = sensor.Sensor(18463)
         self.assertEqual(se.is_useful(), False)
 
     def test_as_dict(self):
         """
         Test that the dictionary export data is shaped correctly
         """
-        se = sensor.Sensor('2891')
+        se = sensor.Sensor(2891)
         expected_shape = {
             'parent': {
                 'meta': {
@@ -165,7 +180,7 @@ class TestSensorMethods(unittest.TestCase):
         """
         Test that the flat dictionary export data is shaped correctly
         """
-        se = sensor.Sensor('2891')
+        se = sensor.Sensor(2891)
         expected_shape = {
             'parent': 0,
             'lat': 0,
