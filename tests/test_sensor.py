@@ -55,24 +55,30 @@ class TestSensorMethods(unittest.TestCase):
             'parent': {
                 'meta': {
                     'id': 0,
+                    'parent': None,
                     'lat': 0,
                     'lon': 0,
                     'name': 0,
-                    'location_type': 0
+                    'location_type': 0,
                 },
                 'data': {
                     'pm_2.5': 0,
                     'temp_f': 0,
                     'temp_c': 0,
                     'humidity': 0,
-                    'pressure': 0
-                },
-                'statistics': {
-                    '10min_avg': 0,
-                    '30min_avg': 0,
-                    '1hour_avg': 0,
-                    '6hour_avg': 0,
-                    '1week_avg': 0
+                    'pressure': 0,
+                    'p_0_3_um': 0,
+                    'p_0_5_um': 0,
+                    'p_1_0_um': 0,
+                    'p_2_5_um': 0,
+                    'p_5_0_um': 0,
+                    'p_10_0_um': 0,
+                    'pm1_0_cf_1': 0,
+                    'pm2_5_cf_1': 0,
+                    'pm10_0_cf_1': 0,
+                    'pm1_0_atm': 0,
+                    'pm2_5_atm': 0,
+                    'pm10_0_atm': 0,
                 },
                 'diagnostic': {
                     'last_seen': 0,
@@ -80,30 +86,50 @@ class TestSensorMethods(unittest.TestCase):
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
-                    'age': 0
+                    'age': 0,
+                    'brightness': 0,
+                    'hardware': 0,
+                    'version': 0,
+                    'last_update_check': 0,
+                    'created': 0,
+                    'uptime': 0,
+                    'is_owner': 0,
+                },
+                'statistics': {
+                    '10min_avg': 0,
+                    '30min_avg': 0,
+                    '1hour_avg': 0,
+                    '6hour_avg': 0,
+                    '1week_avg': 0
                 }
             },
             'child': {
                 'meta': {
                     'id': 0,
+                    'parent': None,
                     'lat': 0,
                     'lon': 0,
                     'name': 0,
-                    'location_type': 0
+                    'location_type': 0,
                 },
                 'data': {
                     'pm_2.5': 0,
                     'temp_f': 0,
                     'temp_c': 0,
                     'humidity': 0,
-                    'pressure': 0
-                },
-                'statistics': {
-                    '10min_avg': 0,
-                    '30min_avg': 0,
-                    '1hour_avg': 0,
-                    '6hour_avg': 0,
-                    '1week_avg': 0
+                    'pressure': 0,
+                    'p_0_3_um': 0,
+                    'p_0_5_um': 0,
+                    'p_1_0_um': 0,
+                    'p_2_5_um': 0,
+                    'p_5_0_um': 0,
+                    'p_10_0_um': 0,
+                    'pm1_0_cf_1': 0,
+                    'pm2_5_cf_1': 0,
+                    'pm10_0_cf_1': 0,
+                    'pm1_0_atm': 0,
+                    'pm2_5_atm': 0,
+                    'pm10_0_atm': 0,
                 },
                 'diagnostic': {
                     'last_seen': 0,
@@ -111,7 +137,21 @@ class TestSensorMethods(unittest.TestCase):
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
-                    'age': 0
+                    'age': 0,
+                    'brightness': 0,
+                    'hardware': 0,
+                    'version': 0,
+                    'last_update_check': 0,
+                    'created': 0,
+                    'uptime': 0,
+                    'is_owner': 0,
+                },
+                'statistics': {
+                    '10min_avg': 0,
+                    '30min_avg': 0,
+                    '1hour_avg': 0,
+                    '6hour_avg': 0,
+                    '1week_avg': 0
                 }
             }
         }
@@ -127,7 +167,7 @@ class TestSensorMethods(unittest.TestCase):
         """
         se = sensor.Sensor('2891')
         expected_shape = {
-            'id': 0,
+            'parent': 0,
             'lat': 0,
             'lon': 0,
             'name': 0,
@@ -137,19 +177,47 @@ class TestSensorMethods(unittest.TestCase):
             'temp_c': 0,
             'humidity': 0,
             'pressure': 0,
+            'p_0_3_um': 0,
+            'p_0_5_um': 0,
+            'p_1_0_um': 0,
+            'p_2_5_um': 0,
+            'p_5_0_um': 0,
+            'p_10_0_um': 0,
+            'pm1_0_cf_1': 0,
+            'pm2_5_cf_1': 0,
+            'pm10_0_cf_1': 0,
+            'pm1_0_atm': 0,
+            'pm2_5_atm': 0,
+            'pm10_0_atm': 0,
             'last_seen': 0,
             'model': 0,
             'hidden': 0,
             'flagged': 0,
             'downgraded': 0,
             'age': 0,
+            'brightness': 0,
+            'hardware': 0,
+            'version': 0,
+            'last_update_check': 0,
+            'created': 0,
+            'uptime': 0,
+            'is_owner': 0,
             '10min_avg': 0,
             '30min_avg': 0,
             '1hour_avg': 0,
             '6hour_avg': 0,
-            '1week_avg': 0
+            '1week_avg': 0,
         }
+
+        # Test channel b
         src = se.as_flat_dict(channel='a')
+        for data_category in expected_shape:
+            self.assertIn(data_category, src)
+        for data in src:
+            self.assertNotIsInstance(src[data], dict)
+
+        # Test channel a
+        src = se.as_flat_dict(channel='b')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:
