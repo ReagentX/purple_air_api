@@ -39,7 +39,7 @@ print(len(p.useful_sensors))  # 10047, List of sensors with no defects
 
 ```python
 from purpleair.sensor import Sensor
-s = Sensor('2890', parse_location=True)
+s = Sensor(2890, parse_location=True)
 print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, USA
 ```
 
@@ -67,7 +67,7 @@ id                                                                              
 
 ```python
 from purpleair.sensor import Sensor
-se = Sensor('2890')
+se = Sensor(2890)
 df = se.parent.get_historical(weeks_to_get=1,
                               thingspeak_field='secondary')
 print(df.head())
@@ -89,7 +89,7 @@ entry_id
 
 ```python
 from purpleair.sensor import Sensor
-se = Sensor('2890')
+se = Sensor(2890)
 df = se.child.get_historical(weeks_to_get=1,
                              thingspeak_field='secondary')
 print(df.head())
