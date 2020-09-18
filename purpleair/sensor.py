@@ -24,12 +24,15 @@ class Sensor():
         self.identifier = identifier
         self.data: Optional[list] = json_data \
             if json_data is not None else self.get_data()
+
+        # Validate the data we recieved        
         if not self.data:
             raise ValueError(
                 f'Invalid sensor: no configuration found for {identifier}')
         if not isinstance(self.data, list):
             raise ValueError(
                 f'Sensor {identifier} created without valid data')
+
         self.parent_data: dict = self.data[0]
         self.child_data: Optional[dict] = self.data[1] if len(
             self.data) > 1 else None
