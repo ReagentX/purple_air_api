@@ -6,3 +6,7 @@ mypy
 pylint
 autopep8
 bandit
+
+# coverage run --omit venv -m unittest discover -s tests/  
+# coverage report '--omit=*/venv/*' -m --skip-covered
+coverage
