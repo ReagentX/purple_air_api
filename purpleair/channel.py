@@ -84,11 +84,11 @@ class Channel():
         self.h6ravg: Optional[float] = self.safe_float('v4')
         self.d1avg: Optional[float] = self.safe_float('v5')
         self.w1avg: Optional[float] = self.safe_float('v6')
-        self.last_modified_stats = None
+        self.last_modified_stats: Optional[datetime] = None
         last_mod = self.pm2_5stats.get('lastModified') \
             if self.pm2_5stats is not None else None
         if last_mod is not None:
-            self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
+            self.last_modified_stats = datetime.utcfromtimestamp(
                 int(last_mod) / 1000)
         self.last2_modified: Optional[int] = self.pm2_5stats.get(
             'timeSinceModified') if self.pm2_5stats is not None else None
