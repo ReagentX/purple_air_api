@@ -7,6 +7,7 @@ import json
 import os
 from re import sub
 from typing import Optional
+from pandas.core.algorithms import isin
 
 import requests
 from geopy.geocoders import Nominatim
@@ -20,11 +21,19 @@ class Sensor():
     Representation of a single PurpleAir sensor
     """
 
-    def __init__(self, identifier, json_data=None, parse_location=False):
+    def __init__(self, identifier: int, json_data: list = None, parse_location=False):
         self.identifier = identifier
-        self.data = json_data if json_data is not None else self.get_data()
-        self.parent_data = self.data[0]
-        self.child_data = self.data[1] if len(self.data) > 1 else None
+        self.data: Optional[list] = json_data \
+            if json_data is not None else self.get_data()
+        if not self.data:
+            raise ValueError(
+                'Invalid sensor: no configuration found for the given ID')
+        elif not isinstance(self.data, list):
+            raise ValueError(
+                f'Sensor {identifier} created without valid data')
+        self.parent_data: dict = self.data[0]
+        self.child_data: Optional[dict] = self.data[1] if len(
+            self.data) > 1 else None
         self.parse_location = parse_location
         self.thingspeak_data = {}
         self.parent: Channel = Channel(channel_data=self.parent_data,)
@@ -36,19 +45,21 @@ class Sensor():
         if self.parse_location:
             self.get_location()
 
-    def get_data(self) -> dict:
+    def get_data(self) -> Optional[list]:
         """
         Get new data if no data is provided
         """
+        # Santize ID
+        if not isinstance(self.identifier, int):
+            raise ValueError(f'Invalid sensor ID: {self.identifier}')
+
         # Fetch the JSON for parent and child sensors
         response = requests.get(f'{API_ROOT}?show={self.identifier}')
         data = json.loads(response.content)
-        channel_data = data.get('results')
+        channel_data: Optional[list] = data.get('results')
 
         # Handle various API problems
-        if channel_data is None:
-            raise ValueError(f'Results missing from data: {data}')
-        if len(channel_data) == 1:
+        if channel_data and len(channel_data) == 1:
             print('Child sensor requested, acquiring parent instead.')
             try:
                 parent_id = channel_data[0]["ParentID"]
@@ -58,7 +69,8 @@ class Sensor():
             response = requests.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
             channel_data = data.get('results')
-        elif len(channel_data) > 2:
+        elif channel_data and len(channel_data) > 2:
+            print(json.dumps(data, indent=4))
             raise ValueError(
                 f'More than 2 channels found for {self.identifier}')
         return channel_data
