@@ -1,6 +1,6 @@
 # Purple Air API
 
-A Python 3.x API Class to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame with several utility methods.
+A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods.
 
 ![Global Sensor Map with Celsius Scale](maps/sensor_map.png)
 
