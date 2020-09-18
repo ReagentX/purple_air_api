@@ -10,3 +10,7 @@ cache.sqlite
 # Dev env
 venv/*
 .vscode/*
+
+# Coverage generated files
+.coverage
+.coveragerc

@@ -15,7 +15,7 @@ df = p.to_dataframe(sensor_filter='all', channel='a')
 print(df.head())
 
 # Single sensor
-se = Sensor('2890')
+se = Sensor(2890)
 print(se)
 print(se.parent)
 print(se.child)
