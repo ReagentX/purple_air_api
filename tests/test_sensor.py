@@ -182,6 +182,7 @@ class TestSensorMethods(unittest.TestCase):
         """
         se = sensor.Sensor(2891)
         expected_shape = {
+            'id': 0,
             'parent': 0,
             'lat': 0,
             'lon': 0,
