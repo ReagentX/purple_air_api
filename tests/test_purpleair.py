@@ -41,6 +41,11 @@ class TestPurpleAirMethods(unittest.TestCase):
         self.assertEqual(len(p.to_dataframe('useful', 'a')), len(p.useful_sensors))
         self.assertEqual(len(p.to_dataframe('useful', 'b')), len(p.useful_sensors))
 
+    def test_to_dataframe(self):
+        p = network.SensorList()
+        df_a = p.to_dataframe(sensor_filter='all', channel='a')
+        df_b = p.to_dataframe(sensor_filter='all', channel='b')
+        self.assertListEqual(list(df_a.columns), list(df_b.columns))
 
 if __name__ == '__main__':
     unittest.main()

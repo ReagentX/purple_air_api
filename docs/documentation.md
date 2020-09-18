@@ -92,6 +92,30 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
     * Current humidity expressed as decimal (i.e., 0.1 = 10%)
   * `current_pressure`
     * Current atmospheric pressure
+  * `p_0_3_um`
+    * Current pm0.3 / um
+  * `p_0_5_um`
+    * Current pm0.5 / um
+  * `p_1_0_um`
+    * Current pm1.0 / um
+  * `p_2_5_um`
+    * Current pm2.5 / um
+  * `p_5_0_um`
+    * Current pm5.0 / um
+  * `p_10_0_um`
+    * Current pm10.0 / um
+  * `pm1_0_cf_1`
+    * Current pm1.0 / um secondary reading
+  * `pm2_5_cf_1`
+    * Current pm2.5 / um secondary reading
+  * `pm10_0_cf_1`
+    * Current pm10.0 / um secondary reading
+  * `pm1_0_atm`
+    * Current pm1.0 / atm
+  * `pm2_5_atm`
+    * Current pm2.5 / atm
+  * `pm10_0_atm`
+    * Current pm10.0 / atm
   * `m10avg`
     * Average pm2.5 value for the most recent 10 minutes
   * `m30avg`
@@ -132,5 +156,19 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
     * Whether a sensor has previously been flagged for bad data
   * `age`
     * Number of minutes old the data returned by the sensor is
+  * `brightness`
+    * Ambient brightness
+  * `hardware`
+    * Hardware model IDs
+  * `version`
+    * Software version
+  * `last_update_check`
+    * Last software update check
+  * `created`
+    * Date first seen
+  * `uptime`
+    * Time since boot in seconds
+  * `is_owner`
+    * Unknown
 
 See [api/channel_methods.md](api/channel_methods.md) for method documentation.
