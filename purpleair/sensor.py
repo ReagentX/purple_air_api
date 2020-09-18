@@ -76,21 +76,25 @@ class Sensor():
 
     def get_field(self, field) -> None:
         """
-        Gets the thingspeak data for a sensor
+        Gets the thingspeak data for a sensor, setting None if the data is missing
         """
         self.thingspeak_data[field] = {'primary': {}, 'secondary': {}}
 
         # Primary
         self.thingspeak_data[field]['primary']['channel_a'] = json.loads(
-            self.parent.thingspeak_primary.get_field(field=field))
+            self.parent.thingspeak_primary.get_field(field=field)) \
+            if self.parent.thingspeak_primary else None
         self.thingspeak_data[field]['primary']['channel_b'] = json.loads(
-            self.child.thingspeak_primary.get_field(field=field))
+            self.child.thingspeak_primary.get_field(field=field)) \
+            if self.child and self.child.thingspeak_primary else None
 
         # Secondary
         self.thingspeak_data[field]['secondary']['channel_a'] = json.loads(
-            self.parent.thingspeak_secondary.get_field(field=field))
+            self.parent.thingspeak_secondary.get_field(field=field)) \
+            if self.parent.thingspeak_secondary else None
         self.thingspeak_data[field]['secondary']['channel_b'] = json.loads(
-            self.child.thingspeak_secondary.get_field(field=field))
+            self.child.thingspeak_secondary.get_field(field=field)) \
+            if self.child and self.child.thingspeak_secondary else None
 
     def is_useful(self) -> bool:
         """
