@@ -25,7 +25,7 @@ class Sensor():
         self.data: Optional[list] = json_data \
             if json_data is not None else self.get_data()
 
-        # Validate the data we recieved        
+        # Validate the data we recieved
         if not self.data:
             raise ValueError(
                 f'Invalid sensor: no configuration found for {identifier}')
