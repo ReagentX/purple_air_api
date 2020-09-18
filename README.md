@@ -48,7 +48,8 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ```python
 from purpleair.network import SensorList
 p = SensorList()  # Initialized 10,812 sensors!
-df = p.to_dataframe(sensor_filter='all' channel='a')  # Other options include 'outside' and 'useful'
+df = p.to_dataframe(sensor_filter='all',
+                    channel='a')  # Other options include 'outside' and 'useful'
 ```
 
 Result:
