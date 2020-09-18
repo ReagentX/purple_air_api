@@ -31,7 +31,7 @@ class TestSensorMethods(unittest.TestCase):
         Test that we cannot create a sensor without valid json
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('1', {})
+            se = sensor.Sensor('1', {'a': 1})
 
     def test_create_sensor_no_location(self):
         """
