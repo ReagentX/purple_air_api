@@ -6,6 +6,7 @@ PurpleAir Sensor Client
 import json
 import os
 from re import sub
+from typing import Optional
 
 import requests
 from geopy.geocoders import Nominatim
@@ -26,8 +27,8 @@ class Sensor():
         self.child_data = self.data[1] if len(self.data) > 1 else None
         self.parse_location = parse_location
         self.thingspeak_data = {}
-        self.parent = Channel(channel_data=self.parent_data,)
-        self.child = Channel(
+        self.parent: Channel = Channel(channel_data=self.parent_data,)
+        self.child: Optional[Channel] = Channel(
             channel_data=self.child_data) if self.child_data else None
         self.location_type = self.parent.location_type
         # Parse the location (slow, so must be manually enabled)
@@ -142,7 +143,8 @@ class Sensor():
         out_d = {
             'parent': {
                 'meta': {
-                    'id': self.identifier,
+                    'id': a.identifier,
+                    'parent': None,
                     'lat': a.lat,
                     'lon': a.lon,
                     'name': a.name,
@@ -153,7 +155,19 @@ class Sensor():
                     'temp_f': a.current_temp_f,
                     'temp_c': a.current_temp_c,
                     'humidity': a.current_humidity,
-                    'pressure': a.current_pressure
+                    'pressure': a.current_pressure,
+                    'p_0_3_um': a.current_p_0_3_um,
+                    'p_0_5_um': a.current_p_0_5_um,
+                    'p_1_0_um': a.current_p_1_0_um,
+                    'p_2_5_um': a.current_p_2_5_um,
+                    'p_5_0_um': a.current_p_5_0_um,
+                    'p_10_0_um': a.current_p_10_0_um,
+                    'pm1_0_cf_1': a.current_pm1_0_cf_1,
+                    'pm2_5_cf_1': a.current_pm2_5_cf_1,
+                    'pm10_0_cf_1': a.current_pm10_0_cf_1,
+                    'pm1_0_atm': a.current_pm1_0_atm,
+                    'pm2_5_atm': a.current_pm2_5_atm,
+                    'pm10_0_atm': a.current_pm10_0_atm
                 },
                 'diagnostic': {
                     'last_seen': a.last_seen,
@@ -161,31 +175,58 @@ class Sensor():
                     'hidden': a.hidden,
                     'flagged': a.flagged,
                     'downgraded': a.downgraded,
-                    'age': a.age
+                    'age': a.age,
+                    'brightness': a.brightness,
+                    'hardware': a.hardware,
+                    'version': a.version,
+                    'last_update_check': a.last_update_check,
+                    'created': a.created,
+                    'uptime': a.uptime,
+                    'is_owner': a.is_owner
                 }
             },
             'child': {
                 'meta': {
-                    'id': self.identifier,
-                    'lat': b.lat if b is not None else None,
-                    'lon': b.lon if b is not None else None,
-                    'name': b.name if b is not None else None,
-                    'location_type': b.location_type if b is not None else None,
+                    'id': b.identifier if b else None,
+                    'parent': a.identifier if b else None,
+                    'lat': b.lat if b else None,
+                    'lon': b.lon if b else None,
+                    'name': b.name if b else None,
+                    'location_type': b.location_type if b else None
                 },
                 'data': {
-                    'pm_2.5': b.current_pm2_5 if b is not None else None,
-                    'temp_f': b.current_temp_f if b is not None else None,
-                    'temp_c': b.current_temp_c if b is not None else None,
-                    'humidity': b.current_humidity if b is not None else None,
-                    'pressure': b.current_pressure if b is not None else None,
+                    'pm_2.5': b.current_pm2_5 if b else None,
+                    'temp_f': b.current_temp_f if b else None,
+                    'temp_c': b.current_temp_c if b else None,
+                    'humidity': b.current_humidity if b else None,
+                    'pressure': b.current_pressure if b else None,
+                    'p_0_3_um': b.current_p_0_3_um if b else None,
+                    'p_0_5_um': b.current_p_0_5_um if b else None,
+                    'p_1_0_um': b.current_p_1_0_um if b else None,
+                    'p_2_5_um': b.current_p_2_5_um if b else None,
+                    'p_5_0_um': b.current_p_5_0_um if b else None,
+                    'p_10_0_um': b.current_p_10_0_um if b else None,
+                    'pm1_0_cf_1': b.current_pm1_0_cf_1 if b else None,
+                    'pm2_5_cf_1': b.current_pm2_5_cf_1 if b else None,
+                    'pm10_0_cf_1': b.current_pm10_0_cf_1 if b else None,
+                    'pm1_0_atm': b.current_pm1_0_atm if b else None,
+                    'pm2_5_atm': b.current_pm2_5_atm if b else None,
+                    'pm10_0_atm': b.current_pm10_0_atm if b else None
                 },
                 'diagnostic': {
-                    'last_seen': b.last_seen if b is not None else None,
-                    'model': b.model if b is not None else None,
-                    'hidden': b.hidden if b is not None else None,
-                    'flagged': b.flagged if b is not None else None,
-                    'downgraded': b.downgraded if b is not None else None,
-                    'age': b.age if b is not None else None
+                    'last_seen': b.last_seen if b else None,
+                    'model': b.model if b else None,
+                    'hidden': b.hidden if b else None,
+                    'flagged': b.flagged if b else None,
+                    'downgraded': b.downgraded if b else None,
+                    'age': b.age if b else None,
+                    'brightness': b.brightness if b else None,
+                    'hardware': b.hardware if b else None,
+                    'version': b.version if b else None,
+                    'last_update_check': b.last_update_check if b else None,
+                    'created': b.created if b else None,
+                    'uptime': b.uptime if b else None,
+                    'is_owner': b.is_owner if b else None
                 }
             }
         }
@@ -209,11 +250,11 @@ class Sensor():
 
         if b and 'Stats' in b.channel_data and b.channel_data['Stats']:
             out_d['child']['statistics'] = {
-                '10min_avg': b.m10avg if b is not None else None,
-                '30min_avg': b.m30avg if b is not None else None,
-                '1hour_avg': b.h1ravg if b is not None else None,
-                '6hour_avg': b.h6ravg if b is not None else None,
-                '1week_avg': b.w1avg if b is not None else None
+                '10min_avg': b.m10avg if b else None,
+                '30min_avg': b.m30avg if b else None,
+                '1hour_avg': b.h1ravg if b else None,
+                '6hour_avg': b.h6ravg if b else None,
+                '1week_avg': b.w1avg if b else None
             }
         else:
             out_d['child']['statistics'] = {
