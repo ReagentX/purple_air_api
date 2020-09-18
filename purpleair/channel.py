@@ -22,13 +22,27 @@ class Channel():
         self.channel_data = channel_data
         self.setup()
 
+    def safe_float(self, key: str) -> Optional[float]:
+        """
+        Convert to float if the item exists, otherwise return none
+        """
+        result: Optional[float] = self.channel_data.get(key)
+        if result is not None:
+            try:
+                result = float(result)
+            except TypeError:
+                return None
+            except ValueError:
+                return None
+        return result
+
     def setup(self) -> None:
         """
         Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
-        self.lat: Optional[float] = self.channel_data.get('Lat')
-        self.lon: Optional[float] = self.channel_data.get('Lon')
+        self.lat: Optional[float] = self.safe_float('Lat')
+        self.lon: Optional[float] = self.safe_float('Lon')
         self.identifier: Optional[int] = self.channel_data.get('ID')
         self.parent: Optional[int] = self.channel_data.get('ParentID')
         self.type: str = 'parent' if self.parent is None else 'child'
@@ -37,55 +51,67 @@ class Channel():
         self.location_type: Optional[str] = self.channel_data.get(
             'DEVICE_LOCATIONTYPE')
 
-        # Data
-        # Current pm2.5
-        self.current_pm2_5: Optional[float] = self.channel_data.get('PM2_5Value')
-        if self.current_pm2_5 is not None:
-            self.current_pm2_5 = float(self.current_pm2_5)
-
-        # Current temperature
-        self.current_temp_f: Optional[float] = self.channel_data.get('temp_f')
-        self.current_temp_c: Optional[float] = self.current_temp_f
-        if self.current_temp_f is not None:
-            self.current_temp_f = float(self.current_temp_f)
-            self.current_temp_c = (self.current_temp_f - 32) * (5 / 9)
-
-        # Humidity
-        self.current_humidity: Optional[float] = self.channel_data.get('humidity')
-        if self.current_humidity is not None:
-            self.current_humidity = float(self.current_humidity)
-
-        # Pressure
-        self.current_pressure: Optional[float] = self.channel_data.get('pressure')
-        if self.current_pressure is not None:
-            self.current_pressure = float(self.current_pressure)
+        # Data, possible TODO: abstract to class
+        self.current_pm2_5: Optional[float] = self.safe_float('PM2_5Value')
+        self.current_temp_f: Optional[float] = self.safe_float('temp_f')
+        self.current_temp_c = (self.current_temp_f - 32) * (5 / 9) \
+            if self.current_temp_f is not None else None
+        self.current_humidity: Optional[float] = self.safe_float('humidity')
+        self.current_pressure: Optional[float] = self.safe_float('pressure')
+        self.current_p_0_3_um: Optional[float] = self.safe_float('p_0_3_um')
+        self.current_p_0_5_um: Optional[float] = self.safe_float('p_0_5_um')
+        self.current_p_1_0_um: Optional[float] = self.safe_float('p_1_0_um')
+        self.current_p_2_5_um: Optional[float] = self.safe_float('p_2_5_um')
+        self.current_p_5_0_um: Optional[float] = self.safe_float('p_5_0_um')
+        self.current_p_10_0_um: Optional[float] = self.safe_float('p_10_0_um')
+        self.current_pm1_0_cf_1: Optional[float] = self.safe_float(
+            'pm1_0_cf_1')
+        self.current_pm2_5_cf_1: Optional[float] = self.safe_float(
+            'pm2_5_cf_1')
+        self.current_pm10_0_cf_1: Optional[float] = self.safe_float(
+            'pm10_0_cf_1')
+        self.current_pm1_0_atm: Optional[float] = self.safe_float('pm1_0_atm')
+        self.current_pm2_5_atm: Optional[float] = self.safe_float('pm2_5_atm')
+        self.current_pm10_0_atm: Optional[float] = self.safe_float(
+            'pm10_0_atm')
 
         # Statistics
-        stats = self.channel_data.get('Stats', None)
-        if stats:
-            self.pm2_5stats: dict = json.loads(self.channel_data['Stats'])
-            self.m10avg: Optional[float] = self.pm2_5stats.get('v1')
-            self.m30avg: Optional[float] = self.pm2_5stats.get('v2')
-            self.h1ravg: Optional[float] = self.pm2_5stats.get('v3')
-            self.h6ravg: Optional[float] = self.pm2_5stats.get('v4')
-            self.d1avg: Optional[float] = self.pm2_5stats.get('v5')
-            self.w1avg: Optional[float] = self.pm2_5stats.get('v6')
-            last_mod = self.pm2_5stats.get('lastModified')
-            if last_mod is not None:
-                self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
-                    int(last_mod) / 1000)
-            self.last2_modified: Optional[int] = self.pm2_5stats.get(
-                'timeSinceModified')
+        self.pm2_5stats: Optional[dict] = json.loads(self.channel_data['Stats']) \
+            if 'Stats' in self.channel_data else None
+        self.m10avg: Optional[float] = self.safe_float('v1')
+        self.m30avg: Optional[float] = self.safe_float('v2')
+        self.h1ravg: Optional[float] = self.safe_float('v3')
+        self.h6ravg: Optional[float] = self.safe_float('v4')
+        self.d1avg: Optional[float] = self.safe_float('v5')
+        self.w1avg: Optional[float] = self.safe_float('v6')
+        self.last_modified_stats = None
+        last_mod = self.pm2_5stats.get('lastModified') \
+            if self.pm2_5stats is not None else None
+        if last_mod is not None:
+            self.last_modified_stats: Optional[datetime] = datetime.utcfromtimestamp(
+                int(last_mod) / 1000)
+        self.last2_modified: Optional[int] = self.pm2_5stats.get(
+            'timeSinceModified') if self.pm2_5stats is not None else None
 
-        # Thingspeak IDs
-        self.tp_primary_channel: str = self.channel_data['THINGSPEAK_PRIMARY_ID']
-        self.tp_primary_key: str = self.channel_data['THINGSPEAK_PRIMARY_ID_READ_KEY']
-        self.tp_secondary_channel: str = self.channel_data['THINGSPEAK_SECONDARY_ID']
-        self.tp_secondary_key: str = self.channel_data['THINGSPEAK_SECONDARY_ID_READ_KEY']
-        self.thingspeak_primary: thingspeak.Channel = thingspeak.Channel(
-            id=self.tp_primary_channel, api_key=self.tp_primary_key)
-        self.thingspeak_secondary: thingspeak.Channel = thingspeak.Channel(
-            id=self.tp_secondary_channel, api_key=self.tp_secondary_key)
+        # Thingspeak IDs, if these are missing do not crash, just set to None
+        try:
+            self.tp_primary_channel: Optional[str] = self.channel_data['THINGSPEAK_PRIMARY_ID']
+            self.tp_primary_key: Optional[str] = self.channel_data['THINGSPEAK_PRIMARY_ID_READ_KEY']
+            self.tp_secondary_channel: Optional[str] = self.channel_data['THINGSPEAK_SECONDARY_ID']
+            self.tp_secondary_key: Optional[str] = self.channel_data['THINGSPEAK_SECONDARY_ID_READ_KEY']
+            self.thingspeak_primary: Optional[thingspeak.Channel] = thingspeak.Channel(
+                id=self.tp_primary_channel, api_key=self.tp_primary_key)
+            self.thingspeak_secondary: Optional[thingspeak.Channel] = thingspeak.Channel(
+                id=self.tp_secondary_channel, api_key=self.tp_secondary_key)
+        except KeyError:
+            # Doing this prevents a crash until we actually access ThingSpeak data
+            #   which the user may not do
+            self.tp_primary_channel = None
+            self.tp_primary_key = None
+            self.tp_secondary_channel = None
+            self.tp_secondary_key = None
+            self.thingspeak_primary = None
+            self.thingspeak_secondary = None
 
         # Diagnostic
         last_seen = self.channel_data.get('LastSeen')
@@ -107,8 +133,10 @@ class Channel():
             'A_H') == 'true' else False
         # Number of minutes old the data is
         self.age: Optional[int] = self.channel_data.get('AGE')
-        self.brightness: Optional[str] = self.channel_data.get('DEVICE_BRIGHTNESS')
-        self.hardware: Optional[str] = self.channel_data.get('DEVICE_HARDWAREDISCOVERED')
+        self.brightness: Optional[str] = self.channel_data.get(
+            'DEVICE_BRIGHTNESS')
+        self.hardware: Optional[str] = self.channel_data.get(
+            'DEVICE_HARDWAREDISCOVERED')
         self.version: Optional[str] = self.channel_data.get('Version')
         self.last_update_check: Optional[int] = self.channel_data.get(
             'LastUpdateCheck')
