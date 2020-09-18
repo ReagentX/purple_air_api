@@ -7,7 +7,6 @@ import json
 import os
 from re import sub
 from typing import Optional
-from pandas.core.algorithms import isin
 
 import requests
 from geopy.geocoders import Nominatim
@@ -28,7 +27,7 @@ class Sensor():
         if not self.data:
             raise ValueError(
                 f'Invalid sensor: no configuration found for {identifier}')
-        elif not isinstance(self.data, list):
+        if not isinstance(self.data, list):
             raise ValueError(
                 f'Sensor {identifier} created without valid data')
         self.parent_data: dict = self.data[0]
