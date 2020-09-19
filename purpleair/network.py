@@ -6,7 +6,7 @@ PurpleAir API Client Class
 import json
 import time
 from json.decoder import JSONDecodeError
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import pandas as pd
 import requests
@@ -28,12 +28,6 @@ class SensorList():
 
         self.all_sensors: List[Sensor] = []
         self.generate_sensor_list()  # Populate `all_sensors`
-
-        # Commonly requested/used filters
-        self.outside_sensors: List[Sensor] = [
-            s for s in self.all_sensors if s.location_type == 'outside']
-        self.useful_sensors: List[Sensor] = [
-            s for s in self.all_sensors if s.is_useful()]
 
     def get_all_data(self) -> None:
         """
@@ -111,9 +105,41 @@ class SensorList():
                                            json_data=sensor,
                                            parse_location=self.parse_location))
 
+    def filter_column(self,
+                      channel: str,
+                      column: Optional[str],
+                      value_filter: Union[str, int, float, None]) -> pd.DataFrame:
+        """
+        Filter sensors by column and value_filter. If only column is passed, we
+          return rows that are not None. If the value_filter is passed, we only
+          return rows where the column matches that value.
+        """
+        # Check if there is no column passed
+        if column is None:
+            raise ValueError('No column name provided to filter on!')
+        out_l: List[dict] = []
+        for sensor in self.all_sensors:
+            sensor_data = sensor.as_flat_dict(channel)
+            if column not in sensor_data:
+                raise ValueError('Column name provided does not exist in sensor data!')
+            result = sensor_data.get(column)
+            if value_filter and result != value_filter:
+                continue
+            elif value_filter and result == value_filter:
+                out_l.append(sensor_data)
+            elif result is not None:
+                # If we do not want to filter the values, we filter out `None`s
+                out_l.append(sensor_data)
+        if not out_l:
+            # pylint: disable=line-too-long
+            raise ValueError(f'No data for filterset: Column {column}, value filter: {value_filter}')
+        return pd.DataFrame(out_l)
+
     def to_dataframe(self,
                      sensor_filter: str,
-                     channel: str) -> pd.DataFrame:
+                     channel: str,
+                     column: Optional[str] = None,
+                     value_filter: Union[str, int, float, None] = None) -> pd.DataFrame:
         """
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
@@ -131,6 +157,12 @@ class SensorList():
                                                    if s.location_type == 'outside']]),
                 'useful': pd.DataFrame([s.as_flat_dict(channel)
                                         for s in [s for s in self.all_sensors if s.is_useful()]]),
+                'family': pd.DataFrame([s.as_flat_dict(channel)
+                                        for s in [s for s in self.all_sensors
+                                                  if s.parent and s.child]]),
+                'no_child': pd.DataFrame([s.as_flat_dict(channel)
+                                          for s in [s for s in self.all_sensors if not s.child]]),
+                'column': self.filter_column(channel, column, value_filter)
             }[sensor_filter]
 
         except KeyError as err:
