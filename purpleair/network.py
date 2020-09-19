@@ -178,9 +178,9 @@ class SensorList():
                                                             if not s.child]]),
                 'column': lambda: self.filter_column(channel, column, value_filter)
             }[sensor_filter]()
-
         except KeyError as err:
             raise KeyError(
                 f'Invalid sensor filter supplied: {sensor_filter}') from err
+
         sensor_data.index = sensor_data.pop('id')
         return sensor_data
