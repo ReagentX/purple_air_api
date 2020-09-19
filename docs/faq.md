@@ -57,6 +57,10 @@ The given `Sensor()`'s ID is not in valid integer form.
 
 PurpleAir reports that a sensor has more than one child. This is a problem with PurpleAir, not this program. Try removing the `cache.sqlite` file it creates in the project’s root directory.
 
+## Channel `{channel}` does not exist on sensor `{self.identifier}`
+
+`as_flat_dict` attempted to resolve the provided `channel` for a sensor, but that sensor does not have the provided `channel`.
+
 ## No sensor data returned from PurpleAir
 
 This error happens if the API fails to return data with a `results` key, where `results` is mapped to a JSON blob of sensors.
