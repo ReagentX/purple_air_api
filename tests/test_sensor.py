@@ -24,14 +24,14 @@ class TestSensorMethods(unittest.TestCase):
         Test that we cannot create a sensor without an integer ID
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('a')
+            se = sensor.Sensor('parent')
 
     def test_cannot_create_sensor_bad_json(self):
         """
         Test that we cannot create a sensor without valid json
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('1', {'a': 1})
+            se = sensor.Sensor('1', {'parent': 1})
 
     def test_create_sensor_no_location(self):
         """
@@ -225,15 +225,15 @@ class TestSensorMethods(unittest.TestCase):
             '1week_avg': 0,
         }
 
-        # Test channel b
-        src = se.as_flat_dict(channel='a')
+        # Test parent
+        src = se.as_flat_dict(channel='parent')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:
             self.assertNotIsInstance(src[data], dict)
 
-        # Test channel a
-        src = se.as_flat_dict(channel='b')
+        # Test child
+        src = se.as_flat_dict(channel='child')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:

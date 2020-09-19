@@ -2,7 +2,7 @@
 
 ## `setup()`
 
-This converts the JSON metadata to Python class members, exposing data in a Pythonic way.
+This converts the JSON metadata to Python class properties, exposing data in a Pythonic way.
 
 ## `get_historical(weeks_to_get: int, thingspeak_field: str) -> pd.DataFrame`
 

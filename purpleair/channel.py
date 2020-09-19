@@ -78,12 +78,12 @@ class Channel():
         # Statistics
         self.pm2_5stats: Optional[dict] = json.loads(self.channel_data['Stats']) \
             if 'Stats' in self.channel_data else None
-        self.m10avg: Optional[float] = self.safe_float('v1')
-        self.m30avg: Optional[float] = self.safe_float('v2')
-        self.h1ravg: Optional[float] = self.safe_float('v3')
-        self.h6ravg: Optional[float] = self.safe_float('v4')
-        self.d1avg: Optional[float] = self.safe_float('v5')
-        self.w1avg: Optional[float] = self.safe_float('v6')
+        self.m10avg: Optional[float] = self.pm2_5stats.get('v1') if self.pm2_5stats else None
+        self.m30avg: Optional[float] = self.pm2_5stats.get('v2') if self.pm2_5stats else None
+        self.h1ravg: Optional[float] = self.pm2_5stats.get('v3') if self.pm2_5stats else None
+        self.h6ravg: Optional[float] = self.pm2_5stats.get('v4') if self.pm2_5stats else None
+        self.d1avg: Optional[float] = self.pm2_5stats.get('v5') if self.pm2_5stats else None
+        self.w1avg: Optional[float] = self.pm2_5stats.get('v6') if self.pm2_5stats else None
         self.last_modified_stats: Optional[datetime] = None
         last_mod = self.pm2_5stats.get('lastModified') \
             if self.pm2_5stats is not None else None
@@ -93,7 +93,7 @@ class Channel():
         self.last2_modified: Optional[int] = self.pm2_5stats.get(
             'timeSinceModified') if self.pm2_5stats is not None else None
 
-        # Thingspeak IDs, if these are missing do not crash, just set to None
+        # ThingSpeak IDs, if these are missing do not crash, just set to None
         try:
             self.tp_primary_channel: Optional[str] = self.channel_data['THINGSPEAK_PRIMARY_ID']
             self.tp_primary_key: Optional[str] = self.channel_data['THINGSPEAK_PRIMARY_ID_READ_KEY']

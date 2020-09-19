@@ -225,7 +225,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
 
 Returns a flat dictionary representation of the Sensor data.
 
-`channel` is one of `{'a', 'b'}`.
+`channel` is one of `{'parent', 'child'}`.
 
 The data is shaped like this:
 

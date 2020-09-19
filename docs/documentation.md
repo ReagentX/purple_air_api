@@ -2,6 +2,8 @@
 
 There are two main components of this program: `SensorList` and `Sensor`. A `SensorList` instance represents the network or a subset of the network of PurpleAir sensors, while a `Sensor` represents a single sensor.
 
+`Sensor`s have up to two channels, a `parent` and an optional `child`, that hold data the sensor generates.
+
 ## SensorList
 
 PurpleAir sensor network representation
@@ -12,13 +14,9 @@ PurpleAir sensor network representation
 
 To parse location of all sensors from coordinates to addresses, pass `SensorList(parse_location=True)`.
 
-* Members
+* Properties
   * `all_sensors`
     * All sensors in the PurpleAir network
-  * `outside_sensors`
-    * Outdoor sensors in the PurpleAir network
-  * `useful_sensors`
-    * Sensors without faults in the PurpleAir network
 
 See [api/sensorlist_methods.md](api/sensorlist_methods.md) for method documentation.
 
@@ -36,7 +34,7 @@ Initialize a new sensor.
 
 `parse_location` is an optional boolean parameter to use `geopy` to parse the rough address of the location of the sensor based on the latitude and longitude from the sensor's metadata.
 
-* Members
+* Properties
   * `identifier`
     * Sensor ID Number
   * `data`
@@ -67,7 +65,7 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
 
 ### `class Channel(channel_data: dict)`
 
-* Members
+* Properties
   * `channel_data`
     * metadata in Python dictionary format about the channel
   * `lat`
