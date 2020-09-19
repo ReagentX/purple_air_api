@@ -166,16 +166,24 @@ class Sensor():
             self.child.as_dict()
         ]
 
-    def as_flat_dict(self, channel: str) -> dict:
+    def resolve_sensor_channel(self, channel: str) -> Optional[Channel]:
         """
-        Returns a flat dictionary representation of the Sensor data
+        Resolves a sensor channel string to the respective Channel object
         """
         if channel not in {'parent', 'child'}:
             raise ValueError(
                 f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
         choice: Optional[Channel] = self.parent if channel == 'parent' else self.child
+        return choice
+
+    def as_flat_dict(self, channel: str) -> dict:
+        """
+        Returns a flat dictionary representation of the Sensor data
+        """
+        choice = self.resolve_sensor_channel(channel)
         if choice is None:
-            raise ValueError(f'Channel {channel} does not exist on sensor {self.identifier}')
+            # There is no data for the specified sensor, so fill with `None`s
+            return {key: None for key in self.parent.as_flat_dict()}
         return choice.as_flat_dict()
 
     def __repr__(self):
