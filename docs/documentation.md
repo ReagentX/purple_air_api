@@ -2,6 +2,8 @@
 
 There are two main components of this program: `SensorList` and `Sensor`. A `SensorList` instance represents the network or a subset of the network of PurpleAir sensors, while a `Sensor` represents a single sensor.
 
+`Sensor`s have up to two channels, a `parent` and an optional `child`, that hold data the sensor generates.
+
 ## SensorList
 
 PurpleAir sensor network representation
