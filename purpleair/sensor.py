@@ -289,14 +289,15 @@ class Sensor():
         """
         Returns a flat dictionary representation of the Sensor data
         """
-        channel_map = {'a': 'parent', 'b': 'child'}
-        if channel not in channel_map:
-            raise ValueError(f'Invalid sensor channel: {channel}')
+        # TODO: fix channel to be just `parent` or `child` and not `a` and `b`
+        if channel not in {'parent', 'child'}:
+            # pylint: disable=line-too-long
+            raise ValueError(f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
         out_d = {}
         src = self.as_dict()
-        for data_category in src[channel_map[channel]]:
-            for data in src[channel_map[channel]][data_category]:
-                out_d[data] = src[channel_map[channel]][data_category][data]
+        for data_category in src[channel]:
+            for data in src[channel][data_category]:
+                out_d[data] = src[channel][data_category][data]
         return out_d
 
     def __repr__(self):
