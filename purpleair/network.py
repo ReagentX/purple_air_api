@@ -135,7 +135,7 @@ class SensorList():
         if len(out_l) == 0:
             # pylint: disable=line-too-long
             raise ValueError(
-                f'No data for filter set: Column {column}, value filter: {value_filter}: {out_l}')
+                f'No data for filter set: Column {column}, value filter: {value_filter}')
         return pd.DataFrame(out_l)
 
     def to_dataframe(self,
