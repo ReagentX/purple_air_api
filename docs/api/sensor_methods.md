@@ -164,6 +164,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
             '30min_avg': a.m30avg,
             '1hour_avg': a.h1ravg,
             '6hour_avg': a.h6ravg,
+            '1day_avg': a.d1avg,
             '1week_avg': a.w1avg
         }
     },
@@ -217,6 +218,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
             '30min_avg': b.m30avg,
             '1hour_avg': b.h1ravg,
             '6hour_avg': b.h6ravg,
+            '1day_avg': b.d1avg,
             '1week_avg': b.w1avg
         }
     }
