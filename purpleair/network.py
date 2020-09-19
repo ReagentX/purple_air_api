@@ -6,7 +6,7 @@ PurpleAir API Client Class
 import json
 import time
 from json.decoder import JSONDecodeError
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
 import requests
@@ -55,7 +55,6 @@ class SensorList():
 
         self.parse_raw_result(data['results'])
         print(f"Initialized {len(self.data):,} sensors!")
-
 
     def parse_raw_result(self, flat_sensor_data: dict) -> None:
         """
@@ -112,27 +111,30 @@ class SensorList():
                                            json_data=sensor,
                                            parse_location=self.parse_location))
 
-    def to_dataframe(self, sensor_filter: str, channel: str) -> pd.DataFrame:
+    def to_dataframe(self,
+                     sensor_filter: str,
+                     channel: str) -> pd.DataFrame:
         """
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
-        if sensor_filter not in {'useful', 'outside', 'all'}:
-            # pylint: disable=line-too-long
-            raise ValueError(
-                f'{sensor_filter} is an invalid sensor group! Must be in {{"useful", "outside", "all"}}')
         if channel not in {'a', 'b'}:
             raise ValueError(
                 f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
 
-        if sensor_filter == 'all':
-            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
-                                        for s in self.all_sensors])
-        elif sensor_filter == 'outside':
-            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
-                                        for s in self.outside_sensors])
-        elif sensor_filter == 'useful':
-            sensor_data = pd.DataFrame([s.as_flat_dict(channel)
-                                        for s in self.useful_sensors])
+        try:
+            sensor_data: pd.DataFrame = {
+                'all': pd.DataFrame([s.as_flat_dict(channel)
+                                     for s in self.all_sensors]),
+                'outside': pd.DataFrame([s.as_flat_dict(channel)
+                                         for s in [s for s in self.all_sensors
+                                                   if s.location_type == 'outside']]),
+                'useful': pd.DataFrame([s.as_flat_dict(channel)
+                                        for s in [s for s in self.all_sensors if s.is_useful()]]),
+            }[sensor_filter]
+
+        except KeyError as err:
+            raise KeyError(
+                f'Invalid sensor filter supplied: {sensor_filter}') from err
         sensor_data.index = sensor_data.pop('id')
         return sensor_data
