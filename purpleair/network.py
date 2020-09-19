@@ -121,7 +121,8 @@ class SensorList():
         for sensor in self.all_sensors:
             sensor_data = sensor.as_flat_dict(channel)
             if column not in sensor_data:
-                raise ValueError('Column name provided does not exist in sensor data!')
+                raise ValueError(
+                    'Column name provided does not exist in sensor data!')
             result = sensor_data.get(column)
             if value_filter and result != value_filter:
                 continue
@@ -130,9 +131,11 @@ class SensorList():
             elif result is not None:
                 # If we do not want to filter the values, we filter out `None`s
                 out_l.append(sensor_data)
-        if not out_l:
+
+        if len(out_l) == 0:
             # pylint: disable=line-too-long
-            raise ValueError(f'No data for filterset: Column {column}, value filter: {value_filter}')
+            raise ValueError(
+                f'No data for filter set: Column {column}, value filter: {value_filter}: {out_l}')
         return pd.DataFrame(out_l)
 
     def to_dataframe(self,
@@ -148,22 +151,33 @@ class SensorList():
             raise ValueError(
                 f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
 
+        # We do not want to pre-calculate all of the possible filters just by creating an
+        #   instance of this class.
+        #
+        # Using lambdas here means instead of immediately generating and storing a result of
+        #   some code to the dictionary when we first construct it, we only store a function
+        #   that can generate the data we want.
+        #
+        # The dictionary returns this function, which we immediately call. As a result we do
+        #   not create these data until we ask for them.
         try:
             sensor_data: pd.DataFrame = {
-                'all': pd.DataFrame([s.as_flat_dict(channel)
-                                     for s in self.all_sensors]),
-                'outside': pd.DataFrame([s.as_flat_dict(channel)
-                                         for s in [s for s in self.all_sensors
-                                                   if s.location_type == 'outside']]),
-                'useful': pd.DataFrame([s.as_flat_dict(channel)
-                                        for s in [s for s in self.all_sensors if s.is_useful()]]),
-                'family': pd.DataFrame([s.as_flat_dict(channel)
-                                        for s in [s for s in self.all_sensors
-                                                  if s.parent and s.child]]),
-                'no_child': pd.DataFrame([s.as_flat_dict(channel)
-                                          for s in [s for s in self.all_sensors if not s.child]]),
-                'column': self.filter_column(channel, column, value_filter)
-            }[sensor_filter]
+                'all': lambda: pd.DataFrame([s.as_flat_dict(channel)
+                                             for s in self.all_sensors]),
+                'outside': lambda: pd.DataFrame([s.as_flat_dict(channel)
+                                                 for s in [s for s in self.all_sensors
+                                                           if s.location_type == 'outside']]),
+                'useful': lambda: pd.DataFrame([s.as_flat_dict(channel)
+                                                for s in [s for s in self.all_sensors
+                                                          if s.is_useful()]]),
+                'family': lambda: pd.DataFrame([s.as_flat_dict(channel)
+                                                for s in [s for s in self.all_sensors
+                                                          if s.parent and s.child]]),
+                'no_child': lambda: pd.DataFrame([s.as_flat_dict(channel)
+                                                  for s in [s for s in self.all_sensors
+                                                            if not s.child]]),
+                'column': lambda: self.filter_column(channel, column, value_filter)
+            }[sensor_filter]()
 
         except KeyError as err:
             raise KeyError(
