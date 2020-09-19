@@ -190,6 +190,8 @@ class Sensor():
                 'diagnostic': {
                     'last_seen': a.last_seen,
                     'model': a.model,
+                    'adc': a.adc,
+                    'rssi': a.rssi,
                     'hidden': a.hidden,
                     'flagged': a.flagged,
                     'downgraded': a.downgraded,
@@ -234,6 +236,8 @@ class Sensor():
                 'diagnostic': {
                     'last_seen': b.last_seen if b else None,
                     'model': b.model if b else None,
+                    'adc': b.adc if b else None,
+                    'rssi' b.rssi if b else None,
                     'hidden': b.hidden if b else None,
                     'flagged': b.flagged if b else None,
                     'downgraded': b.downgraded if b else None,
