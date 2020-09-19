@@ -25,8 +25,8 @@ The child sensor requested lists a parent, but the parent does not exist on the 
 ```python
 p = SensorList()
 p.to_dataframe(sensor_filter='column',
-                      channel='a',
-                      column='m10avg')  # See Channel docs for all column options
+               channel='parent',
+               column='m10avg')  # See Channel docs for all column options
 ```
 
 ## Column name provided does not exist in sensor data
