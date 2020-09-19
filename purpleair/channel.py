@@ -78,12 +78,18 @@ class Channel():
         # Statistics
         self.pm2_5stats: Optional[dict] = json.loads(self.channel_data['Stats']) \
             if 'Stats' in self.channel_data else None
-        self.m10avg: Optional[float] = self.pm2_5stats.get('v1') if self.pm2_5stats else None
-        self.m30avg: Optional[float] = self.pm2_5stats.get('v2') if self.pm2_5stats else None
-        self.h1ravg: Optional[float] = self.pm2_5stats.get('v3') if self.pm2_5stats else None
-        self.h6ravg: Optional[float] = self.pm2_5stats.get('v4') if self.pm2_5stats else None
-        self.d1avg: Optional[float] = self.pm2_5stats.get('v5') if self.pm2_5stats else None
-        self.w1avg: Optional[float] = self.pm2_5stats.get('v6') if self.pm2_5stats else None
+        self.m10avg: Optional[float] = self.pm2_5stats.get(
+            'v1') if self.pm2_5stats else None
+        self.m30avg: Optional[float] = self.pm2_5stats.get(
+            'v2') if self.pm2_5stats else None
+        self.h1ravg: Optional[float] = self.pm2_5stats.get(
+            'v3') if self.pm2_5stats else None
+        self.h6ravg: Optional[float] = self.pm2_5stats.get(
+            'v4') if self.pm2_5stats else None
+        self.d1avg: Optional[float] = self.pm2_5stats.get(
+            'v5') if self.pm2_5stats else None
+        self.w1avg: Optional[float] = self.pm2_5stats.get(
+            'v6') if self.pm2_5stats else None
         self.last_modified_stats: Optional[datetime] = None
         last_mod = self.pm2_5stats.get('lastModified') \
             if self.pm2_5stats is not None else None
@@ -235,12 +241,8 @@ class Channel():
                 'created': self.created,
                 'uptime': self.uptime,
                 'is_owner': self.is_owner
-            }
-        }
-
-        # Add optional statistics fields
-        if self.pm2_5stats:
-            out_d['statistics'] = {
+            },
+            'statistics': {
                 '10min_avg': self.m10avg,
                 '30min_avg': self.m30avg,
                 '1hour_avg': self.h1ravg,
@@ -248,15 +250,7 @@ class Channel():
                 '1day_avg': self.d1avg,
                 '1week_avg': self.w1avg
             }
-        else:
-            out_d['statistics'] = {
-                '10min_avg': None,
-                '30min_avg': None,
-                '1hour_avg': None,
-                '6hour_avg': None,
-                '1day_avg': None,
-                '1week_avg': None
-            }
+        }
 
         return out_d
 
