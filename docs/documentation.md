@@ -14,7 +14,7 @@ PurpleAir sensor network representation
 
 To parse location of all sensors from coordinates to addresses, pass `SensorList(parse_location=True)`.
 
-* Members
+* Properties
   * `all_sensors`
     * All sensors in the PurpleAir network
 
@@ -34,7 +34,7 @@ Initialize a new sensor.
 
 `parse_location` is an optional boolean parameter to use `geopy` to parse the rough address of the location of the sensor based on the latitude and longitude from the sensor's metadata.
 
-* Members
+* Properties
   * `identifier`
     * Sensor ID Number
   * `data`
@@ -65,7 +65,7 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
 
 ### `class Channel(channel_data: dict)`
 
-* Members
+* Properties
   * `channel_data`
     * metadata in Python dictionary format about the channel
   * `lat`
