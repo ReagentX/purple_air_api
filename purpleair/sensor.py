@@ -289,7 +289,6 @@ class Sensor():
         """
         Returns a flat dictionary representation of the Sensor data
         """
-        # TODO: fix channel to be just `parent` or `child` and not `a` and `b`
         if channel not in {'parent', 'child'}:
             # pylint: disable=line-too-long
             raise ValueError(f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
