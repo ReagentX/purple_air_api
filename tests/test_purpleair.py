@@ -20,45 +20,45 @@ class TestPurpleAirMethods(unittest.TestCase):
         Test that not using sensor filters works
         """
         p = network.SensorList()
-        p.to_dataframe('all', 'a')
-        p.to_dataframe('all', 'b')
+        p.to_dataframe('all', 'parent')
+        p.to_dataframe('all', 'child')
 
     def test_to_dataframe_filtering_outside(self):
         """
         Test that outside sensor filter works
         """
         p = network.SensorList()
-        p.to_dataframe('outside', 'a')
-        p.to_dataframe('outside', 'b')
+        p.to_dataframe('outside', 'parent')
+        p.to_dataframe('outside', 'child')
 
     def test_to_dataframe_filtering_useful(self):
         """
         Test that useful sensor filter works
         """
         p = network.SensorList()
-        p.to_dataframe('useful', 'a')
-        p.to_dataframe('useful', 'b')
+        p.to_dataframe('useful', 'parent')
+        p.to_dataframe('useful', 'child')
 
     def test_to_dataframe_filtering_no_child(self):
         """
         Test that no_child sensor filter works
         """
         p = network.SensorList()
-        p.to_dataframe('no_child', 'a')
-        p.to_dataframe('no_child', 'b')
+        p.to_dataframe('no_child', 'parent')
+        p.to_dataframe('no_child', 'child')
 
     def test_to_dataframe_filtering_family(self):
         """
         Test that family sensor filter works
         """
         p = network.SensorList()
-        p.to_dataframe('family', 'a')
-        p.to_dataframe('family', 'b')
+        p.to_dataframe('family', 'parent')
+        p.to_dataframe('family', 'child')
 
     def test_to_dataframe_cols(self):
         p = network.SensorList()
-        df_a = p.to_dataframe(sensor_filter='all', channel='a')
-        df_b = p.to_dataframe(sensor_filter='all', channel='b')
+        df_a = p.to_dataframe(sensor_filter='all', channel='parent')
+        df_b = p.to_dataframe(sensor_filter='all', channel='child')
         self.assertListEqual(list(df_a.columns), list(df_b.columns))
 
 
@@ -72,8 +72,8 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
         """
         with self.assertRaises(ValueError):
             p = network.SensorList()
-            p.to_dataframe('column', 'a')
-            p.to_dataframe('column', 'b')
+            p.to_dataframe('column', 'parent')
+            p.to_dataframe('column', 'child')
 
     def test_to_dataframe_filtering_bad_column(self):
         """
@@ -81,25 +81,25 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
         """
         with self.assertRaises(ValueError):
             p = network.SensorList()
-            p.to_dataframe('column', 'a', 'fake_col_name')
-            p.to_dataframe('column', 'b', 'fake_col_name')
+            p.to_dataframe('column', 'parent', 'fake_col_name')
+            p.to_dataframe('column', 'child', 'fake_col_name')
 
     def test_to_dataframe_filtering_no_value(self):
         """
         Test that providing a bad value fails
         """
         p = network.SensorList()
-        p.to_dataframe('column', 'a', 'temp_f')
-        p.to_dataframe('column', 'b', 'temp_f')
+        p.to_dataframe('column', 'parent', 'temp_f')
+        p.to_dataframe('column', 'child', 'temp_f')
 
     def test_to_dataframe_filtering_good_value(self):
         """
         Test that providing a bad value fails
         """
         p = network.SensorList()
-        p.to_dataframe('column', 'a', 'location_type', 'outside')
+        p.to_dataframe('column', 'parent', 'location_type', 'outside')
         with self.assertRaises(ValueError):
-            p.to_dataframe('column', 'b', 'location_type', 'outside')
+            p.to_dataframe('column', 'child', 'location_type', 'outside')
 
     def test_to_dataframe_filtering_bad_value(self):
         """
@@ -107,8 +107,8 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
         """
         with self.assertRaises(ValueError):
             p = network.SensorList()
-            p.to_dataframe('column', 'a', 'location_type', 1234)
-            p.to_dataframe('column', 'b', 'location_type', 1234)
+            p.to_dataframe('column', 'parent', 'location_type', 1234)
+            p.to_dataframe('column', 'child', 'location_type', 1234)
 
 if __name__ == '__main__':
     unittest.main()
