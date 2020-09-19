@@ -14,7 +14,7 @@ VAR_TO_VIZ = 'temp_c'  # The dict item that we want to visualize
 
 # Get PurpleAir data
 p = SensorList()
-df = p.to_dataframe('all', 'a')
+df = p.to_dataframe('all', 'parent')
 
 # Store the lat and lon coords to plot
 lat = df['lat'].values

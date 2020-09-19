@@ -10,7 +10,7 @@ from purpleair.sensor import Sensor
 p = SensorList()
 s = p.all_sensors[0]  # First sensor found
 s.get_location()
-df = p.to_dataframe(sensor_filter='all', channel='a')
+df = p.to_dataframe(sensor_filter='all', channel='parent')
 print(df.head())
 
 # Single sensor
@@ -18,7 +18,7 @@ se = Sensor(2890)
 print(se)
 print(se.parent)
 print(se.child)
-print(se.as_flat_dict('a'))
+print(se.as_flat_dict('parent'))
 se.get_field('field3')
 se.get_field('field4')
 print(se.thingspeak_data.keys())
