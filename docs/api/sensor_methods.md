@@ -276,6 +276,7 @@ The data is shaped like this:
     '30min_avg': 0,
     '1hour_avg': 0,
     '6hour_avg': 0,
+    '1day_avg': 0,
     '1week_avg': 0
 }
 ```
