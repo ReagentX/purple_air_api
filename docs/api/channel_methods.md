@@ -4,6 +4,119 @@
 
 This converts the JSON metadata to Python class properties, exposing data in a Pythonic way.
 
+## `as_dict() -> dict`
+
+Return a dictionary representation of a Channel. The data is shaped like this:
+
+```python
+{
+    'meta': {
+        'id': a.identifier,
+        'parent': None,
+        'lat': a.lat,
+        'lon': a.lon,
+        'name': a.name,
+        'location_type': a.location_type
+    },
+    'data': {
+        'pm_2.5': a.current_pm2_5,
+        'temp_f': a.current_temp_f,
+        'temp_c': a.current_temp_c,
+        'humidity': a.current_humidity,
+        'pressure': a.current_pressure,
+        'p_0_3_um': a.current_p_0_3_um,
+        'p_0_5_um': a.current_p_0_5_um,
+        'p_1_0_um': a.current_p_1_0_um,
+        'p_2_5_um': a.current_p_2_5_um,
+        'p_5_0_um': a.current_p_5_0_um,
+        'p_10_0_um': a.current_p_10_0_um,
+        'pm1_0_cf_1': a.current_pm1_0_cf_1,
+        'pm2_5_cf_1': a.current_pm2_5_cf_1,
+        'pm10_0_cf_1': a.current_pm10_0_cf_1,
+        'pm1_0_atm': a.current_pm1_0_atm,
+        'pm2_5_atm': a.current_pm2_5_atm,
+        'pm10_0_atm': a.current_pm10_0_atm
+    },
+    'diagnostic': {
+        'last_seen': a.last_seen,
+        'model': a.model,
+        'hidden': a.hidden,
+        'flagged': a.flagged,
+        'downgraded': a.downgraded,
+        'age': a.age,
+        'brightness': a.brightness,
+        'hardware': a.hardware,
+        'version': a.version,
+        'last_update_check': a.last_update_check,
+        'created': a.created,
+        'uptime': a.uptime,
+        'is_owner': a.is_owner
+    },
+    'statistics': {
+        '10min_avg': a.m10avg,
+        '30min_avg': a.m30avg,
+        '1hour_avg': a.h1ravg,
+        '6hour_avg': a.h6ravg,
+        '1day_avg': a.d1avg,
+        '1week_avg': a.w1avg
+    }
+}
+```
+
+## `as_flat_dict() -> dict`
+
+Returns a flat dictionary representation of the Channel data.
+
+The data is shaped like this:
+
+```python
+{
+    'parent': 0,
+    'lat': 0,
+    'lon': 0,
+    'name': 0,
+    'location_type': 0,
+    'pm_2.5': 0,
+    'temp_f': 0,
+    'temp_c': 0,
+    'humidity': 0,
+    'pressure': 0,
+    'p_0_3_um': 0,
+    'p_0_5_um': 0,
+    'p_1_0_um': 0,
+    'p_2_5_um': 0,
+    'p_5_0_um': 0,
+    'p_10_0_um': 0,
+    'pm1_0_cf_1': 0,
+    'pm2_5_cf_1': 0,
+    'pm10_0_cf_1': 0,
+    'pm1_0_atm': 0,
+    'pm2_5_atm': 0,
+    'pm10_0_atm': 0,
+    'last_seen': 0,
+    'model': 0,
+    'adc': 0,
+    'rssi': 0,
+    'hidden': 0,
+    'flagged': 0,
+    'downgraded': 0,
+    'age': 0,
+    'brightness': 0,
+    'hardware': 0,
+    'version': 0,
+    'last_update_check': 0,
+    'created': 0,
+    'uptime': 0,
+    'is_owner': 0,
+    '10min_avg': 0,
+    '30min_avg': 0,
+    '1hour_avg': 0,
+    '6hour_avg': 0,
+    '1day_avg': 0,
+    '1week_avg': 0
+}
+```
+
 ## `get_historical(weeks_to_get: int, thingspeak_field: str) -> pd.DataFrame`
 
 Get data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.

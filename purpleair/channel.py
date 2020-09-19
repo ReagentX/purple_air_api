@@ -78,12 +78,18 @@ class Channel():
         # Statistics
         self.pm2_5stats: Optional[dict] = json.loads(self.channel_data['Stats']) \
             if 'Stats' in self.channel_data else None
-        self.m10avg: Optional[float] = self.pm2_5stats.get('v1') if self.pm2_5stats else None
-        self.m30avg: Optional[float] = self.pm2_5stats.get('v2') if self.pm2_5stats else None
-        self.h1ravg: Optional[float] = self.pm2_5stats.get('v3') if self.pm2_5stats else None
-        self.h6ravg: Optional[float] = self.pm2_5stats.get('v4') if self.pm2_5stats else None
-        self.d1avg: Optional[float] = self.pm2_5stats.get('v5') if self.pm2_5stats else None
-        self.w1avg: Optional[float] = self.pm2_5stats.get('v6') if self.pm2_5stats else None
+        self.m10avg: Optional[float] = self.pm2_5stats.get(
+            'v1') if self.pm2_5stats else None
+        self.m30avg: Optional[float] = self.pm2_5stats.get(
+            'v2') if self.pm2_5stats else None
+        self.h1ravg: Optional[float] = self.pm2_5stats.get(
+            'v3') if self.pm2_5stats else None
+        self.h6ravg: Optional[float] = self.pm2_5stats.get(
+            'v4') if self.pm2_5stats else None
+        self.d1avg: Optional[float] = self.pm2_5stats.get(
+            'v5') if self.pm2_5stats else None
+        self.w1avg: Optional[float] = self.pm2_5stats.get(
+            'v6') if self.pm2_5stats else None
         self.last_modified_stats: Optional[datetime] = None
         last_mod = self.pm2_5stats.get('lastModified') \
             if self.pm2_5stats is not None else None
@@ -186,6 +192,78 @@ class Channel():
             weekly_data['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
         weekly_data.index = weekly_data.pop('entry_id')
         return weekly_data
+
+    def as_dict(self) -> dict:
+        """
+        Returns a dictionary representation of the channel data
+        """
+        out_d = {
+            'meta': {
+                'id': self.identifier,
+                'parent': self.parent,
+                'lat': self.lat,
+                'lon': self.lon,
+                'name': self.name,
+                'location_type': self.location_type
+            },
+            'data': {
+                'pm_2.5': self.current_pm2_5,
+                'temp_f': self.current_temp_f,
+                'temp_c': self.current_temp_c,
+                'humidity': self.current_humidity,
+                'pressure': self.current_pressure,
+                'p_0_3_um': self.current_p_0_3_um,
+                'p_0_5_um': self.current_p_0_5_um,
+                'p_1_0_um': self.current_p_1_0_um,
+                'p_2_5_um': self.current_p_2_5_um,
+                'p_5_0_um': self.current_p_5_0_um,
+                'p_10_0_um': self.current_p_10_0_um,
+                'pm1_0_cf_1': self.current_pm1_0_cf_1,
+                'pm2_5_cf_1': self.current_pm2_5_cf_1,
+                'pm10_0_cf_1': self.current_pm10_0_cf_1,
+                'pm1_0_atm': self.current_pm1_0_atm,
+                'pm2_5_atm': self.current_pm2_5_atm,
+                'pm10_0_atm': self.current_pm10_0_atm
+            },
+            'diagnostic': {
+                'last_seen': self.last_seen,
+                'model': self.model,
+                'adc': self.adc,
+                'rssi': self.rssi,
+                'hidden': self.hidden,
+                'flagged': self.flagged,
+                'downgraded': self.downgraded,
+                'age': self.age,
+                'brightness': self.brightness,
+                'hardware': self.hardware,
+                'version': self.version,
+                'last_update_check': self.last_update_check,
+                'created': self.created,
+                'uptime': self.uptime,
+                'is_owner': self.is_owner
+            },
+            'statistics': {
+                '10min_avg': self.m10avg,
+                '30min_avg': self.m30avg,
+                '1hour_avg': self.h1ravg,
+                '6hour_avg': self.h6ravg,
+                '1day_avg': self.d1avg,
+                '1week_avg': self.w1avg
+            }
+        }
+
+        return out_d
+
+    def as_flat_dict(self) -> dict:
+        """
+        Returns a flat dictionary representation of channel data
+        """
+        out_d = {}
+        nested = self.as_dict()
+        for category in nested:
+            for prop in nested[category]:
+                out_d[prop] = nested[category][prop]
+        return out_d
 
     def __repr__(self):
         """

@@ -1,4 +1,3 @@
-from purpleair.sensor import Sensor
 import unittest
 
 from purpleair import sensor

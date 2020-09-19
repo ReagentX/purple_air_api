@@ -122,7 +122,7 @@ class SensorList():
             sensor_data = sensor.as_flat_dict(channel)
             if column not in sensor_data:
                 raise ValueError(
-                    'Column name provided does not exist in sensor data!')
+                    f'Requested column {column} does not exist in sensor data!')
             result = sensor_data.get(column)
             if value_filter and result != value_filter:
                 continue
@@ -145,21 +145,18 @@ class SensorList():
                      value_filter: Union[str, int, float, None] = None) -> pd.DataFrame:
         """
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
-        where sensor_group determines which group of sensors are used
-        """
-        if channel not in {'parent', 'child'}:
-            raise ValueError(
-                f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
+        where sensor_group determines which group of sensors are used.
 
-        # We do not want to pre-calculate all of the possible filters just by creating an
-        #   instance of this class.
-        #
-        # Using lambdas here means instead of immediately generating and storing a result of
-        #   some code to the dictionary when we first construct it, we only store a function
-        #   that can generate the data we want.
-        #
-        # The dictionary returns this function, which we immediately call. As a result we do
-        #   not create these data until we ask for them.
+        We do not want to pre-calculate all of the possible filters just by creating an
+        instance of this class.
+
+        Using lambdas here means instead of immediately generating and storing a result of
+        some code to the dictionary when we first construct it, we only store a function
+        that can generate the data we want.
+
+        The dictionary returns this function, which we immediately call. As a result we do
+        not create these data until we ask for them.
+        """
         try:
             sensor_data: pd.DataFrame = {
                 'all': lambda: pd.DataFrame([s.as_flat_dict(channel)
