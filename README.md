@@ -69,14 +69,12 @@ id                                                                              
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,071 sensors!
 # If `sensor_filter` is set to 'column' then we must also provide a value for `column`
-df_1 = p.to_dataframe(sensor_filter='all',
-                      channel='parent')
-df_2 = p.to_dataframe(sensor_filter='column',
-                      channel='parent',
-                      column='m10avg')  # See Channel docs for all column options
-print(len(df_1), len(df_2))  # 11,071 10,723
+df = p.to_dataframe(sensor_filter='column',
+                    channel='parent',
+                    column='m10avg')  # See Channel docs for all column options
+print(len(df))  # 10,723
 ```
 
 ### Get historical data for parent sensor secondary channel
