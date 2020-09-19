@@ -6,7 +6,7 @@ PurpleAir Sensor Client
 import json
 import os
 from re import sub
-from typing import Optional
+from typing import Optional, List
 
 import requests
 from geopy.geocoders import Nominatim
@@ -25,7 +25,7 @@ class Sensor():
         self.data: Optional[list] = json_data \
             if json_data is not None else self.get_data()
 
-        # Validate the data we recieved
+        # Validate the data we received
         if not self.data:
             raise ValueError(
                 f'Invalid sensor: no configuration found for {identifier}')
@@ -51,7 +51,7 @@ class Sensor():
         """
         Get new data if no data is provided
         """
-        # Santize ID
+        # Sanitize ID
         if not isinstance(self.identifier, int):
             raise ValueError(f'Invalid sensor ID: {self.identifier}')
 
@@ -141,163 +141,50 @@ class Sensor():
             user_agent = root_ua + sub(r'\/|\\| ', '', user_agent)
         except OSError:
             print(
-                'Unable to read current direcory name to generate Nominatim user agent!')
+                'Unable to read current directory name to generate Nominatim user agent!')
             user_agent = f'{root_ua}anonymous_github_com_reagentx_purple_air_api'
 
         geolocator = Nominatim(user_agent=user_agent)
         location = geolocator.reverse(f'{self.parent.lat}, {self.parent.lon}')
-        self.location = location
+        self.location = str(location)
 
     def as_dict(self) -> dict:
         """
         Returns a dictionary representation of the sensor data
         """
-
-        # Shorthand names for brevity here
-        # pylint: disable=invalid-name
-        a = self.parent
-        # pylint: disable=invalid-name
-        b = self.child
-        out_d = {
-            'parent': {
-                'meta': {
-                    'id': a.identifier,
-                    'parent': None,
-                    'lat': a.lat,
-                    'lon': a.lon,
-                    'name': a.name,
-                    'location_type': a.location_type
-                },
-                'data': {
-                    'pm_2.5': a.current_pm2_5,
-                    'temp_f': a.current_temp_f,
-                    'temp_c': a.current_temp_c,
-                    'humidity': a.current_humidity,
-                    'pressure': a.current_pressure,
-                    'p_0_3_um': a.current_p_0_3_um,
-                    'p_0_5_um': a.current_p_0_5_um,
-                    'p_1_0_um': a.current_p_1_0_um,
-                    'p_2_5_um': a.current_p_2_5_um,
-                    'p_5_0_um': a.current_p_5_0_um,
-                    'p_10_0_um': a.current_p_10_0_um,
-                    'pm1_0_cf_1': a.current_pm1_0_cf_1,
-                    'pm2_5_cf_1': a.current_pm2_5_cf_1,
-                    'pm10_0_cf_1': a.current_pm10_0_cf_1,
-                    'pm1_0_atm': a.current_pm1_0_atm,
-                    'pm2_5_atm': a.current_pm2_5_atm,
-                    'pm10_0_atm': a.current_pm10_0_atm
-                },
-                'diagnostic': {
-                    'last_seen': a.last_seen,
-                    'model': a.model,
-                    'hidden': a.hidden,
-                    'flagged': a.flagged,
-                    'downgraded': a.downgraded,
-                    'age': a.age,
-                    'brightness': a.brightness,
-                    'hardware': a.hardware,
-                    'version': a.version,
-                    'last_update_check': a.last_update_check,
-                    'created': a.created,
-                    'uptime': a.uptime,
-                    'is_owner': a.is_owner
-                }
-            },
-            'child': {
-                'meta': {
-                    'id': b.identifier if b else None,
-                    'parent': a.identifier if b else None,
-                    'lat': b.lat if b else None,
-                    'lon': b.lon if b else None,
-                    'name': b.name if b else None,
-                    'location_type': b.location_type if b else None
-                },
-                'data': {
-                    'pm_2.5': b.current_pm2_5 if b else None,
-                    'temp_f': b.current_temp_f if b else None,
-                    'temp_c': b.current_temp_c if b else None,
-                    'humidity': b.current_humidity if b else None,
-                    'pressure': b.current_pressure if b else None,
-                    'p_0_3_um': b.current_p_0_3_um if b else None,
-                    'p_0_5_um': b.current_p_0_5_um if b else None,
-                    'p_1_0_um': b.current_p_1_0_um if b else None,
-                    'p_2_5_um': b.current_p_2_5_um if b else None,
-                    'p_5_0_um': b.current_p_5_0_um if b else None,
-                    'p_10_0_um': b.current_p_10_0_um if b else None,
-                    'pm1_0_cf_1': b.current_pm1_0_cf_1 if b else None,
-                    'pm2_5_cf_1': b.current_pm2_5_cf_1 if b else None,
-                    'pm10_0_cf_1': b.current_pm10_0_cf_1 if b else None,
-                    'pm1_0_atm': b.current_pm1_0_atm if b else None,
-                    'pm2_5_atm': b.current_pm2_5_atm if b else None,
-                    'pm10_0_atm': b.current_pm10_0_atm if b else None
-                },
-                'diagnostic': {
-                    'last_seen': b.last_seen if b else None,
-                    'model': b.model if b else None,
-                    'hidden': b.hidden if b else None,
-                    'flagged': b.flagged if b else None,
-                    'downgraded': b.downgraded if b else None,
-                    'age': b.age if b else None,
-                    'brightness': b.brightness if b else None,
-                    'hardware': b.hardware if b else None,
-                    'version': b.version if b else None,
-                    'last_update_check': b.last_update_check if b else None,
-                    'created': b.created if b else None,
-                    'uptime': b.uptime if b else None,
-                    'is_owner': b.is_owner if b else None
-                }
-            }
+        return {
+            'parent': self.parent.as_dict(),
+            'child': self.child.as_dict() if self.child else None,
         }
 
-        if 'Stats' in a.channel_data and a.channel_data['Stats']:
-            out_d['parent']['statistics'] = {
-                '10min_avg': a.m10avg,
-                '30min_avg': a.m30avg,
-                '1hour_avg': a.h1ravg,
-                '6hour_avg': a.h6ravg,
-                '1week_avg': a.w1avg
-            }
-        else:
-            out_d['parent']['statistics'] = {
-                '10min_avg': None,
-                '30min_avg': None,
-                '1hour_avg': None,
-                '6hour_avg': None,
-                '1week_avg': None
-            }
+    def as_list(self) -> List[Optional[dict]]:
+        """
+        Returns a list representation of the sensor data
+        """
+        return [
+            self.parent.as_dict(),
+            self.child.as_dict() if self.child else None
+        ]
 
-        if b and 'Stats' in b.channel_data and b.channel_data['Stats']:
-            out_d['child']['statistics'] = {
-                '10min_avg': b.m10avg if b else None,
-                '30min_avg': b.m30avg if b else None,
-                '1hour_avg': b.h1ravg if b else None,
-                '6hour_avg': b.h6ravg if b else None,
-                '1week_avg': b.w1avg if b else None
-            }
-        else:
-            out_d['child']['statistics'] = {
-                '10min_avg': None,
-                '30min_avg': None,
-                '1hour_avg': None,
-                '6hour_avg': None,
-                '1week_avg': None
-            }
-
-        return out_d
+    def resolve_sensor_channel(self, channel: str) -> Optional[Channel]:
+        """
+        Resolves a sensor channel string to the respective Channel object
+        """
+        if channel not in {'parent', 'child'}:
+            raise ValueError(
+                f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
+        choice: Optional[Channel] = self.parent if channel == 'parent' else self.child
+        return choice
 
     def as_flat_dict(self, channel: str) -> dict:
         """
         Returns a flat dictionary representation of the Sensor data
         """
-        channel_map = {'a': 'parent', 'b': 'child'}
-        if channel not in channel_map:
-            raise ValueError(f'Invalid sensor channel: {channel}')
-        out_d = {}
-        src = self.as_dict()
-        for data_category in src[channel_map[channel]]:
-            for data in src[channel_map[channel]][data_category]:
-                out_d[data] = src[channel_map[channel]][data_category][data]
-        return out_d
+        choice = self.resolve_sensor_channel(channel)
+        if choice is None:
+            # There is no data for the specified sensor, so fill with `None`s
+            return {key: None for key in self.parent.as_flat_dict()}
+        return choice.as_flat_dict()
 
     def __repr__(self):
         """

@@ -1,6 +1,6 @@
-# Purple Air API
+# PurpleAir API
 
-A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods.
+A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods and clear errors.
 
 ![Global Sensor Map with Celsius Scale](maps/sensor_map.png)
 
@@ -48,7 +48,9 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ```python
 from purpleair.network import SensorList
 p = SensorList()  # Initialized 10,812 sensors!
-df = p.to_dataframe(sensor_filter='all' channel='a')  # Other options include 'outside' and 'useful'
+# Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
+df = p.to_dataframe(sensor_filter='all',
+                    channel='parent')
 ```
 
 Result:
@@ -61,6 +63,20 @@ id                                                                              
 14091  37.883620 -122.070087                   WC Hillside       outside   11.36    89.0  31.666667  ...       False   1     10.31      8.74       7.21      20.03      63.44
 42073  47.185173 -122.176855                            #1       outside   99.46    73.0  22.777778  ...       False   0    100.06    100.31     101.36     106.93      68.40
 53069  47.190197 -122.177992                            #2       outside  109.82    79.0  26.111111  ...       False   0    109.52    108.72     109.33     116.64      74.52
+```
+
+### Make a DataFrame from all current sensors that have a 10 minute average pm2.5 value
+
+```python
+from purpleair.network import SensorList
+p = SensorList()  # Initialized 10,812 sensors!
+# If `sensor_filter` is set to 'column' then we must also provide a value for `column`
+df_1 = p.to_dataframe(sensor_filter='all',
+                      channel='parent')
+df_2 = p.to_dataframe(sensor_filter='column',
+                      channel='parent',
+                      column='m10avg')  # See Channel docs for all column options
+print(len(df_1), len(df_2))  # 11,071 10,723
 ```
 
 ### Get historical data for parent sensor secondary channel

@@ -1,4 +1,3 @@
-from purpleair.sensor import Sensor
 import unittest
 
 from purpleair import sensor
@@ -24,14 +23,14 @@ class TestSensorMethods(unittest.TestCase):
         Test that we cannot create a sensor without an integer ID
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('a')
+            se = sensor.Sensor('parent')
 
     def test_cannot_create_sensor_bad_json(self):
         """
         Test that we cannot create a sensor without valid json
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('1', {'a': 1})
+            se = sensor.Sensor('1', {'parent': 1})
 
     def test_create_sensor_no_location(self):
         """
@@ -98,6 +97,8 @@ class TestSensorMethods(unittest.TestCase):
                 'diagnostic': {
                     'last_seen': 0,
                     'model': 0,
+                    'adc': 0,
+                    'rssi': 0,
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
@@ -115,6 +116,7 @@ class TestSensorMethods(unittest.TestCase):
                     '30min_avg': 0,
                     '1hour_avg': 0,
                     '6hour_avg': 0,
+                    '1day_avg': 0,
                     '1week_avg': 0
                 }
             },
@@ -149,6 +151,8 @@ class TestSensorMethods(unittest.TestCase):
                 'diagnostic': {
                     'last_seen': 0,
                     'model': 0,
+                    'adc': 0,
+                    'rssi': 0,
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
@@ -166,6 +170,7 @@ class TestSensorMethods(unittest.TestCase):
                     '30min_avg': 0,
                     '1hour_avg': 0,
                     '6hour_avg': 0,
+                    '1day_avg': 0,
                     '1week_avg': 0
                 }
             }
@@ -208,6 +213,8 @@ class TestSensorMethods(unittest.TestCase):
             'last_seen': 0,
             'model': 0,
             'hidden': 0,
+            'adc': 0,
+            'rssi': 0,
             'flagged': 0,
             'downgraded': 0,
             'age': 0,
@@ -222,18 +229,19 @@ class TestSensorMethods(unittest.TestCase):
             '30min_avg': 0,
             '1hour_avg': 0,
             '6hour_avg': 0,
+            '1day_avg': 0,
             '1week_avg': 0,
         }
 
-        # Test channel b
-        src = se.as_flat_dict(channel='a')
+        # Test parent
+        src = se.as_flat_dict(channel='parent')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:
             self.assertNotIsInstance(src[data], dict)
 
-        # Test channel a
-        src = se.as_flat_dict(channel='b')
+        # Test child
+        src = se.as_flat_dict(channel='child')
         for data_category in expected_shape:
             self.assertIn(data_category, src)
         for data in src:
