@@ -50,7 +50,7 @@ from purpleair.network import SensorList
 p = SensorList()  # Initialized 10,812 sensors!
 # Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
 df = p.to_dataframe(sensor_filter='all',
-                    channel='a')
+                    channel='parent')
 ```
 
 Result:
@@ -72,9 +72,9 @@ from purpleair.network import SensorList
 p = SensorList()  # Initialized 10,812 sensors!
 # If `sensor_filter` is set to 'column' then we must also provide a value for `column`
 df_1 = p.to_dataframe(sensor_filter='all',
-                      channel='a')
+                      channel='parent')
 df_2 = p.to_dataframe(sensor_filter='column',
-                      channel='a',
+                      channel='parent',
                       column='m10avg')  # See Channel docs for all column options
 print(len(df_1), len(df_2))  # 11,071 10,723
 ```
