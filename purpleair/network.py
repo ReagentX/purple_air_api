@@ -126,7 +126,7 @@ class SensorList():
             result = sensor_data.get(column)
             if value_filter and result != value_filter:
                 continue
-            elif value_filter and result == value_filter:
+            if value_filter and result == value_filter:
                 out_l.append(sensor_data)
             elif result is not None:
                 # If we do not want to filter the values, we filter out `None`s
