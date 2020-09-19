@@ -171,7 +171,7 @@ Return a dictionary representation of a sensor. The data is shaped like this:
     'child':{
         'meta': {
             'id': b.identifier,
-            'parent': None,
+            'parent': a.identifier,
             'lat': b.lat,
             'lon': b.lon,
             'name': b.name,
