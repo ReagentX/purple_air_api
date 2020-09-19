@@ -8,8 +8,7 @@ from purpleair.sensor import Sensor
 
 # All Sensors
 p = SensorList()
-print(len(p.useful_sensors))
-s = p.useful_sensors[0]  # First confirmed useful sensor
+s = p.all_sensors[0]  # First sensor found
 s.get_location()
 df = p.to_dataframe(sensor_filter='all', channel='a')
 print(df.head())
