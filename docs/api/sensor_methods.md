@@ -225,6 +225,18 @@ Return a dictionary representation of a sensor. The data is shaped like this:
 }
 ```
 
+## `as_list() -> dict`
+
+Return a list representation of a sensor. The data is shaped the same as `as_dict` except instead of `parent` and `child` keys, the `parent` is the 0th index and the child is the 1st index:
+
+```python
+[
+    {...parent_sensor_data...},
+    {...child_sensor_data...},
+]
+```
+
+
 ## `as_flat_dict(channel: str) -> dict`
 
 Returns a flat dictionary representation of the Sensor data.
