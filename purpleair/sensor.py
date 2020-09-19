@@ -154,16 +154,16 @@ class Sensor():
         """
         return {
             'parent': self.parent.as_dict(),
-            'child': self.child.as_dict(),
+            'child': self.child.as_dict() if self.child else None,
         }
 
-    def as_list(self) -> List[dict]:
+    def as_list(self) -> List[Optional[dict]]:
         """
         Returns a list representation of the sensor data
         """
         return [
             self.parent.as_dict(),
-            self.child.as_dict()
+            self.child.as_dict() if self.child else None
         ]
 
     def resolve_sensor_channel(self, channel: str) -> Optional[Channel]:
