@@ -25,7 +25,7 @@ class Sensor():
         self.data: Optional[list] = json_data \
             if json_data is not None else self.get_data()
 
-        # Validate the data we recieved
+        # Validate the data we received
         if not self.data:
             raise ValueError(
                 f'Invalid sensor: no configuration found for {identifier}')
@@ -51,7 +51,7 @@ class Sensor():
         """
         Get new data if no data is provided
         """
-        # Santize ID
+        # Sanitize ID
         if not isinstance(self.identifier, int):
             raise ValueError(f'Invalid sensor ID: {self.identifier}')
 
@@ -141,12 +141,12 @@ class Sensor():
             user_agent = root_ua + sub(r'\/|\\| ', '', user_agent)
         except OSError:
             print(
-                'Unable to read current direcory name to generate Nominatim user agent!')
+                'Unable to read current directory name to generate Nominatim user agent!')
             user_agent = f'{root_ua}anonymous_github_com_reagentx_purple_air_api'
 
         geolocator = Nominatim(user_agent=user_agent)
         location = geolocator.reverse(f'{self.parent.lat}, {self.parent.lon}')
-        self.location = location
+        self.location = str(location)
 
     def as_dict(self) -> dict:
         """
