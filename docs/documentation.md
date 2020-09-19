@@ -17,10 +17,6 @@ To parse location of all sensors from coordinates to addresses, pass `SensorList
 * Members
   * `all_sensors`
     * All sensors in the PurpleAir network
-  * `outside_sensors`
-    * Outdoor sensors in the PurpleAir network
-  * `useful_sensors`
-    * Sensors without faults in the PurpleAir network
 
 See [api/sensorlist_methods.md](api/sensorlist_methods.md) for method documentation.
 
