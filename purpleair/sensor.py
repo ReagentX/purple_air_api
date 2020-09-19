@@ -190,6 +190,8 @@ class Sensor():
                 'diagnostic': {
                     'last_seen': a.last_seen,
                     'model': a.model,
+                    'adc': a.adc,
+                    'rssi': a.rssi,
                     'hidden': a.hidden,
                     'flagged': a.flagged,
                     'downgraded': a.downgraded,
@@ -234,6 +236,8 @@ class Sensor():
                 'diagnostic': {
                     'last_seen': b.last_seen if b else None,
                     'model': b.model if b else None,
+                    'adc': b.adc if b else None,
+                    'rssi': b.rssi if b else None,
                     'hidden': b.hidden if b else None,
                     'flagged': b.flagged if b else None,
                     'downgraded': b.downgraded if b else None,
@@ -255,6 +259,7 @@ class Sensor():
                 '30min_avg': a.m30avg,
                 '1hour_avg': a.h1ravg,
                 '6hour_avg': a.h6ravg,
+                '1day_avg': a.d1avg,
                 '1week_avg': a.w1avg
             }
         else:
@@ -263,6 +268,7 @@ class Sensor():
                 '30min_avg': None,
                 '1hour_avg': None,
                 '6hour_avg': None,
+                '1day_avg': None,
                 '1week_avg': None
             }
 
@@ -272,6 +278,7 @@ class Sensor():
                 '30min_avg': b.m30avg if b else None,
                 '1hour_avg': b.h1ravg if b else None,
                 '6hour_avg': b.h6ravg if b else None,
+                '1day_avg': b.d1avg if b else None,
                 '1week_avg': b.w1avg if b else None
             }
         else:
@@ -280,6 +287,7 @@ class Sensor():
                 '30min_avg': None,
                 '1hour_avg': None,
                 '6hour_avg': None,
+                '1day_avg': None,
                 '1week_avg': None
             }
 

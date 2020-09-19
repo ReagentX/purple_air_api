@@ -98,6 +98,8 @@ class TestSensorMethods(unittest.TestCase):
                 'diagnostic': {
                     'last_seen': 0,
                     'model': 0,
+                    'adc': 0,
+                    'rssi': 0,
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
@@ -115,6 +117,7 @@ class TestSensorMethods(unittest.TestCase):
                     '30min_avg': 0,
                     '1hour_avg': 0,
                     '6hour_avg': 0,
+                    '1day_avg': 0,
                     '1week_avg': 0
                 }
             },
@@ -149,6 +152,8 @@ class TestSensorMethods(unittest.TestCase):
                 'diagnostic': {
                     'last_seen': 0,
                     'model': 0,
+                    'adc': 0,
+                    'rssi': 0,
                     'hidden': 0,
                     'flagged': 0,
                     'downgraded': 0,
@@ -166,6 +171,7 @@ class TestSensorMethods(unittest.TestCase):
                     '30min_avg': 0,
                     '1hour_avg': 0,
                     '6hour_avg': 0,
+                    '1day_avg': 0,
                     '1week_avg': 0
                 }
             }
@@ -208,6 +214,8 @@ class TestSensorMethods(unittest.TestCase):
             'last_seen': 0,
             'model': 0,
             'hidden': 0,
+            'adc': 0,
+            'rssi': 0,
             'flagged': 0,
             'downgraded': 0,
             'age': 0,
@@ -222,6 +230,7 @@ class TestSensorMethods(unittest.TestCase):
             '30min_avg': 0,
             '1hour_avg': 0,
             '6hour_avg': 0,
+            '1day_avg': 0,
             '1week_avg': 0,
         }
 
