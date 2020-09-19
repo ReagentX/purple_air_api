@@ -147,9 +147,9 @@ class SensorList():
         Converts dictionary representation of a list of sensors to a Pandas DataFrame
         where sensor_group determines which group of sensors are used
         """
-        if channel not in {'a', 'b'}:
+        if channel not in {'parent', 'child'}:
             raise ValueError(
-                f'Invalid sensor channel: {channel}. Must be in {{"a", "b"}}')
+                f'Invalid sensor channel: {channel}. Must be in {{"parent", "child"}}')
 
         # We do not want to pre-calculate all of the possible filters just by creating an
         #   instance of this class.
