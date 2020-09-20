@@ -66,6 +66,7 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
     """
     Test that we can initialize the PurpleAir network
     """
+
     def test_to_dataframe_filtering_no_column(self):
         """
         Test that not providing a column fails

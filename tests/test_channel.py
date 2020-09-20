@@ -7,6 +7,7 @@ class TestChannelMethods(unittest.TestCase):
     """
     Tests for Sensor class
     """
+
     def test_can_repr(self):
         """
         Test that we properly generate a Channel's string representation
