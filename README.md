@@ -35,7 +35,7 @@ For detailed documentation, see the [docs](docs/documentation.md) file.
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 print(len(p.useful_sensors))  # 10047, List of sensors with no defects
 ```
 
@@ -51,7 +51,7 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 # Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
 df = p.to_dataframe(sensor_filter='all',
                     channel='parent')
@@ -73,7 +73,7 @@ id                                                                              
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 11,071 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 # If `sensor_filter` is set to 'column' then we must also provide a value for `column`
 df = p.to_dataframe(sensor_filter='column',
                     channel='parent',
