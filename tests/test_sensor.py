@@ -24,6 +24,16 @@ class TestSensorMethods(unittest.TestCase):
         """
         se = sensor.Sensor(7423, parse_location=True)
         se.get_field('field3')
+        self.assertIn('field3', se.thingspeak_data)
+        self.assertIn('primary', se.thingspeak_data['field3'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_b'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_b'])
+        self.assertGreater(
+            len(se.thingspeak_data['field3']['primary']['channel_a']['feeds']),
+            0
+        )
 
     def test_cannot_create_sensor_bad_id(self):
         """
