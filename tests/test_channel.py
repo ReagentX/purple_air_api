@@ -9,7 +9,7 @@ class TestChannelMethods(unittest.TestCase):
     """
     def test_can_repr(self):
         """
-        as
+        Test that we properly generate a Channel's string representation
         """
         se = sensor.Sensor(2891)
         self.assertEqual(se.child.__repr__(), 'Sensor 2891, child of 2890')
