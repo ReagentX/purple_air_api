@@ -53,6 +53,10 @@ This error means there is a problem connecting to the `cache.sqlite` file create
 
 ## Network and SensorList problems
 
+### Child `{child_sensor_id}` lists parent `{parent_sensor_id}`, but parent does not exist
+
+The child sensor requested lists a parent, but the parent does not exist on the PurpleAir network. This is a problem with PurpleAir, not this program. Try removing the `cache.sqlite` file it creates in the project’s root directory.
+
 ### No column name provided to filter on
 
 `to_dataframe` was invoked with `sensor_filter` set to `'column'` but no value for the `column` parameter was provided. It should be invoked like this:
@@ -79,10 +83,6 @@ p.to_dataframe(sensor_filter='column',
 ### Invalid ThingSpeak key
 
 Provided key does not exist on ThingSpeak. Refer to the [purpleair docs](/docs/purpleair_documentation.md#Field%20descriptions) for valid columns and their meanings.
-
-### Child `{child_sensor_id}` lists parent `{parent_sensor_id}`, but parent does not exist
-
-The child sensor requested lists a parent, but the parent does not exist on the PurpleAir network. This is a problem with PurpleAir, not this program. Try removing the `cache.sqlite` file it creates in the project’s root directory.
 
 ### Invalid sensor channel: `{channel}`. Must be in `{"parent", "child"}`
 
@@ -118,6 +118,6 @@ If the error message is not a rate limit error, try to delete the cache by remov
 
 ***
 
-### Other Crashes and Errors
+## Other Crashes and Errors
 
 If your problem is not listed here, please open a new [issue](https://github.com/ReagentX/purple_air_api/issues).
