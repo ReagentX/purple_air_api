@@ -27,6 +27,10 @@ A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas
 
 For detailed documentation, see the [docs](docs/documentation.md) file.
 
+## Frequently Asked Questions
+
+Before opening a new ticket, please refer to the [FAQ document](docs/faq.md).
+
 ### Listing all useful sensors
 
 ```python
