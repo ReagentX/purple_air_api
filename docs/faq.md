@@ -12,7 +12,7 @@ Please see the sample code section of the [readme](/README.md#example-code).
 
 This is a pseudo-JSON representation of the relationships between these data:
 
-```json
+```
 [
     sensor_1: {
         'parent': {
