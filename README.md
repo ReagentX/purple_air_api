@@ -23,6 +23,10 @@ A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas
     * Install development requirements with `pip install -r requirements/dev.txt`
     * Install example file requirements with `pip install -r requirements/examples.txt`
 
+## Frequently Asked Questions
+
+Before opening a new ticket, please refer to the [FAQ document](docs/faq.md).
+
 ## Example code
 
 For detailed documentation, see the [docs](docs/documentation.md) file.
