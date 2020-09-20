@@ -7,13 +7,19 @@ class TestChannelMethods(unittest.TestCase):
     """
     Tests for Sensor class
     """
+    def test_can_repr(self):
+        """
+        as
+        """
+        se = sensor.Sensor(2891)
+        self.assertEqual(se.child.__repr__(), 'Sensor 2891, child of 2890')
 
     def test_get_historical(self):
         """
         Test that we properly get a sensor's historical data
         """
         se = sensor.Sensor(2891)
-        se.parent.get_historical(1, 'primary')
+        se.parent.get_historical(2, 'primary')
         se.parent.get_historical(1, 'secondary')
         se.child.get_historical(1, 'primary')
         se.child.get_historical(1, 'secondary')
@@ -141,7 +147,3 @@ class TestChannelMethods(unittest.TestCase):
         result = se.child.as_flat_dict()
         for key in expected_shape:
             self.assertIn(key, result)
-
-
-if __name__ == '__main__':
-    unittest.main()
