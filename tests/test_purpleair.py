@@ -70,18 +70,22 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
         """
         Test that not providing a column fails
         """
+        p = network.SensorList()
         with self.assertRaises(ValueError):
-            p = network.SensorList()
             p.to_dataframe('column', 'parent')
+
+        with self.assertRaises(ValueError):
             p.to_dataframe('column', 'child')
 
     def test_to_dataframe_filtering_bad_column(self):
         """
         Test that providing a bad column fails
         """
+        p = network.SensorList()
         with self.assertRaises(ValueError):
-            p = network.SensorList()
             p.to_dataframe('column', 'parent', 'fake_col_name')
+
+        with self.assertRaises(ValueError):
             p.to_dataframe('column', 'child', 'fake_col_name')
 
     def test_to_dataframe_filtering_no_value(self):
@@ -105,10 +109,9 @@ class TestPurpleAirColumnFilters(unittest.TestCase):
         """
         Test that providing a bad value fails
         """
+        p = network.SensorList()
         with self.assertRaises(ValueError):
-            p = network.SensorList()
             p.to_dataframe('column', 'parent', 'location_type', 1234)
-            p.to_dataframe('column', 'child', 'location_type', 1234)
 
-if __name__ == '__main__':
-    unittest.main()
+        with self.assertRaises(ValueError):
+            p.to_dataframe('column', 'child', 'location_type', 1234)
