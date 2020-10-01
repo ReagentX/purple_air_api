@@ -23,6 +23,10 @@ A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas
     * Install development requirements with `pip install -r requirements/dev.txt`
     * Install example file requirements with `pip install -r requirements/examples.txt`
 
+## Frequently Asked Questions
+
+Before opening a new ticket, please refer to the [FAQ document](docs/faq.md).
+
 ## Example code
 
 For detailed documentation, see the [docs](docs/documentation.md) file.
@@ -31,7 +35,7 @@ For detailed documentation, see the [docs](docs/documentation.md) file.
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 print(len(p.useful_sensors))  # 10047, List of sensors with no defects
 ```
 
@@ -47,7 +51,7 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 # Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
 df = p.to_dataframe(sensor_filter='all',
                     channel='parent')
@@ -69,14 +73,12 @@ id                                                                              
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 10,812 sensors!
+p = SensorList()  # Initialized 11,220 sensors!
 # If `sensor_filter` is set to 'column' then we must also provide a value for `column`
-df_1 = p.to_dataframe(sensor_filter='all',
-                      channel='parent')
-df_2 = p.to_dataframe(sensor_filter='column',
-                      channel='parent',
-                      column='m10avg')  # See Channel docs for all column options
-print(len(df_1), len(df_2))  # 11,071 10,723
+df = p.to_dataframe(sensor_filter='column',
+                    channel='parent',
+                    column='m10avg')  # See Channel docs for all column options
+print(len(df))  # 10,723
 ```
 
 ### Get historical data for parent sensor secondary channel
@@ -107,7 +109,7 @@ entry_id
 from purpleair.sensor import Sensor
 se = Sensor(2890)
 df = se.child.get_historical(weeks_to_get=1,
-                             thingspeak_field='secondary')
+                             thingspeak_field='primary')
 print(df.head())
 ```
 

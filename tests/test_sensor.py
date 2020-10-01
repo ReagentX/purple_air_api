@@ -18,12 +18,29 @@ class TestSensorMethods(unittest.TestCase):
             'Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States of America'
         )
 
+    def test_can_get_field(self):
+        """
+        Test that we can get data from the ThingSpeak API
+        """
+        se = sensor.Sensor(7423, parse_location=True)
+        se.get_field('field3')
+        self.assertIn('field3', se.thingspeak_data)
+        self.assertIn('primary', se.thingspeak_data['field3'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_b'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_b'])
+        self.assertGreater(
+            len(se.thingspeak_data['field3']['primary']['channel_a']['feeds']),
+            0
+        )
+
     def test_cannot_create_sensor_bad_id(self):
         """
         Test that we cannot create a sensor without an integer ID
         """
         with self.assertRaises(ValueError):
-            se = sensor.Sensor('parent')
+            se = sensor.Sensor('a')
 
     def test_cannot_create_sensor_bad_json(self):
         """
@@ -246,7 +263,3 @@ class TestSensorMethods(unittest.TestCase):
             self.assertIn(data_category, src)
         for data in src:
             self.assertNotIsInstance(src[data], dict)
-
-
-if __name__ == '__main__':
-    unittest.main()

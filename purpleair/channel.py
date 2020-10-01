@@ -123,7 +123,7 @@ class Channel():
         last_seen = self.channel_data.get('LastSeen')
         if last_seen is not None:
             self.last_seen: Optional[datetime] = datetime.utcfromtimestamp(
-                int(last_seen) / 1000)
+                int(last_seen))
         else:
             self.last_seen = last_seen
         self.model: Optional[str] = self.channel_data.get('Type')
