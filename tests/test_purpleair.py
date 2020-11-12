@@ -61,6 +61,46 @@ class TestPurpleAirMethods(unittest.TestCase):
         df_b = p.to_dataframe(sensor_filter='all', channel='child')
         self.assertListEqual(list(df_a.columns), list(df_b.columns))
 
+    def test_to_dataframe_multi_filter_outside_family(self):
+        """
+        Test that family sensor plus outside sensor filter works.
+        """
+        p = network.SensorList()
+        p.to_dataframe_multi_filter(sensor_filters=['outside', 'family'], channel='parent')
+        p.to_dataframe_multi_filter(sensor_filters=['outside', 'family'], channel='child')
+
+    def test_to_dataframe_multi_filter_parity(self):
+        """
+        Test that to_dataframe_multi_filter returns same results as to_dataframe
+        when just one filter is passed in.
+        """
+        p = network.SensorList()
+
+        # all sensors
+        df_single_filter = p.to_dataframe(sensor_filter='all', channel='parent')
+        df_multi_filter = p.to_dataframe_multi_filter(sensor_filters=['all'], channel='parent')
+        self.assertListEqual(list(df_single_filter.columns), list(df_multi_filter.columns))
+        self.assertEqual(len(df_single_filter), len(df_multi_filter))
+
+        # outside sensors only
+        df_single_filter = p.to_dataframe(sensor_filter='outside', channel='parent')
+        df_multi_filter = p.to_dataframe_multi_filter(sensor_filters=['outside'], channel='parent')
+        self.assertListEqual(list(df_single_filter.columns), list(df_multi_filter.columns))
+        self.assertEqual(len(df_single_filter), len(df_multi_filter))
+
+        # no_child sensors only
+        df_single_filter = p.to_dataframe(sensor_filter='no_child', channel='parent')
+        df_multi_filter = p.to_dataframe_multi_filter(sensor_filters=['no_child'], channel='parent')
+        self.assertListEqual(list(df_single_filter.columns), list(df_multi_filter.columns))
+        self.assertEqual(len(df_single_filter), len(df_multi_filter))
+
+        # useful sensors only
+        df_single_filter = p.to_dataframe(sensor_filter='useful', channel='parent')
+        df_multi_filter = p.to_dataframe_multi_filter(sensor_filters=['useful'], channel='parent')
+        self.assertListEqual(list(df_single_filter.columns), list(df_multi_filter.columns))
+        self.assertEqual(len(df_single_filter), len(df_multi_filter))
+
+
 
 class TestPurpleAirColumnFilters(unittest.TestCase):
     """

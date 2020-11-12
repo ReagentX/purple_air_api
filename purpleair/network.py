@@ -110,27 +110,12 @@ class SensorList():
                       column: Optional[str],
                       value_filter: Union[str, int, float, None]) -> pd.DataFrame:
         """
-        Filter sensors by column and value_filter. If only column is passed, we
-          return rows that are not None. If the value_filter is passed, we only
-          return rows where the column matches that value.
+        Returns the output of filter_column_to_array as a pandas dataframe.
         """
         # Check if there is no column passed
         if column is None:
             raise ValueError('No column name provided to filter on!')
-        out_l: List[dict] = []
-        for sensor in self.all_sensors:
-            sensor_data = sensor.as_flat_dict(channel)
-            if column not in sensor_data:
-                raise ValueError(
-                    f'Requested column {column} does not exist in sensor data!')
-            result = sensor_data.get(column)
-            if value_filter and result != value_filter:
-                continue
-            if value_filter and result == value_filter:
-                out_l.append(sensor_data)
-            elif result is not None:
-                # If we do not want to filter the values, we filter out `None`s
-                out_l.append(sensor_data)
+        out_l = filter_column_to_array(self.all_sensors, channel, column, value_filter)
 
         if len(out_l) == 0:
             # pylint: disable=line-too-long
@@ -181,3 +166,63 @@ class SensorList():
 
         sensor_data.index = sensor_data.pop('id')
         return sensor_data
+
+    def to_dataframe_multi_filter(self,
+                     channel: str,
+                     sensor_filters: Optional[str] = None,
+                     column: Optional[str] = None,
+                     value_filter: Union[str, int, float, None] = None) -> pd.DataFrame:
+        """
+        Returns a Pandas dataframe with filtered sensors, based on multiple filters
+        provided by the user. If no filters are provided, we return all sensors in
+        self.all_sensors.
+        """
+
+        if not sensor_filters or len(sensor_filters) == 0 or 'all' in sensor_filters:
+            sensor_data = pd.DataFrame([s.as_flat_dict(channel) for s in self.all_sensors])
+        else:
+            relevant_sensors = self.all_sensors
+
+            if 'outside' in sensor_filters:
+                relevant_sensors = [s for s in relevant_sensors if s.location_type == 'outside']
+            if 'useful' in sensor_filters:
+                relevant_sensors = [s for s in relevant_sensors if s.is_useful()]
+            if 'family' in sensor_filters:
+                relevant_sensors = [s for s in relevant_sensors if s.parent and s.child]
+            if 'no_child' in sensor_filters:
+                relevant_sensors =  [s for s in relevant_sensors if not s.child]
+
+            dict_transformed_sensors = [s.as_flat_dict(channel) for s in relevant_sensors]
+            if 'column' in sensor_filters:
+                dict_transformed_sensors = filter_column_to_array(
+                    relevant_sensors, channel, column, value_filter)
+
+            sensor_data = pd.DataFrame(dict_transformed_sensors)
+
+        sensor_data.index = sensor_data.pop('id')
+        return sensor_data
+
+def filter_column_to_array(
+        sensors, channel: str, column: Optional[str],
+        value_filter: Union[str, int, float, None]
+    ) -> List[dict]:
+    """
+    Filter sensors by column and value_filter. If only column is passed, we
+        return rows that are not None. If the value_filter is passed, we only
+        return rows where the column matches that value.
+    """
+    out_l: List[dict] = []
+    for sensor in sensors:
+        sensor_data = sensor.as_flat_dict(channel)
+        if column not in sensor_data:
+            raise ValueError(
+                f'Requested column {column} does not exist in sensor data!')
+        result = sensor_data.get(column)
+        if value_filter and result != value_filter:
+            continue
+        if value_filter and result == value_filter:
+            out_l.append(sensor_data)
+        elif result is not None:
+            # If we do not want to filter the values, we filter out `None`s
+            out_l.append(sensor_data)
+    return out_l
