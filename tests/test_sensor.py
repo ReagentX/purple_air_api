@@ -15,7 +15,7 @@ class TestSensorMethods(unittest.TestCase):
         se = sensor.Sensor(2891, parse_location=True)
         self.assertEqual(
             se.__repr__(),
-            'Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States of America'
+            'Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States'
         )
 
     def test_can_get_field(self):

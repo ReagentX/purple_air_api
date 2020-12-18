@@ -33,7 +33,7 @@ class SensorList():
         """
         Get all data from the API
         """
-        response = requests.get(f'{API_ROOT}')
+        response = requests.get(f'{API_ROOT}?q=""')
         try:
             data = json.loads(response.content)
         except JSONDecodeError as err:
