@@ -1,5 +1,7 @@
 # PurpleAir API
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4540629.svg)](https://doi.org/10.5281/zenodo.4540629)
+
 A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods and clear errors.
 
 ![Global Sensor Map with Celsius Scale](maps/sensor_map.png)
