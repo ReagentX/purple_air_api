@@ -3,7 +3,7 @@ Representation of sensor channel data
 """
 
 import json
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 import pandas as pd
@@ -153,7 +153,7 @@ class Channel():
     def get_historical(self,
                        weeks_to_get: int,
                        thingspeak_field: str,
-                       start_date: Optional[datetime] = datetime.now()) -> pd.DataFrame:
+                       start_date: datetime = datetime.now()) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past
         """
