@@ -70,8 +70,9 @@ class SensorList():
             parent_sensor_id = child_map[child_sensor_id]['ParentID']
             if parent_sensor_id not in parent_map:
                 # pylint: disable=line-too-long
-                raise ValueError(
+                print(
                     f'Child {child_sensor_id} lists parent {parent_sensor_id}, but parent does not exist!')
+                continue
             channels = [
                 parent_map[parent_sensor_id],
                 child_map[child_sensor_id]
