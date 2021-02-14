@@ -152,7 +152,8 @@ class Channel():
 
     def get_historical(self,
                        weeks_to_get: int,
-                       thingspeak_field: str) -> pd.DataFrame:
+                       thingspeak_field: str,
+                       start_date: Optional[datetime] = datetime.now()) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past
         """
@@ -173,17 +174,16 @@ class Channel():
         child_cols = CHILD_PRIMARY_COLS if thingspeak_field == 'primary' else CHILD_SECONDARY_COLS
 
         columns = parent_cols if self.type == 'parent' else child_cols
-        from_week = datetime.now()
-        to_week = from_week - timedelta(weeks=1)
+        to_week = start_date - timedelta(weeks=1)
         # pylint: disable=line-too-long
-        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={start_date.strftime("%Y-%m-%d")}%2000:00:00'
         weekly_data = pd.read_csv(url)
         if weeks_to_get > 1:
             for _ in range(weeks_to_get):
-                from_week = to_week  # DateTimes are immutable so this reference is not a problem
+                start_date = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
                 # pylint: disable=line-too-long
-                url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={from_week.strftime("%Y-%m-%d")}%2000:00:00'
+                url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={start_date.strftime("%Y-%m-%d")}%2000:00:00'
                 weekly_data = pd.concat([weekly_data, pd.read_csv(url)])
 
         # Handle formatting the DataFrame
