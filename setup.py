@@ -19,7 +19,8 @@ setup(
     author_email='purpleair@reagentx.net',
     url='https://github.com/ReagentX/purple_air_api/',
     packages=find_packages(),
-    install_requires=['requests', 'requests_cache', 'thingspeak', 'geopy', 'pandas'],
+    install_requires=['requests', 'requests_cache',
+                      'thingspeak', 'geopy', 'pandas'],
     python_requires='>=3.6',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

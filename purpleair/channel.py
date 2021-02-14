@@ -3,7 +3,7 @@ Representation of sensor channel data
 """
 
 import json
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Optional
 
 import pandas as pd
