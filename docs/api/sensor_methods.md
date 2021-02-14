@@ -86,7 +86,7 @@ The JSON data contains a `results` array where the 0th index is the parent senso
 }
 ```
 
-## `get_field('field': str)`
+## `get_field(field: int)`
 
 Gets the ThingSpeak data from `field` for a sensor. Sets the properties `channel_a` and `channel_b` to the data returned by ThingSpeak.
 
