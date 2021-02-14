@@ -117,11 +117,13 @@ The data is shaped like this:
 }
 ```
 
-## `get_historical(weeks_to_get: int, thingspeak_field: str) -> pd.DataFrame`
+## `get_historical(weeks_to_get: int, thingspeak_field: str, start_date: Optional[datetime] = None) -> pd.DataFrame`
 
 Get data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.
 
 `thingspeak_field` is one of `{'primary', 'secondary'}`.
+
+`start_date` is an optional field to supply a start date. `weeks_to_get` is relative to this value. If not set, it defaults to `datetime.now()`
 
 Parent Primary:
 

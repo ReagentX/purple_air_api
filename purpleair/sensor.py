@@ -77,7 +77,7 @@ class Sensor():
                 f'More than 2 channels found for {self.identifier}')
         return channel_data
 
-    def get_field(self, field) -> None:
+    def get_field(self, field: int) -> None:
         """
         Gets the thingspeak data for a sensor, setting None if the data is missing
         """
