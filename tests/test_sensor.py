@@ -23,15 +23,15 @@ class TestSensorMethods(unittest.TestCase):
         Test that we can get data from the ThingSpeak API
         """
         se = sensor.Sensor(7423, parse_location=True)
-        se.get_field('field3')
-        self.assertIn('field3', se.thingspeak_data)
-        self.assertIn('primary', se.thingspeak_data['field3'])
-        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_a'])
-        self.assertIn('feeds', se.thingspeak_data['field3']['primary']['channel_b'])
-        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_a'])
-        self.assertIn('feeds', se.thingspeak_data['field3']['secondary']['channel_b'])
+        se.get_field(3)
+        self.assertIn(3, se.thingspeak_data)
+        self.assertIn('primary', se.thingspeak_data[3])
+        self.assertIn('feeds', se.thingspeak_data[3]['primary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data[3]['primary']['channel_b'])
+        self.assertIn('feeds', se.thingspeak_data[3]['secondary']['channel_a'])
+        self.assertIn('feeds', se.thingspeak_data[3]['secondary']['channel_b'])
         self.assertGreater(
-            len(se.thingspeak_data['field3']['primary']['channel_a']['feeds']),
+            len(se.thingspeak_data[3]['primary']['channel_a']['feeds']),
             0
         )
 
