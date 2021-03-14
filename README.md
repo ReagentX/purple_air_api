@@ -118,7 +118,7 @@ print(df.head())
 Result:
 
 ```log
-                        created_at  PM1.0_CF_ATM_ug/m3  PM2.5_CF_ATM_ug/m3  PM10.0_CF_ATM_ug/m3  UptimeMinutes  RSSI_dbm  Pressure_hpa  Blank  PM2.5_CF_1_ug/m3
+                        created_at  PM1.0 (CF=1) ug/m3  PM2.5 (CF=1) ug/m3  PM10.0 (CF=1) ug/m3  UptimeMinutes  RSSI_dbm  Pressure_hpa  Blank  PM2.5 (CF=ATM) ug/m3
 entry_id
 1002561  2020-09-09 00:01:09+00:00                1.03                1.41                 1.41        18136.0      0.01        982.25    NaN              1.41
 1002562  2020-09-09 00:03:09+00:00                1.07                1.60                 1.60        18136.0      0.01        982.18    NaN              1.60
