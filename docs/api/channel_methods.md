@@ -117,7 +117,7 @@ The data is shaped like this:
 }
 ```
 
-## `get_historical(weeks_to_get: int, thingspeak_field: str, start_date: Optional[datetime] = None) -> pd.DataFrame`
+## `get_historical(weeks_to_get: int, thingspeak_field: str, start_date: datetime = datetime.now()) -> pd.DataFrame`
 
 Get data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.
 
@@ -131,11 +131,11 @@ Parent Primary:
   * Timestamp of data posting to ThingSpeak (created by ThingSpeak)
 * `entry_id`
   * row number relative to all data Parent primary data (created by ThingSpeak)
-* `PM1.0_CF_ATM_ug/m3`
+* `PM1.0 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~1.0um for “atmospheric” particles (From Plantower 5003/1003)
-* `PM2.5_CF_ATM_ug/m3`
+* `PM2.5 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~2.5um for “atmospheric” particles (From Plantower 5003/1003)
-* `PM10.0_CF_ATM_ug/m3`
+* `PM10.0 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~10um for “atmospheric” particles (From Plantower 5003/1003)
 * `UptimeMinutes`
   * the amount time the unit CPU has been running since it was powered up (From ESP8266 WiFi chip)
@@ -145,7 +145,7 @@ Parent Primary:
   * Temperature inside of the sensor housing in Fahrenheit. On average, this is 8F higher than ambient conditions. (From BME280)
 * `Humidity_%`
   * Relative humidity inside of the sensor housing as a percentage. On average, this is 4% lower than ambient conditions (From BME280)
-* `PM2.5_CF_1_ug/m3`
+* `PM2.5 (CF=ATM) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~2.5um for “standard” particles (From Plantower 5003/1003)
 
 Parent Secondary:
@@ -177,11 +177,11 @@ Child Primary:
   * Timestamp of data posting to ThingSpeak (created by ThingSpeak)
 * `entry_id`
   * row number relative to all data child primary data (created by ThingSpeak)
-* `PM1.0_CF_ATM_ug/m3`
+* `PM1.0 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~1.0um for “atmospheric” particles (From Plantower 5003/1003)
-* `PM2.5_CF_ATM_ug/m3`
+* `PM2.5 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~2.5um for “atmospheric” particles (From Plantower 5003/1003)
-* `PM10.0_CF_ATM_ug/m3`
+* `PM10.0 (CF=1) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~10um for “atmospheric” particles (From Plantower 5003/1003)
 * `UptimeMinutes`
   * the amount time the unit CPU has been running since it was powered up
@@ -192,7 +192,7 @@ Child Primary:
 * `Blank`
   * No Data
   * Note: there appears to be some float data in this column
-* `PM2.5_CF_1_ug/m3`
+* `PM2.5 (CF=ATM) ug/m3`
   * mass concentration calculated from count data for particle sizes ~0.3um to ~2.5um for “standard” particles (From Plantower 5003/1003)
 
 Child Secondary:
