@@ -1,6 +1,6 @@
 # Usage requirements
-requests
-requests_cache
-thingspeak
-geopy
-pandas
+requests_cache==0.6.0
+thingspeak==1.0.0
+requests==2.25.1
+pandas==1.2.4
+geopy==2.1.0

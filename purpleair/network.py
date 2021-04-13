@@ -7,9 +7,10 @@ import json
 import time
 from json.decoder import JSONDecodeError
 from typing import List, Optional, Union
+from datetime import timedelta
 
 import pandas as pd
-import requests
+from requests_cache import CachedSession
 
 from .api_data import API_ROOT
 from .sensor import Sensor
@@ -33,7 +34,8 @@ class SensorList():
         """
         Get all data from the API
         """
-        response = requests.get(f'{API_ROOT}?q=""')
+        session = CachedSession(expire_after=timedelta(hours=1))
+        response = session.get(f'{API_ROOT}?q=""')
         try:
             data = json.loads(response.content)
         except JSONDecodeError as err:

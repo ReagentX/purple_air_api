@@ -7,8 +7,9 @@ import json
 import os
 from re import sub
 from typing import Optional, List
+from datetime import timedelta
 
-import requests
+from requests_cache import CachedSession
 from geopy.geocoders import Nominatim
 
 from .api_data import API_ROOT
@@ -56,7 +57,8 @@ class Sensor():
             raise ValueError(f'Invalid sensor ID: {self.identifier}')
 
         # Fetch the JSON for parent and child sensors
-        response = requests.get(f'{API_ROOT}?show={self.identifier}')
+        session = CachedSession(expire_after=timedelta(hours=1))
+        response = session.get(f'{API_ROOT}?show={self.identifier}')
         data = json.loads(response.content)
         channel_data: Optional[list] = data.get('results')
 
@@ -68,7 +70,7 @@ class Sensor():
             except IndexError:
                 raise IndexError from IndexError(
                     f'Parent sensor for {self.identifier} does not exist!')
-            response = requests.get(f'{API_ROOT}?show={parent_id}')
+            response = session.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
             channel_data = data.get('results')
         elif channel_data and len(channel_data) > 2:
