@@ -6,6 +6,7 @@ dist/*
 
 # Requests cache
 cache.sqlite
+http_cache.sqlite
 
 # Dev env
 venv/*
