@@ -68,6 +68,7 @@ class SensorList():
                 parent_map[sensor['ID']] = sensor
 
         # Second pass: build list of complete sensors
+        # pylint: disable=consider-using-dict-items
         for child_sensor_id in child_map:
             parent_sensor_id = child_map[child_sensor_id]['ParentID']
             if parent_sensor_id not in parent_map:
@@ -84,6 +85,7 @@ class SensorList():
             out_l.append(channels)
 
         # Handle remaining parent sensors
+        # pylint: disable=consider-using-dict-items
         for remaining_parent in parent_map:
             channels = [
                 parent_map[remaining_parent],
