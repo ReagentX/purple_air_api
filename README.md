@@ -37,7 +37,7 @@ For detailed documentation, see the [docs](docs/documentation.md) file.
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 11,220 sensors!
+p = SensorList()  # Initialized 23,145 sensors!
 useful = [s for s in p.all_sensors if s.is_useful()]  # List of sensors with no defects
 print(len(useful))  # 17,426
 ```
