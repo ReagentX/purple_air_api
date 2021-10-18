@@ -60,7 +60,7 @@ class TestSensorMethods(unittest.TestCase):
         """
         Test that we ensure a useful sensor is useful
         """
-        se = sensor.Sensor(14633)
+        se = sensor.Sensor(81879)
         self.assertEqual(se.is_useful(), True)
 
     def test_is_not_useful_flagged(self):
