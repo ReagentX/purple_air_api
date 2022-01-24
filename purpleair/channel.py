@@ -179,7 +179,7 @@ class Channel():
         url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={start_date.strftime("%Y-%m-%d")}%2000:00:00'
         weekly_data = pd.read_csv(url)
         if weeks_to_get > 1:
-            for _ in range(weeks_to_get):
+            for _ in range(weeks_to_get - 1):
                 start_date = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
                 # pylint: disable=line-too-long
