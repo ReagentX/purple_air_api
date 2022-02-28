@@ -48,6 +48,7 @@ class Sensor():
         if self.parse_location:
             self.get_location()
 
+    # pylint: disable=no-self-use
     def get_data(self, identifier: int) -> Optional[list]:
         """
         Get new data if no data is provided
