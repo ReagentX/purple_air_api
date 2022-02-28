@@ -55,7 +55,7 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ```python
 from purpleair.network import SensorList
 p = SensorList()  # Initialized 11,220 sensors!
-# Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
+# Other sensor filters include 'outside', 'useful', and 'family'
 df = p.to_dataframe(sensor_filter='all',
                     channel='parent')
 ```
