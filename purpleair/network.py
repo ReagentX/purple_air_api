@@ -175,9 +175,6 @@ class SensorList():
                 'family': lambda: pd.DataFrame([s.as_flat_dict(channel)
                                                 for s in [s for s in self.all_sensors
                                                           if s.parent and s.child]]),
-                'no_child': lambda: pd.DataFrame([s.as_flat_dict(channel)
-                                                  for s in [s for s in self.all_sensors
-                                                            if not s.child]]),
                 'column': lambda: self.filter_column(channel, column, value_filter)
             }[sensor_filter]()
         except KeyError as err:
