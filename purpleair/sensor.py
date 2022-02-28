@@ -21,10 +21,9 @@ class Sensor():
     Representation of a single PurpleAir sensor
     """
 
-    def __init__(self, identifier: int, json_data: list = None, parse_location=False):
-        self.identifier = identifier
+    def __init__(self, identifier: int, json_data: Optional[list] = None, parse_location=False):
         self.data: Optional[list] = json_data \
-            if json_data is not None else self.get_data()
+            if json_data is not None else self.get_data(identifier)
 
         # Validate the data we received
         if not self.data:
@@ -35,6 +34,7 @@ class Sensor():
                 f'Sensor {identifier} created without valid data')
 
         self.parent_data: dict = self.data[0]
+        self.identifier = self.parent_data['ID']
         self.child_data: Optional[dict] = self.data[1] if len(
             self.data) > 1 else None
         self.parse_location: bool = parse_location
@@ -48,17 +48,18 @@ class Sensor():
         if self.parse_location:
             self.get_location()
 
-    def get_data(self) -> Optional[list]:
+    # pylint: disable=no-self-use
+    def get_data(self, identifier: int) -> Optional[list]:
         """
         Get new data if no data is provided
         """
         # Sanitize ID
-        if not isinstance(self.identifier, int):
-            raise ValueError(f'Invalid sensor ID: {self.identifier}')
+        if not isinstance(identifier, int):
+            raise ValueError(f'Invalid sensor ID: {identifier}')
 
         # Fetch the JSON for parent and child sensors
         session = CachedSession(expire_after=timedelta(hours=1))
-        response = session.get(f'{API_ROOT}?show={self.identifier}')
+        response = session.get(f'{API_ROOT}?show={identifier}')
         data = json.loads(response.content)
         channel_data: Optional[list] = data.get('results')
 
@@ -69,14 +70,14 @@ class Sensor():
                 parent_id = channel_data[0]["ParentID"]
             except IndexError:
                 raise IndexError from IndexError(
-                    f'Parent sensor for {self.identifier} does not exist!')
+                    f'Parent sensor for {identifier} does not exist!')
             response = session.get(f'{API_ROOT}?show={parent_id}')
             data = json.loads(response.content)
             channel_data = data.get('results')
         elif channel_data and len(channel_data) > 2:
             print(json.dumps(data, indent=4))
             raise ValueError(
-                f'More than 2 channels found for {self.identifier}')
+                f'More than 2 channels found for {identifier}')
         return channel_data
 
     def get_field(self, field: int) -> None:

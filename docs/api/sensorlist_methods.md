@@ -18,8 +18,6 @@ Converts dictionary representation of a list of sensors to a Pandas DataFrame wh
   * Do not filter sensors
 * `family`
   * Sensor has both parent and child
-* `no_child`
-  * Sensor is parent-only
 * `column`
   * Must be a value that exists on a [Channel](/docs/documentation.md#channel)
   * If `value_filter` is not provided:

@@ -39,14 +39,6 @@ class TestPurpleAirMethods(unittest.TestCase):
         p.to_dataframe('useful', 'parent')
         p.to_dataframe('useful', 'child')
 
-    def test_to_dataframe_filtering_no_child(self):
-        """
-        Test that no_child sensor filter works
-        """
-        p = network.SensorList()
-        p.to_dataframe('no_child', 'parent')
-        p.to_dataframe('no_child', 'child')
-
     def test_to_dataframe_filtering_family(self):
         """
         Test that family sensor filter works
@@ -56,6 +48,9 @@ class TestPurpleAirMethods(unittest.TestCase):
         p.to_dataframe('family', 'child')
 
     def test_to_dataframe_cols(self):
+        """
+        Test that child and parent sensor dataframes contain the same data
+        """
         p = network.SensorList()
         df_a = p.to_dataframe(sensor_filter='all', channel='parent')
         df_b = p.to_dataframe(sensor_filter='all', channel='child')

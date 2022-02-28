@@ -260,6 +260,7 @@ class Channel():
         """
         out_d = {}
         nested = self.as_dict()
+        # pylint: disable=consider-using-dict-items
         for category in nested:
             for prop in nested[category]:
                 out_d[prop] = nested[category][prop]

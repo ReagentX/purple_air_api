@@ -1,6 +1,6 @@
 # PurpleAir API
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4540629.svg)](https://doi.org/10.5281/zenodo.4540629)
+[![DOI](https://zenodo.org/badge/163108208.svg)](https://zenodo.org/badge/latestdoi/163108208)
 
 A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods and clear errors.
 
@@ -37,8 +37,9 @@ For detailed documentation, see the [docs](docs/documentation.md) file.
 
 ```python
 from purpleair.network import SensorList
-p = SensorList()  # Initialized 11,220 sensors!
-print(len(p.useful_sensors))  # 10047, List of sensors with no defects
+p = SensorList()  # Initialized 23,145 sensors!
+useful = [s for s in p.all_sensors if s.is_useful()]  # List of sensors with no defects
+print(len(useful))  # 17,426
 ```
 
 ### Get location for a single sensor
@@ -54,7 +55,7 @@ print(s)  # Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 
 ```python
 from purpleair.network import SensorList
 p = SensorList()  # Initialized 11,220 sensors!
-# Other sensor filters include 'outside', 'useful', 'family', and 'no_child'
+# Other sensor filters include 'outside', 'useful', and 'family'
 df = p.to_dataframe(sensor_filter='all',
                     channel='parent')
 ```
