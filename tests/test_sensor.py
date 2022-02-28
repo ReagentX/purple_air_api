@@ -15,7 +15,7 @@ class TestSensorMethods(unittest.TestCase):
         se = sensor.Sensor(2891, parse_location=True)
         self.assertEqual(
             se.__repr__(),
-            'Sensor 2891 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States'
+            'Sensor 2890 at 10834, Canyon Road, Omaha, Douglas County, Nebraska, 68112, United States'
         )
 
     def test_can_get_field(self):
@@ -52,9 +52,11 @@ class TestSensorMethods(unittest.TestCase):
     def test_create_sensor_no_location(self):
         """
         Test that we can initialize a sensor without location enabled
+
+        This test gets a child sensor, so we end up with the parent's ID
         """
         se = sensor.Sensor(2891)
-        self.assertEqual(se.__repr__(), 'Sensor 2891')
+        self.assertEqual(se.__repr__(), 'Sensor 2890')
 
     def test_is_useful(self):
         """
