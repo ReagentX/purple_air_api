@@ -53,7 +53,7 @@ Initialize a new sensor.
     * [Channel](#channel) instance for child data
     * Not all parent data is available from the child sensor
   * `location_type`
-    * The location type of the sensor, one of `{'indoor', 'outdoor', 'unknown'}`
+    * The location type of the sensor, one of `{'inside', 'outside', None}`
   * `location`
     * Location string if `parse_location` was true, otherwise empty string
 
