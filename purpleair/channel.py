@@ -6,12 +6,20 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 
+try:
+    # py3
+    from urllib.parse import urlencode
+except ImportError:
+    # py2
+    from urllib import urlencode
+
 import pandas as pd
 import thingspeak
 
 from .api_data import (PARENT_PRIMARY_COLS, PARENT_SECONDARY_COLS,
                        CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS)
 
+THINGSPEAK_API_URL = "https://thingspeak.com/channels/{channel}/feed.csv?"
 
 class Channel():
     """
@@ -153,9 +161,12 @@ class Channel():
     def get_historical(self,
                        weeks_to_get: int,
                        thingspeak_field: str,
-                       start_date: datetime = datetime.now()) -> pd.DataFrame:
+                       start_date: datetime = datetime.now(),
+                       thingspeak_args={}) -> pd.DataFrame:
         """
-        Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past
+        Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past.
+        
+        thingspeak_args takes an optional list of additional arguments to send to the Thingspeak API. See here for more details: https://ww2.mathworks.cn/help/thingspeak/readdata.html
         """
         if thingspeak_field not in {'primary', 'secondary'}:
             # pylint: disable=line-too-long
@@ -175,22 +186,43 @@ class Channel():
 
         columns = parent_cols if self.type == 'parent' else child_cols
         to_week = start_date - timedelta(weeks=1)
-        # pylint: disable=line-too-long
-        url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={start_date.strftime("%Y-%m-%d")}%2000:00:00'
-        weekly_data = pd.read_csv(url)
-        if weeks_to_get > 1:
+        
+        # copy args to a local variable
+        thingspeak_args = thingspeak_args.copy()
+        default_args = {
+            'api_key': key,
+            'offset': 0,
+            'average': '',
+            'round': 2,
+        }
+        for key, val in default_args.items():
+            if key not in thingspeak_args:
+                thingspeak_args[key] = val
+        
+        weekly_data = []
+        base_url = THINGSPEAK_API_URL.format(channel=channel)
+        while weeks_to_get > 0:
             for _ in range(weeks_to_get):
                 start_date = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
-                # pylint: disable=line-too-long
-                url = f'https://thingspeak.com/channels/{channel}/feed.csv?api_key={key}&offset=0&average=&round=2&start={to_week.strftime("%Y-%m-%d")}%2000:00:00&end={start_date.strftime("%Y-%m-%d")}%2000:00:00'
-                weekly_data = pd.concat([weekly_data, pd.read_csv(url)])
-
+                thingspeak_args.update({
+                    'start': to_week.strftime("%Y-%m-%d 00:00:00"),
+                    'end' : start_date.strftime("%Y-%m-%d 00:00:00")
+                })
+                url = base_url + urlencode(thingspeak_args)
+                weekly_data.append(pd.read_csv(url))
+                weeks_to_get -= 1
+        
+        weekly_data = pd.concat(weekly_data)
         # Handle formatting the DataFrame
         weekly_data.rename(columns=columns, inplace=True)
         weekly_data['created_at'] = pd.to_datetime(
             weekly_data['created_at'], format='%Y-%m-%d %H:%M:%S %Z')
-        weekly_data.index = weekly_data.pop('entry_id')
+        try:
+            weekly_data.index = weekly_data.pop('entry_id')
+        except KeyError:
+            # entry_id isn't always present. E.g. if you use timescale='nonstandard'
+            pass
         return weekly_data
 
     def as_dict(self) -> dict:
