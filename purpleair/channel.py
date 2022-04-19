@@ -157,7 +157,15 @@ class Channel():
         self.created: Optional[int] = self.channel_data.get('Created')
         self.uptime: Optional[int] = self.channel_data.get('Uptime')
         self.is_owner: Optional[bool] = bool(self.channel_data.get('isOwner'))
-
+    
+    def get_all_historical(self,
+                           weeks_to_get: int,
+                           start_date: datetime = datetime.now(),
+                           thingspeak_args={}) -> pd.DataFrame:
+        primary = self.get_historical(weeks_to_get, 'primary', start_date, thingspeak_args)
+        secondary = self.get_historical(weeks_to_get, 'secondary', start_date, thingspeak_args)
+        return pd.merge(primary, secondary, how='inner', on='created_at')
+        
     def get_historical(self,
                        weeks_to_get: int,
                        thingspeak_field: str,
