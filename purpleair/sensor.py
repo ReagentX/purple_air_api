@@ -47,6 +47,10 @@ class Sensor():
         self.location: str = ''
         if self.parse_location:
             self.get_location()
+    
+    @property
+    def created_date(self):
+        return self.parent.created_date
 
     # pylint: disable=no-self-use
     def get_data(self, identifier: int) -> Optional[list]:
