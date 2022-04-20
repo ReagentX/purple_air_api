@@ -6,20 +6,14 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 
-try:
-    # py3
-    from urllib.parse import urlencode
-except ImportError:
-    # py2
-    from urllib import urlencode
+from urllib.parse import urlencode
 
 import pandas as pd
 import thingspeak
 
 from .api_data import (PARENT_PRIMARY_COLS, PARENT_SECONDARY_COLS,
-                       CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS)
+                       CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS, THINGSPEAK_API_URL)
 
-THINGSPEAK_API_URL = "https://thingspeak.com/channels/{channel}/feed.csv?"
 
 class Channel():
     """
@@ -161,7 +155,7 @@ class Channel():
     def get_all_historical(self,
                            weeks_to_get: int,
                            start_date: datetime = datetime.now(),
-                           thingspeak_args={}) -> pd.DataFrame:
+                           thingspeak_args=None) -> pd.DataFrame:
         primary = self.get_historical(weeks_to_get, 'primary', start_date, thingspeak_args)
         secondary = self.get_historical(weeks_to_get, 'secondary', start_date, thingspeak_args)
         return pd.merge(primary, secondary, how='inner', on='created_at')
@@ -170,7 +164,7 @@ class Channel():
                        weeks_to_get: int,
                        thingspeak_field: str,
                        start_date: datetime = datetime.now(),
-                       thingspeak_args={}) -> pd.DataFrame:
+                       thingspeak_args=None) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past.
         
@@ -196,7 +190,8 @@ class Channel():
         to_week = start_date - timedelta(weeks=1)
         
         # copy args to a local variable
-        thingspeak_args = thingspeak_args.copy()
+        if not thingspeak_args:
+            thingspeak_args = {}
         default_args = {
             'api_key': key,
             'offset': 0,
