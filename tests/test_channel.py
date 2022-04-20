@@ -1,7 +1,7 @@
 import unittest
 
 from purpleair import sensor
-
+from purpleair import api_data
 
 class TestChannelMethods(unittest.TestCase):
     """
@@ -24,6 +24,38 @@ class TestChannelMethods(unittest.TestCase):
         se.parent.get_historical(1, 'secondary')
         se.child.get_historical(1, 'primary')
         se.child.get_historical(1, 'secondary')
+    
+    def test_get_all_historical(self):
+        """
+        Test that we properly get both primary and secondary data in one go using the _all method
+        """
+        se = sensor.Sensor(2891)
+        
+        # parent sensor
+        parent_results = se.parent.get_all_historical(1)
+        
+        parent_columns = set(api_data.PARENT_PRIMARY_COLS.values())
+        parent_columns.update( api_data.PARENT_SECONDARY_COLS.values())
+        parent_columns.remove('entry_id') # remove entry_id
+
+        for field in parent_columns:
+            self.assertTrue(field in parent_results.columns)
+        
+        
+        # child sensor
+        child_results = se.child.get_all_historical(1)
+        
+        child_columns = set(api_data.CHILD_PRIMARY_COLS.values())
+        child_columns.update( api_data.CHILD_SECONDARY_COLS.values())
+        child_columns.remove('entry_id') # remove entry_id
+        
+        for field in child_columns:
+            self.assertTrue(field in child_results.columns)
+    
+    def test_get_mean_values(self):
+        se = sensor.Sensor(2891)
+        results = se.parent.get_historical(1, 'primary', thingspeak_args={'average': 'daily'})
+        self.assertTrue(len(results) in [7,8]) # either 7 or 8 results will be returned - depending on if we span 7 or 8 days with our 'week' time
 
     def test_as_dict(self):
         """
