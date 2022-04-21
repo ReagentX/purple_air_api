@@ -159,14 +159,19 @@ class Channel():
 
     @property
     def created_date(self):
+        """Gets the date the channel was created
+
+        Useful for finding out the earliest data point for a given channel
+        """
         url = self.get_thingspeak_url(
             'primary', start=datetime(
                 1990, 1, 1), end=None, thingspeak_args={
                 'results': 1}, dataformat='json')
-        data = json.loads(request.urlopen(url).read())
-        created_at = datetime.strptime(
-            data['channel']['created_at'],
-            '%Y-%m-%dT%H:%M:%SZ')
+
+        with json.loads(request.urlopen(url).read()) as data:
+            created_at = datetime.strptime(
+                data['channel']['created_at'],
+                '%Y-%m-%dT%H:%M:%SZ')
         return created_at
 
     def get_thingspeak_url(
@@ -178,7 +183,9 @@ class Channel():
             dataformat='csv'):
         """Build the URL to fetch the thingspeak data
 
-        thingspeak_args takes an optional list of additional arguments to send to the Thingspeak API. See here for more details: https://ww2.mathworks.cn/help/thingspeak/readdata.html
+        thingspeak_args takes an optional list of additional arguments
+        to send to the Thingspeak API.
+        See here for more details:https://ww2.mathworks.cn/help/thingspeak/readdata.html
         """
 
         if thingspeak_field not in {'primary', 'secondary'}:
@@ -186,8 +193,12 @@ class Channel():
             raise ValueError(
                 f'Invalid ThingSpeak key: {thingspeak_field}. Must be in {{"primary", "secondary"}}')
 
-        channel = self.tp_primary_channel if thingspeak_field == 'primary' else self.tp_secondary_channel
-        key = self.tp_primary_key if thingspeak_field == 'primary' else self.tp_secondary_key
+        if thingspeak_field == 'primary':
+            channel = self.tp_primary_channel
+            key = self.tp_primary_key
+        else:
+            channel = self.tp_secondary_channel
+            key = self.tp_secondary_key
 
         # copy args to a local variable
         if thingspeak_args:
@@ -215,10 +226,20 @@ class Channel():
         return base_url + urlencode(thingspeak_args)
 
     def clean_data(self, thingspeak_field, data):
+        """
+        Cleans up data from the thingspeak API
 
-        parent_cols = PARENT_PRIMARY_COLS if thingspeak_field == 'primary' else PARENT_SECONDARY_COLS
-        # pylint: disable=line-too-long
-        child_cols = CHILD_PRIMARY_COLS if thingspeak_field == 'primary' else CHILD_SECONDARY_COLS
+        * Inserts the correct column names
+        * Sets the index to `entry_id` if it exists
+        """
+
+        if thingspeak_field == 'primary':
+            parent_cols = PARENT_PRIMARY_COLS
+            child_cols = CHILD_PRIMARY_COLS
+        else:
+            parent_cols = PARENT_SECONDARY_COLS
+            child_cols = CHILD_SECONDARY_COLS
+
         columns = parent_cols if self.type == 'parent' else child_cols
 
         data.rename(columns=columns, inplace=True)
@@ -253,9 +274,11 @@ class Channel():
                                    last_date: datetime = datetime.now(),
                                    thingspeak_args=None) -> pd.DataFrame:
         """
-        Get all data (both primary and secondary) from the ThingSpeak API all in one go, staring from first_date up until last_date.
+        Get all data (both primary and secondary) from the ThingSpeak API between two dates
 
-        WARNING: For huge date ranges, this may be a large dataset, and take a long time to download. In these situations, get_historical (by week) may be a better option.
+        WARNING: For huge date ranges, this may be a large dataset, and take
+        a long time to download. In these situations, get_historical (by week)
+        may be a better option.
 
         """
         primary = self.get_historical_between(
@@ -270,10 +293,11 @@ class Channel():
                                last_date: datetime = datetime.now(),
                                thingspeak_args=None) -> pd.DataFrame:
         """
-        Get data from the ThingSpeak API all in one go, staring from first_date up until last_date.
+        Get data from the ThingSpeak API in one go between two dates.
 
-        WARNING: For huge date ranges, this may be a large dataset, and take a long time to download. In these situations, get_historical (by week) may be a better option.
-
+        WARNING: For huge date ranges, this may be a large dataset, and take
+        a long time to download. In these situations, get_historical (by week)
+        may be a better option.
         """
 
         url = self.get_thingspeak_url(

@@ -54,6 +54,10 @@ class Sensor():
 
     @property
     def created_date(self):
+        """Gets the date the sensor's first known active date
+
+        Does so by getting the parent channel's `created_date` from thingspeak
+        """
         return self.parent.created_date
 
     # pylint: disable=no-self-use
