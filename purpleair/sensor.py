@@ -21,7 +21,11 @@ class Sensor():
     Representation of a single PurpleAir sensor
     """
 
-    def __init__(self, identifier: int, json_data: Optional[list] = None, parse_location=False):
+    def __init__(
+            self,
+            identifier: int,
+            json_data: Optional[list] = None,
+            parse_location=False):
         self.data: Optional[list] = json_data \
             if json_data is not None else self.get_data(identifier)
 
@@ -47,7 +51,7 @@ class Sensor():
         self.location: str = ''
         if self.parse_location:
             self.get_location()
-    
+
     @property
     def created_date(self):
         return self.parent.created_date
@@ -127,7 +131,8 @@ class Sensor():
         if self.parent.current_pressure is None:
             return False
         if not self.parent.channel_data.get('Stats', None):
-            # Happens before stats because they will be missing if this is missing
+            # Happens before stats because they will be missing if this is
+            # missing
             return False
         if self.parent.last_modified_stats is None:
             return False
