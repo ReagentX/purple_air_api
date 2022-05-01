@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from urllib.parse import urlencode
-from urllib import request
+from requests_cache import CachedSession
 
 import pandas as pd
 import thingspeak
@@ -168,10 +168,12 @@ class Channel():
                 1990, 1, 1), end=None, thingspeak_args={
                 'results': 1}, dataformat='json')
 
-        with json.loads(request.urlopen(url).read()) as data:
-            created_at = datetime.strptime(
-                data['channel']['created_at'],
-                '%Y-%m-%dT%H:%M:%SZ')
+        session = CachedSession(expire_after=timedelta(hours=1))
+        response = session.get(url)
+        data = json.loads(response.content)
+        created_at = datetime.strptime(
+            data['channel']['created_at'],
+            '%Y-%m-%dT%H:%M:%SZ')
         return created_at
 
     def get_thingspeak_url(
