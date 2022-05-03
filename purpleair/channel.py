@@ -23,7 +23,7 @@ class Channel():
 
     def __init__(self, channel_data: dict):
         self.channel_data = channel_data
-        self.setup()
+        self._setup()
 
     def _safe_float(self, key: str) -> Optional[float]:
         """
@@ -39,7 +39,7 @@ class Channel():
                 return None
         return result
 
-    def setup(self) -> None:
+    def _setup(self) -> None:
         """
         Initialize metadata and real data for a sensor; for detailed info see docs
         """
@@ -225,7 +225,7 @@ class Channel():
             channel=channel, dataformat=dataformat)
         return base_url + urlencode(thingspeak_args)
 
-    def clean_data(self, thingspeak_field: str, data: pd.DataFrame):
+    def _clean_data(self, thingspeak_field: str, data: pd.DataFrame):
         """
         Cleans up data from the thingspeak API
 
@@ -270,8 +270,8 @@ class Channel():
         return pd.merge(primary, secondary, how='inner', on='created_at')
 
     def get_all_historical_between(self,
-                                   first_date: datetime,
-                                   last_date: datetime = datetime.now(),
+                                   start_date: datetime,
+                                   end_date: datetime = datetime.now(),
                                    thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API between two dates
@@ -282,15 +282,15 @@ class Channel():
 
         """
         primary = self.get_historical_between(
-            'primary', first_date, last_date, thingspeak_args)
+            'primary', start_date, end_date, thingspeak_args)
         secondary = self.get_historical_between(
-            'secondary', first_date, last_date, thingspeak_args)
+            'secondary', start_date, end_date, thingspeak_args)
         return pd.merge(primary, secondary, how='inner', on='created_at')
 
     def get_historical_between(self,
                                thingspeak_field: str,
-                               first_date: datetime,
-                               last_date: datetime = datetime.now(),
+                               start_date: datetime,
+                               end_date: datetime = datetime.now(),
                                thingspeak_args=None) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API in one go between two dates.
@@ -302,10 +302,10 @@ class Channel():
 
         url = self._get_thingspeak_url(
             thingspeak_field,
-            first_date,
-            last_date,
+            start_date,
+            end_date,
             thingspeak_args)
-        return self.clean_data(thingspeak_field, pd.read_csv(url))
+        return self._clean_data(thingspeak_field, pd.read_csv(url))
 
     def get_historical(self,
                        weeks_to_get: int,
@@ -329,7 +329,7 @@ class Channel():
         weekly_data_df = pd.DataFrame(pd.concat(weekly_data))
 
         # Handle formatting the DataFrame column names
-        return self.clean_data(thingspeak_field, weekly_data_df)
+        return self._clean_data(thingspeak_field, weekly_data_df)
 
     def as_dict(self) -> dict:
         """
