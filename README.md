@@ -1,6 +1,6 @@
 # PurpleAir API
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6513212.svg)](https://doi.org/10.5281/zenodo.6513212)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6513212.svg)](https://zenodo.org/record/6513212)
 
 A Python 3.x module to turn data from the PurpleAir/ThingSpeak API into a Pandas DataFrame safely, with many utility methods and clear errors.
 
