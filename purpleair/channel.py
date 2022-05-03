@@ -25,7 +25,7 @@ class Channel():
         self.channel_data = channel_data
         self.setup()
 
-    def safe_float(self, key: str) -> Optional[float]:
+    def _safe_float(self, key: str) -> Optional[float]:
         """
         Convert to float if the item exists, otherwise return none
         """
@@ -44,8 +44,8 @@ class Channel():
         Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
-        self.lat: Optional[float] = self.safe_float('Lat')
-        self.lon: Optional[float] = self.safe_float('Lon')
+        self.lat: Optional[float] = self._safe_float('Lat')
+        self.lon: Optional[float] = self._safe_float('Lon')
         self.identifier: Optional[int] = self.channel_data.get('ID')
         self.parent: Optional[int] = self.channel_data.get('ParentID')
         self.type: str = 'parent' if self.parent is None else 'child'
@@ -55,27 +55,27 @@ class Channel():
             'DEVICE_LOCATIONTYPE')
 
         # Data, possible TODO: abstract to class
-        self.current_pm2_5: Optional[float] = self.safe_float('PM2_5Value')
-        self.current_temp_f: Optional[float] = self.safe_float('temp_f')
+        self.current_pm2_5: Optional[float] = self._safe_float('PM2_5Value')
+        self.current_temp_f: Optional[float] = self._safe_float('temp_f')
         self.current_temp_c = (self.current_temp_f - 32) * (5 / 9) \
             if self.current_temp_f is not None else None
-        self.current_humidity: Optional[float] = self.safe_float('humidity')
-        self.current_pressure: Optional[float] = self.safe_float('pressure')
-        self.current_p_0_3_um: Optional[float] = self.safe_float('p_0_3_um')
-        self.current_p_0_5_um: Optional[float] = self.safe_float('p_0_5_um')
-        self.current_p_1_0_um: Optional[float] = self.safe_float('p_1_0_um')
-        self.current_p_2_5_um: Optional[float] = self.safe_float('p_2_5_um')
-        self.current_p_5_0_um: Optional[float] = self.safe_float('p_5_0_um')
-        self.current_p_10_0_um: Optional[float] = self.safe_float('p_10_0_um')
-        self.current_pm1_0_cf_1: Optional[float] = self.safe_float(
+        self.current_humidity: Optional[float] = self._safe_float('humidity')
+        self.current_pressure: Optional[float] = self._safe_float('pressure')
+        self.current_p_0_3_um: Optional[float] = self._safe_float('p_0_3_um')
+        self.current_p_0_5_um: Optional[float] = self._safe_float('p_0_5_um')
+        self.current_p_1_0_um: Optional[float] = self._safe_float('p_1_0_um')
+        self.current_p_2_5_um: Optional[float] = self._safe_float('p_2_5_um')
+        self.current_p_5_0_um: Optional[float] = self._safe_float('p_5_0_um')
+        self.current_p_10_0_um: Optional[float] = self._safe_float('p_10_0_um')
+        self.current_pm1_0_cf_1: Optional[float] = self._safe_float(
             'pm1_0_cf_1')
-        self.current_pm2_5_cf_1: Optional[float] = self.safe_float(
+        self.current_pm2_5_cf_1: Optional[float] = self._safe_float(
             'pm2_5_cf_1')
-        self.current_pm10_0_cf_1: Optional[float] = self.safe_float(
+        self.current_pm10_0_cf_1: Optional[float] = self._safe_float(
             'pm10_0_cf_1')
-        self.current_pm1_0_atm: Optional[float] = self.safe_float('pm1_0_atm')
-        self.current_pm2_5_atm: Optional[float] = self.safe_float('pm2_5_atm')
-        self.current_pm10_0_atm: Optional[float] = self.safe_float(
+        self.current_pm1_0_atm: Optional[float] = self._safe_float('pm1_0_atm')
+        self.current_pm2_5_atm: Optional[float] = self._safe_float('pm2_5_atm')
+        self.current_pm10_0_atm: Optional[float] = self._safe_float(
             'pm10_0_atm')
 
         # Statistics
@@ -155,7 +155,8 @@ class Channel():
 
     @property
     def created_date(self):
-        """Gets the date the channel was created
+        """
+        Gets the date the channel was created
 
         Useful for finding out the earliest data point for a given channel
         """
@@ -179,11 +180,12 @@ class Channel():
             end: Optional[datetime] = None,
             thingspeak_args: Optional[Dict[str, Any]] = None,
             dataformat: str = 'csv'):
-        """Build the URL to fetch the thingspeak data
+        """
+        Build the URL to fetch the thingspeak data
 
-        thingspeak_args takes an optional list of additional arguments
+        `thingspeak_args` takes an optional list of additional arguments
         to send to the Thingspeak API.
-        See here for more details:https://ww2.mathworks.cn/help/thingspeak/readdata.html
+        See here for more details: https://www.mathworks.com/help/thingspeak/readdata.html
         """
 
         if thingspeak_field not in {'primary', 'secondary'}:
