@@ -117,13 +117,47 @@ The data is shaped like this:
 }
 ```
 
-## `get_historical(weeks_to_get: int, thingspeak_field: str, start_date: datetime = datetime.now()) -> pd.DataFrame`
+## `get_historical(weeks_to_get: int, thingspeak_field: str, start_date: datetime = datetime.now(), thingspeak_args: Dict[str, Any] = None) -> pd.DataFrame`
 
-Get data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.
+Get either primary or secondary data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.
 
 `thingspeak_field` is one of `{'primary', 'secondary'}`.
 
-`start_date` is an optional field to supply a start date. `weeks_to_get` is relative to this value. If not set, it defaults to `datetime.now()`
+`start_date` is an optional field to supply a start date. `weeks_to_get` is relative (historical) to this value. If not set, `start_date` defaults to `datetime.now()`
+
+`thingspeak_args` are optional parameters to send to the thingspeak API. The available paramters are listed [here](https://www.mathworks.com/help/thingspeak/readdata.html).
+
+See [Channel Fields](#channel-fields) for a description of available data.
+
+## `get_historical_between(thingspeak_field: str, start_date: datetime, end_date: datetime = datetime.now(), thingspeak_args: Dict[str, Any] = None)`
+
+Get either primary or secondary data from the ThingSpeak API from `start_date` to `end_date`. If omitted, `end_date` defaults to the current date and time.
+
+`thingspeak_field` is one of `{'primary', 'secondary'}`.
+
+`thingspeak_args` are optional parameters to send to the thingspeak API. The available paramters are listed [here](https://www.mathworks.com/help/thingspeak/readdata.html).
+
+See [Channel Fields](#channel-fields) for a description of available data.
+
+## `get_all_historical(weeks_to_get: int, start_date: datetime = datetime.now(), thingspeak_args: Dict[str, Any] = None) -> pd.DataFrame`
+
+Get both primary and secondary data from the ThingSpeak API from field `thingspeak_field` one week at a time up to `weeks_to_get` weeks in the past.
+
+`start_date` is an optional field to supply a start date. `weeks_to_get` is relative (historical) to this value. If not set, `start_date` defaults to `datetime.now()`
+
+`thingspeak_args` are optional parameters to send to the thingspeak API. The available paramters are listed [here](https://www.mathworks.com/help/thingspeak/readdata.html).
+
+See [Channel Fields](#channel-fields) for a description of available data.
+
+## `get_all_historical_between(start_date: datetime, end_date: datetime = datetime.now(), thingspeak_args: Dict[str, Any] = None)`
+
+Get both primary and secondary data from the ThingSpeak API from `start_date` to `end_date`. If omitted, `end_date` defaults to the current date and time.
+
+`thingspeak_args` are optional parameters to send to the thingspeak API. The available paramters are listed [here](https://www.mathworks.com/help/thingspeak/readdata.html).
+
+See [Channel Fields](#channel-fields) for a description of available data.
+
+## Channel Fields
 
 Parent Primary:
 
