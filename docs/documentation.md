@@ -56,6 +56,8 @@ Initialize a new sensor.
     * The location type of the sensor, one of `{'indoor', 'outdoor', 'unknown'}`
   * `location`
     * Location string if `parse_location` was true, otherwise empty string
+  * `created_date`
+    * The date the sensor was created
 
 See [api/sensor_methods.md](api/sensor_methods.md) for method documentation.
 
@@ -68,6 +70,8 @@ Representation of a sensor channel, either `a` or `b`. For channel `b` (child) s
 * Properties
   * `channel_data`
     * metadata in Python dictionary format about the channel
+  * `created_date`
+    * The date the channel was created
   * `lat`
     * Sensor latitude
   * `lon`
