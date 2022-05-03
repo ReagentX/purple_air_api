@@ -5,12 +5,12 @@ PurpleAir Sensor Client
 
 import json
 import os
-from re import sub
-from typing import Optional, List
 from datetime import timedelta
+from re import sub
+from typing import List, Optional
 
-from requests_cache import CachedSession
 from geopy.geocoders import Nominatim
+from requests_cache import CachedSession
 
 from .api_data import API_ROOT
 from .channel import Channel
@@ -135,8 +135,7 @@ class Sensor():
         if self.parent.current_pressure is None:
             return False
         if not self.parent.channel_data.get('Stats', None):
-            # Happens before stats because they will be missing if this is
-            # missing
+            # Happens before stats because they will be missing if this is missing
             return False
         if self.parent.last_modified_stats is None:
             return False

@@ -4,20 +4,16 @@ Representation of sensor channel data
 
 import json
 from datetime import datetime, timedelta
-from typing import Optional
-
+from typing import Any, Dict, Optional
 from urllib.parse import urlencode
-from requests_cache import CachedSession
 
 import pandas as pd
 import thingspeak
+from requests_cache import CachedSession
 
-from .api_data import (
-    PARENT_PRIMARY_COLS,
-    PARENT_SECONDARY_COLS,
-    CHILD_PRIMARY_COLS,
-    CHILD_SECONDARY_COLS,
-    THINGSPEAK_API_URL)
+from .api_data import (CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS,
+                       PARENT_PRIMARY_COLS, PARENT_SECONDARY_COLS,
+                       THINGSPEAK_API_URL)
 
 
 class Channel():
@@ -27,9 +23,9 @@ class Channel():
 
     def __init__(self, channel_data: dict):
         self.channel_data = channel_data
-        self.setup()
+        self._setup()
 
-    def safe_float(self, key: str) -> Optional[float]:
+    def _safe_float(self, key: str) -> Optional[float]:
         """
         Convert to float if the item exists, otherwise return none
         """
@@ -43,13 +39,13 @@ class Channel():
                 return None
         return result
 
-    def setup(self) -> None:
+    def _setup(self) -> None:
         """
         Initialize metadata and real data for a sensor; for detailed info see docs
         """
         # Meta
-        self.lat: Optional[float] = self.safe_float('Lat')
-        self.lon: Optional[float] = self.safe_float('Lon')
+        self.lat: Optional[float] = self._safe_float('Lat')
+        self.lon: Optional[float] = self._safe_float('Lon')
         self.identifier: Optional[int] = self.channel_data.get('ID')
         self.parent: Optional[int] = self.channel_data.get('ParentID')
         self.type: str = 'parent' if self.parent is None else 'child'
@@ -59,27 +55,27 @@ class Channel():
             'DEVICE_LOCATIONTYPE')
 
         # Data, possible TODO: abstract to class
-        self.current_pm2_5: Optional[float] = self.safe_float('PM2_5Value')
-        self.current_temp_f: Optional[float] = self.safe_float('temp_f')
+        self.current_pm2_5: Optional[float] = self._safe_float('PM2_5Value')
+        self.current_temp_f: Optional[float] = self._safe_float('temp_f')
         self.current_temp_c = (self.current_temp_f - 32) * (5 / 9) \
             if self.current_temp_f is not None else None
-        self.current_humidity: Optional[float] = self.safe_float('humidity')
-        self.current_pressure: Optional[float] = self.safe_float('pressure')
-        self.current_p_0_3_um: Optional[float] = self.safe_float('p_0_3_um')
-        self.current_p_0_5_um: Optional[float] = self.safe_float('p_0_5_um')
-        self.current_p_1_0_um: Optional[float] = self.safe_float('p_1_0_um')
-        self.current_p_2_5_um: Optional[float] = self.safe_float('p_2_5_um')
-        self.current_p_5_0_um: Optional[float] = self.safe_float('p_5_0_um')
-        self.current_p_10_0_um: Optional[float] = self.safe_float('p_10_0_um')
-        self.current_pm1_0_cf_1: Optional[float] = self.safe_float(
+        self.current_humidity: Optional[float] = self._safe_float('humidity')
+        self.current_pressure: Optional[float] = self._safe_float('pressure')
+        self.current_p_0_3_um: Optional[float] = self._safe_float('p_0_3_um')
+        self.current_p_0_5_um: Optional[float] = self._safe_float('p_0_5_um')
+        self.current_p_1_0_um: Optional[float] = self._safe_float('p_1_0_um')
+        self.current_p_2_5_um: Optional[float] = self._safe_float('p_2_5_um')
+        self.current_p_5_0_um: Optional[float] = self._safe_float('p_5_0_um')
+        self.current_p_10_0_um: Optional[float] = self._safe_float('p_10_0_um')
+        self.current_pm1_0_cf_1: Optional[float] = self._safe_float(
             'pm1_0_cf_1')
-        self.current_pm2_5_cf_1: Optional[float] = self.safe_float(
+        self.current_pm2_5_cf_1: Optional[float] = self._safe_float(
             'pm2_5_cf_1')
-        self.current_pm10_0_cf_1: Optional[float] = self.safe_float(
+        self.current_pm10_0_cf_1: Optional[float] = self._safe_float(
             'pm10_0_cf_1')
-        self.current_pm1_0_atm: Optional[float] = self.safe_float('pm1_0_atm')
-        self.current_pm2_5_atm: Optional[float] = self.safe_float('pm2_5_atm')
-        self.current_pm10_0_atm: Optional[float] = self.safe_float(
+        self.current_pm1_0_atm: Optional[float] = self._safe_float('pm1_0_atm')
+        self.current_pm2_5_atm: Optional[float] = self._safe_float('pm2_5_atm')
+        self.current_pm10_0_atm: Optional[float] = self._safe_float(
             'pm10_0_atm')
 
         # Statistics
@@ -159,11 +155,12 @@ class Channel():
 
     @property
     def created_date(self):
-        """Gets the date the channel was created
+        """
+        Gets the date the channel was created
 
         Useful for finding out the earliest data point for a given channel
         """
-        url = self.get_thingspeak_url(
+        url = self._get_thingspeak_url(
             'primary', start=datetime(
                 1990, 1, 1), end=None, thingspeak_args={
                 'results': 1}, dataformat='json')
@@ -176,18 +173,19 @@ class Channel():
             '%Y-%m-%dT%H:%M:%SZ')
         return created_at
 
-    def get_thingspeak_url(
+    def _get_thingspeak_url(
             self,
-            thingspeak_field,
-            start,
-            end=None,
-            thingspeak_args=None,
-            dataformat='csv'):
-        """Build the URL to fetch the thingspeak data
+            thingspeak_field: str,
+            start: datetime,
+            end: Optional[datetime] = None,
+            thingspeak_args: Optional[Dict[str, Any]] = None,
+            dataformat: str = 'csv'):
+        """
+        Build the URL to fetch the thingspeak data
 
-        thingspeak_args takes an optional list of additional arguments
+        `thingspeak_args` takes an optional list of additional arguments
         to send to the Thingspeak API.
-        See here for more details:https://ww2.mathworks.cn/help/thingspeak/readdata.html
+        See here for more details: https://www.mathworks.com/help/thingspeak/readdata.html
         """
 
         if thingspeak_field not in {'primary', 'secondary'}:
@@ -227,7 +225,7 @@ class Channel():
             channel=channel, dataformat=dataformat)
         return base_url + urlencode(thingspeak_args)
 
-    def clean_data(self, thingspeak_field, data):
+    def _clean_data(self, thingspeak_field: str, data: pd.DataFrame):
         """
         Cleans up data from the thingspeak API
 
@@ -259,7 +257,7 @@ class Channel():
     def get_all_historical(self,
                            weeks_to_get: int,
                            start_date: datetime = datetime.now(),
-                           thingspeak_args=None) -> pd.DataFrame:
+                           thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API in weekly increments
 
@@ -272,9 +270,10 @@ class Channel():
         return pd.merge(primary, secondary, how='inner', on='created_at')
 
     def get_all_historical_between(self,
-                                   first_date: datetime,
-                                   last_date: datetime = datetime.now(),
-                                   thingspeak_args=None) -> pd.DataFrame:
+                                   start_date: datetime,
+                                   end_date: datetime = datetime.now(),
+                                   thingspeak_args: Optional[Dict[str, Any]] = None
+                                   ) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API between two dates
 
@@ -284,15 +283,15 @@ class Channel():
 
         """
         primary = self.get_historical_between(
-            'primary', first_date, last_date, thingspeak_args)
+            'primary', start_date, end_date, thingspeak_args)
         secondary = self.get_historical_between(
-            'secondary', first_date, last_date, thingspeak_args)
+            'secondary', start_date, end_date, thingspeak_args)
         return pd.merge(primary, secondary, how='inner', on='created_at')
 
     def get_historical_between(self,
                                thingspeak_field: str,
-                               first_date: datetime,
-                               last_date: datetime = datetime.now(),
+                               start_date: datetime,
+                               end_date: datetime = datetime.now(),
                                thingspeak_args=None) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API in one go between two dates.
@@ -302,21 +301,20 @@ class Channel():
         may be a better option.
         """
 
-        url = self.get_thingspeak_url(
+        url = self._get_thingspeak_url(
             thingspeak_field,
-            first_date,
-            last_date,
+            start_date,
+            end_date,
             thingspeak_args)
-        return self.clean_data(thingspeak_field, pd.read_csv(url))
+        return self._clean_data(thingspeak_field, pd.read_csv(url))
 
     def get_historical(self,
                        weeks_to_get: int,
                        thingspeak_field: str,
                        start_date: datetime = datetime.now(),
-                       thingspeak_args=None) -> pd.DataFrame:
+                       thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past.
-
         """
         to_week = start_date - timedelta(weeks=1)
         weekly_data = []
@@ -324,15 +322,15 @@ class Channel():
             for _ in range(weeks_to_get):
                 start_date = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
-                url = self.get_thingspeak_url(
+                url = self._get_thingspeak_url(
                     thingspeak_field, to_week, start_date, thingspeak_args)
                 weekly_data.append(pd.read_csv(url))
                 weeks_to_get -= 1
 
-        weekly_data = pd.concat(weekly_data)
+        weekly_data_df = pd.DataFrame(pd.concat(weekly_data))
 
         # Handle formatting the DataFrame column names
-        return self.clean_data(thingspeak_field, weekly_data)
+        return self._clean_data(thingspeak_field, weekly_data_df)
 
     def as_dict(self) -> dict:
         """
