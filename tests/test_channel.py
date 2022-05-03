@@ -4,6 +4,7 @@ from purpleair import sensor
 from purpleair import api_data
 import datetime
 
+
 class TestChannelMethods(unittest.TestCase):
     """
     Tests for Sensor class
@@ -25,17 +26,17 @@ class TestChannelMethods(unittest.TestCase):
         se.parent.get_historical(1, 'secondary')
         se.child.get_historical(1, 'primary')
         se.child.get_historical(1, 'secondary')
-    
+
     def columns_for_channel(self, channel_type):
         if channel_type == 'child':
             columns = set(api_data.CHILD_PRIMARY_COLS.values())
-            columns.update( api_data.CHILD_SECONDARY_COLS.values())
-            columns.remove('entry_id') # remove entry_id
+            columns.update(api_data.CHILD_SECONDARY_COLS.values())
+            columns.remove('entry_id')  # remove entry_id
         else:
             columns = set(api_data.PARENT_PRIMARY_COLS.values())
-            columns.update( api_data.PARENT_SECONDARY_COLS.values())
-            columns.remove('entry_id') # remove entry_id
-        
+            columns.update(api_data.PARENT_SECONDARY_COLS.values())
+            columns.remove('entry_id')  # remove entry_id
+
         return columns
 
     def test_get_all_historical(self):
@@ -43,31 +44,30 @@ class TestChannelMethods(unittest.TestCase):
         Test that we properly get both primary and secondary data in one go using the _all method
         """
         se = sensor.Sensor(2891)
-        
+
         # parent sensor
         parent_results = se.parent.get_all_historical(1)
         parent_columns = self.columns_for_channel('parent')
 
         for field in parent_columns:
             self.assertTrue(field in parent_results.columns)
-        
-        
+
         # child sensor
         child_results = se.child.get_all_historical(1)
         child_columns = self.columns_for_channel('child')
-        
+
         for field in child_columns:
             self.assertTrue(field in child_results.columns)
-    
+
     def test_get_historical_between(self):
         """
         Test getting the sensor's historical data between two dates
         """
-        
+
         se = sensor.Sensor(2891)
         start_date = datetime.datetime.today() - datetime.timedelta(weeks=1)
         se.parent.get_historical_between('primary', start_date)
-    
+
     def test_get_all_historical_between(self):
         """
         Test getting all the sensor's historical data (primary and secondary) between two dates
@@ -81,8 +81,10 @@ class TestChannelMethods(unittest.TestCase):
 
     def test_get_average_values(self):
         se = sensor.Sensor(2891)
-        results = se.parent.get_historical(1, 'primary', thingspeak_args={'average': 'daily'})
-        self.assertTrue(len(results) in [7,8]) # either 7 or 8 results will be returned - depending on if we span 7 or 8 days with our 'week' time
+        results = se.parent.get_historical(
+            1, 'primary', thingspeak_args={'average': 'daily'})
+        # either 7 or 8 results will be returned - depending on if we span 7 or 8 days with our 'week' time
+        self.assertTrue(len(results) in [7, 8])
 
     def test_as_dict(self):
         """
