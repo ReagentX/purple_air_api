@@ -4,20 +4,16 @@ Representation of sensor channel data
 
 import json
 from datetime import datetime, timedelta
-from typing import Optional
-
+from typing import Any, Dict, Optional
 from urllib.parse import urlencode
-from requests_cache import CachedSession
 
 import pandas as pd
 import thingspeak
+from requests_cache import CachedSession
 
-from .api_data import (
-    PARENT_PRIMARY_COLS,
-    PARENT_SECONDARY_COLS,
-    CHILD_PRIMARY_COLS,
-    CHILD_SECONDARY_COLS,
-    THINGSPEAK_API_URL)
+from .api_data import (CHILD_PRIMARY_COLS, CHILD_SECONDARY_COLS,
+                       PARENT_PRIMARY_COLS, PARENT_SECONDARY_COLS,
+                       THINGSPEAK_API_URL)
 
 
 class Channel():
@@ -163,7 +159,7 @@ class Channel():
 
         Useful for finding out the earliest data point for a given channel
         """
-        url = self.get_thingspeak_url(
+        url = self._get_thingspeak_url(
             'primary', start=datetime(
                 1990, 1, 1), end=None, thingspeak_args={
                 'results': 1}, dataformat='json')
@@ -176,13 +172,13 @@ class Channel():
             '%Y-%m-%dT%H:%M:%SZ')
         return created_at
 
-    def get_thingspeak_url(
+    def _get_thingspeak_url(
             self,
-            thingspeak_field,
-            start,
-            end=None,
-            thingspeak_args=None,
-            dataformat='csv'):
+            thingspeak_field: str,
+            start: datetime,
+            end: Optional[datetime] = None,
+            thingspeak_args: Optional[Dict[str, Any]] = None,
+            dataformat: str = 'csv'):
         """Build the URL to fetch the thingspeak data
 
         thingspeak_args takes an optional list of additional arguments
@@ -227,7 +223,7 @@ class Channel():
             channel=channel, dataformat=dataformat)
         return base_url + urlencode(thingspeak_args)
 
-    def clean_data(self, thingspeak_field, data):
+    def clean_data(self, thingspeak_field: str, data: pd.DataFrame):
         """
         Cleans up data from the thingspeak API
 
@@ -259,7 +255,7 @@ class Channel():
     def get_all_historical(self,
                            weeks_to_get: int,
                            start_date: datetime = datetime.now(),
-                           thingspeak_args=None) -> pd.DataFrame:
+                           thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API in weekly increments
 
@@ -274,7 +270,7 @@ class Channel():
     def get_all_historical_between(self,
                                    first_date: datetime,
                                    last_date: datetime = datetime.now(),
-                                   thingspeak_args=None) -> pd.DataFrame:
+                                   thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API between two dates
 
@@ -302,7 +298,7 @@ class Channel():
         may be a better option.
         """
 
-        url = self.get_thingspeak_url(
+        url = self._get_thingspeak_url(
             thingspeak_field,
             first_date,
             last_date,
@@ -313,10 +309,9 @@ class Channel():
                        weeks_to_get: int,
                        thingspeak_field: str,
                        start_date: datetime = datetime.now(),
-                       thingspeak_args=None) -> pd.DataFrame:
+                       thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
         """
         Get data from the ThingSpeak API one week at a time up to weeks_to_get weeks in the past.
-
         """
         to_week = start_date - timedelta(weeks=1)
         weekly_data = []
@@ -324,15 +319,15 @@ class Channel():
             for _ in range(weeks_to_get):
                 start_date = to_week  # DateTimes are immutable so this reference is not a problem
                 to_week = to_week - timedelta(weeks=1)
-                url = self.get_thingspeak_url(
+                url = self._get_thingspeak_url(
                     thingspeak_field, to_week, start_date, thingspeak_args)
                 weekly_data.append(pd.read_csv(url))
                 weeks_to_get -= 1
 
-        weekly_data = pd.concat(weekly_data)
+        weekly_data_df = pd.DataFrame(pd.concat(weekly_data))
 
         # Handle formatting the DataFrame column names
-        return self.clean_data(thingspeak_field, weekly_data)
+        return self.clean_data(thingspeak_field, weekly_data_df)
 
     def as_dict(self) -> dict:
         """
