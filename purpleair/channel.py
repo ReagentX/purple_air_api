@@ -272,7 +272,8 @@ class Channel():
     def get_all_historical_between(self,
                                    start_date: datetime,
                                    end_date: datetime = datetime.now(),
-                                   thingspeak_args: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
+                                   thingspeak_args: Optional[Dict[str, Any]] = None
+                                   ) -> pd.DataFrame:
         """
         Get all data (both primary and secondary) from the ThingSpeak API between two dates
 
