@@ -1,3 +1,9 @@
+# The API this library used has been [deprecated](https://community.purpleair.com/t/discontinuation-of-the-json-and-data-json-urls/713)!
+
+Please see issue [#69](https://github.com/ReagentX/purple_air_api/issues/69) for more information.
+
+***
+
 # PurpleAir API
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6513212.svg)](https://zenodo.org/record/6513212)
