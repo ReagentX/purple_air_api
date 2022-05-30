@@ -1,4 +1,4 @@
-# The API this library used has been [deprecated](https://community.purpleair.com/t/discontinuation-of-the-json-and-data-json-urls/713)!
+# The API this library uses has been [deprecated](https://community.purpleair.com/t/discontinuation-of-the-json-and-data-json-urls/713)!
 
 Please see issue [#69](https://github.com/ReagentX/purple_air_api/issues/69) for more information.
 
